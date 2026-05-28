@@ -53,7 +53,8 @@ const NotFound = lazyWithRetry(() => import('@/pages/NotFound'))
 
 // Comercio (B2B)
 const CommerceLogin = lazyWithRetry(() => import('@/pages/commerce/CommerceLogin'))
-const CommerceRegister = lazyWithRetry(() => import('@/pages/commerce/CommerceRegister'))
+const CommerceLanding = lazyWithRetry(() => import('@/pages/commerce/CommerceLanding'))
+const CommerceOnboarding = lazyWithRetry(() => import('@/pages/commerce/CommerceOnboarding'))
 const CommerceResumen = lazyWithRetry(() => import('@/pages/commerce/CommerceResumen'))
 const CommerceBenefits = lazyWithRetry(() => import('@/pages/commerce/CommerceBenefits'))
 const CommerceCampaigns = lazyWithRetry(() => import('@/pages/commerce/CommerceCampaigns'))
@@ -103,7 +104,9 @@ export const router = createBrowserRouter(
       ],
     },
     { path: '/comercio/login', element: withSuspense(<CommerceLogin />) },
-    { path: '/comercio/registro', element: withSuspense(<CommerceRegister />) },
+    { path: '/comercio/sumate', element: withSuspense(<CommerceLanding />) },
+    { path: '/comercio/onboarding', element: withSuspense(<CommerceOnboarding />) },
+    { path: '/comercio/registro', element: <Navigate to="/comercio/sumate" replace /> },
     {
       path: '/comercio',
       element: <RequireCommerce />,

@@ -4,6 +4,7 @@ import { Download, Printer } from 'lucide-react'
 import { api } from '@/services/api'
 import { useApi } from '@/hooks/useApi'
 import { useSessionStore } from '@/store/session'
+import { useCreatedCommerceStore } from '@/store/createdCommerce'
 import { pointDeepLink } from '@/lib/utils'
 import { downloadQrPng, printQr } from '@/lib/qr'
 import { QrImage } from '@/components/features/QrImage'
@@ -13,12 +14,14 @@ import { Skeleton } from '@/components/ui/skeleton'
 
 export default function CommercePoints() {
   const commerce = useSessionStore((s) => s.commerce)
+  const createdCommerce = useCreatedCommerceStore((s) => s.commerce)
+  const createdPoint = useCreatedCommerceStore((s) => s.point)
   const { data: points, loading, error, reload } = useApi(() => api.getPoints(), [])
 
-  const mine = useMemo(
-    () => (points ?? []).filter((p) => p.sponsorId === commerce?.id),
-    [points, commerce?.id],
-  )
+  const mine = useMemo(() => {
+    const base = (points ?? []).filter((p) => p.sponsorId === commerce?.id)
+    return createdCommerce?.id === commerce?.id && createdPoint ? [createdPoint, ...base] : base
+  }, [points, commerce?.id, createdCommerce, createdPoint])
 
   if (!commerce) return null
 

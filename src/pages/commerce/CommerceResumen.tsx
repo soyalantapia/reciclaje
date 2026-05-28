@@ -1,9 +1,12 @@
+import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { toast } from 'sonner'
 import { Coins, Download, FileText, Gift, Recycle, Scale, Users } from 'lucide-react'
 import { api } from '@/services/api'
 import { useApi } from '@/hooks/useApi'
 import { useSessionStore } from '@/store/session'
+import { useCreatedCommerceStore } from '@/store/createdCommerce'
+import { metricsFor } from '@/lib/metrics'
 import { downloadBlob, formatNumber } from '@/lib/utils'
 import { StatCard } from '@/components/features/StatCard'
 import { HuellaVerde } from '@/components/features/HuellaVerde'
@@ -18,10 +21,15 @@ function badgeSvg(name: string, score: number) {
 
 export default function CommerceResumen() {
   const commerce = useSessionStore((s) => s.commerce)
-  const { data: m, loading, error, reload } = useApi(
-    () => api.getSponsorMetrics(commerce!.id),
-    [commerce?.id],
-  )
+  const createdCommerce = useCreatedCommerceStore((s) => s.commerce)
+  const createdPoint = useCreatedCommerceStore((s) => s.point)
+  const { data: points, loading, error, reload } = useApi(() => api.getPoints(), [])
+
+  const m = useMemo(() => {
+    if (!commerce || !points) return null
+    const extra = createdCommerce?.id === commerce.id && createdPoint ? [createdPoint] : []
+    return metricsFor(commerce, [...points, ...extra])
+  }, [commerce, points, createdCommerce, createdPoint])
 
   if (!commerce) return null
 

@@ -163,10 +163,10 @@ export default function CommerceLogin() {
             </div>
 
             <Link
-              to="/comercio/registro"
+              to="/comercio/sumate"
               className="mt-6 block rounded-xl border border-dashed border-border p-3 text-center text-sm font-semibold text-eco-700 dark:text-eco-300"
             >
-              🏪 ¿Tu comercio no está? Registralo →
+              🏪 ¿Tu comercio no está? Conocé la red y registrate →
             </Link>
           </>
         ) : (

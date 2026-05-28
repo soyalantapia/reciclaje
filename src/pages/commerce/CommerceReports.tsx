@@ -1,9 +1,12 @@
+import { useMemo } from 'react'
 import { toast } from 'sonner'
 import { Download, FileText, Printer } from 'lucide-react'
 import type { SponsorMetrics } from '@/types'
 import { api } from '@/services/api'
 import { useApi } from '@/hooks/useApi'
 import { useSessionStore } from '@/store/session'
+import { useCreatedCommerceStore } from '@/store/createdCommerce'
+import { metricsFor } from '@/lib/metrics'
 import { downloadBlob, formatNumber, objectsToCsv } from '@/lib/utils'
 import { ErrorState } from '@/components/features/ErrorState'
 import { Button } from '@/components/ui/button'
@@ -51,10 +54,15 @@ function printReport(m: SponsorMetrics, name: string) {
 
 export default function CommerceReports() {
   const commerce = useSessionStore((s) => s.commerce)
-  const { data: m, loading, error, reload } = useApi(
-    () => api.getSponsorMetrics(commerce!.id),
-    [commerce?.id],
-  )
+  const createdCommerce = useCreatedCommerceStore((s) => s.commerce)
+  const createdPoint = useCreatedCommerceStore((s) => s.point)
+  const { data: points, loading, error, reload } = useApi(() => api.getPoints(), [])
+
+  const m = useMemo(() => {
+    if (!commerce || !points) return null
+    const extra = createdCommerce?.id === commerce.id && createdPoint ? [createdPoint] : []
+    return metricsFor(commerce, [...points, ...extra])
+  }, [commerce, points, createdCommerce, createdPoint])
 
   if (!commerce) return null
   if (error && !m) return <ErrorState message={error} onRetry={reload} />

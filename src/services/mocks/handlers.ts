@@ -10,6 +10,7 @@ import {
   type SponsorMetrics,
 } from '@/types'
 import { shortCode } from '@/lib/utils'
+import { metricsFor } from '@/lib/metrics'
 import {
   benefits,
   causes,
@@ -34,42 +35,14 @@ const api = (path: string) => `${BASE}/api${path}`
 
 /**
  * Métricas del comercio: usa las seedeadas (YPF/River) o las genera de forma
- * determinista a partir del sponsor, para que TODO comercio tenga panel (C06).
+ * determinista con `metricsFor`, para que TODO comercio tenga panel (C06).
  */
 function buildMetrics(sponsorId: string): SponsorMetrics | null {
   const seeded = sponsorMetrics[sponsorId]
   if (seeded) return seeded
   const sponsor = sponsors.find((s) => s.id === sponsorId)
   if (!sponsor) return null
-  const kg = sponsor.kgRecovered
-  const contributions = Math.round(kg * 4.6)
-  const monthBase = Math.max(60, Math.round(contributions / 16))
-  const monthlySeries = ['Ene', 'Feb', 'Mar', 'Abr', 'May'].map((label, i) => ({
-    label,
-    value: Math.round(monthBase * (1 + i * 0.4)),
-  }))
-  const sponsorPoints = points.filter((p) => p.sponsorId === sponsorId)
-  const byPoint = sponsorPoints.length
-    ? sponsorPoints.map((p, i) => ({
-        point: p.name,
-        contributions: Math.round(
-          (contributions / sponsorPoints.length) * (0.85 + (i % 3) * 0.15),
-        ),
-      }))
-    : [{ point: 'Canal online / e-commerce', contributions }]
-  return {
-    sponsorId,
-    sponsorName: sponsor.name,
-    greenScore: sponsor.greenScore,
-    activeUsers: Math.round(kg * 0.9),
-    contributions,
-    xpEmitted: Math.round(contributions * 68),
-    benefitsRedeemed: Math.round(contributions * 0.034),
-    kgRecovered: kg,
-    capsRecovered: Math.round(kg * 238),
-    monthlySeries,
-    byPoint,
-  }
+  return metricsFor(sponsor, points)
 }
 
 export const handlers = [
