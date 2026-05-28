@@ -53,6 +53,7 @@ const NotFound = lazyWithRetry(() => import('@/pages/NotFound'))
 
 // Comercio (B2B)
 const CommerceLogin = lazyWithRetry(() => import('@/pages/commerce/CommerceLogin'))
+const CommerceRegister = lazyWithRetry(() => import('@/pages/commerce/CommerceRegister'))
 const CommerceResumen = lazyWithRetry(() => import('@/pages/commerce/CommerceResumen'))
 const CommerceBenefits = lazyWithRetry(() => import('@/pages/commerce/CommerceBenefits'))
 const CommerceCampaigns = lazyWithRetry(() => import('@/pages/commerce/CommerceCampaigns'))
@@ -102,6 +103,7 @@ export const router = createBrowserRouter(
       ],
     },
     { path: '/comercio/login', element: withSuspense(<CommerceLogin />) },
+    { path: '/comercio/registro', element: withSuspense(<CommerceRegister />) },
     {
       path: '/comercio',
       element: <RequireCommerce />,
