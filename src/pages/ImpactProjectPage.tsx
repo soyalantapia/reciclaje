@@ -55,7 +55,7 @@ export default function ImpactProjectPage() {
 
       <ImpactProgress project={project} />
 
-      <Link to={`/trazabilidad/${project.id}`}>
+      <Link to={`/trazabilidad/${project.id}`} className="block">
         <Button block variant="secondary" size="lg">
           <Route size={18} /> Ver trazabilidad del material
         </Button>

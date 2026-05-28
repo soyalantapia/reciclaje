@@ -40,7 +40,7 @@ export default function Home() {
 
       <XpWallet />
 
-      <Link to="/escanear">
+      <Link to="/escanear" className="block">
         <Button block size="lg" className="shadow-md shadow-eco-600/20">
           <QrCode size={20} /> Escanear un aporte
         </Button>
@@ -89,7 +89,7 @@ export default function Home() {
       )}
 
       {/* Marcas de la red */}
-      <Link to="/marcas">
+      <Link to="/marcas" className="block">
         <div className="flex items-center gap-3 rounded-2xl border border-border bg-card p-4">
           <span className="grid h-10 w-10 place-items-center rounded-xl bg-eco-100 text-eco-700 dark:bg-eco-900/40 dark:text-eco-300">
             <Leaf size={18} />
@@ -105,7 +105,7 @@ export default function Home() {
       </Link>
 
       {/* Premio del mes */}
-      <Link to="/ranking">
+      <Link to="/ranking" className="block">
         <div className="flex items-center gap-3 rounded-2xl bg-gradient-to-r from-xp-400 to-xp-500 p-4 text-ink-900 shadow-sm">
           <Trophy size={28} />
           <div className="flex-1">
