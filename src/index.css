@@ -1,0 +1,145 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 10px);
+
+  /* Semantic tokens → driven by :root / .dark vars below */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Brand — Eco green (primario) */
+  --color-eco-50: #ecfdf5;
+  --color-eco-100: #d1fae5;
+  --color-eco-200: #a7f3d0;
+  --color-eco-300: #6ee7b7;
+  --color-eco-400: #34d399;
+  --color-eco-500: #10b981;
+  --color-eco-600: #059669;
+  --color-eco-700: #047857;
+  --color-eco-800: #065f46;
+  --color-eco-900: #064e3b;
+  --color-eco-950: #022c22;
+
+  /* XP / recompensas (acento ámbar) */
+  --color-xp-50: #fffbeb;
+  --color-xp-100: #fef3c7;
+  --color-xp-200: #fde68a;
+  --color-xp-300: #fcd34d;
+  --color-xp-400: #fbbf24;
+  --color-xp-500: #f59e0b;
+  --color-xp-600: #d97706;
+  --color-xp-700: #b45309;
+
+  /* Neutrales (slate-ish, leve tinte frío) */
+  --color-ink-50: #f6f8f7;
+  --color-ink-100: #eaefec;
+  --color-ink-200: #d4ded8;
+  --color-ink-300: #aebbb4;
+  --color-ink-400: #7f918a;
+  --color-ink-500: #5b6b66;
+  --color-ink-600: #45524d;
+  --color-ink-700: #36413d;
+  --color-ink-800: #232b28;
+  --color-ink-900: #131917;
+
+  --color-success: #16a34a;
+  --color-warning: #f59e0b;
+  --color-danger: #e11d48;
+  --color-info: #0ea5e9;
+
+  --font-sans: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+  --font-display: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+}
+
+:root {
+  --radius: 0.9rem;
+
+  --background: #f3faf6;
+  --foreground: #0c1f1a;
+  --card: #ffffff;
+  --card-foreground: #0c1f1a;
+  --muted: #e8f1ec;
+  --muted-foreground: #5b6b66;
+  --border: #dde7e1;
+  --input: #dde7e1;
+  --ring: #10b981;
+}
+
+.dark {
+  --background: #0a1512;
+  --foreground: #e7f3ed;
+  --card: #11201b;
+  --card-foreground: #e7f3ed;
+  --muted: #16271f;
+  --muted-foreground: #9bb0a6;
+  --border: #1f342b;
+  --input: #1f342b;
+  --ring: #34d399;
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    margin: 0;
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Respeta el safe-area en PWA / notch */
+  .pb-safe {
+    padding-bottom: calc(env(safe-area-inset-bottom) + 0.5rem);
+  }
+  .pt-safe {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  button {
+    cursor: pointer;
+  }
+
+  :focus-visible {
+    outline: none;
+  }
+}
+
+@layer utilities {
+  /* Patrón de fondo sutil tipo "puntos eco" para hero/secciones */
+  .bg-eco-grid {
+    background-image: radial-gradient(
+      var(--color-eco-200) 1px,
+      transparent 1px
+    );
+    background-size: 22px 22px;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
