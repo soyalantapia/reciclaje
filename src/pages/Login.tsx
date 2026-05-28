@@ -107,6 +107,9 @@ export default function Login() {
             Apple
           </Button>
         </div>
+        <p className="mt-2 text-center text-xs text-muted-foreground">
+          Botones de demo — entrás con la cuenta de prueba.
+        </p>
 
         <button
           onClick={doLogin}

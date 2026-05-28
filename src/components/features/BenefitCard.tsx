@@ -57,6 +57,12 @@ export function BenefitCard({ benefit, isPremium, spendableXp, onRedeem }: Props
         {hasPremiumPrice && <Badge variant="xp">Premium</Badge>}
       </div>
 
+      {!isPremium && benefit.premiumCostXp != null && (
+        <p className="mt-1.5 text-xs font-semibold text-xp-700 dark:text-xp-300">
+          👑 Con Premium: {formatNumber(benefit.premiumCostXp)} XP
+        </p>
+      )}
+
       <Button
         size="sm"
         block

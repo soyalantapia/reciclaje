@@ -1,14 +1,15 @@
 import { useState } from 'react'
 import { toast } from 'sonner'
-import { Coins } from 'lucide-react'
 import { api, ApiError } from '@/services/api'
 import { useApi } from '@/hooks/useApi'
 import { useSessionStore } from '@/store/session'
 import { useWalletStore } from '@/store/wallet'
+import { useCouponsStore } from '@/store/coupons'
 import type { Benefit, BenefitCategory, Coupon } from '@/types'
 import { formatNumber } from '@/lib/utils'
 import { BenefitCard } from '@/components/features/BenefitCard'
 import { QrCoupon } from '@/components/features/QrCoupon'
+import { ErrorState } from '@/components/features/ErrorState'
 import { Tabs, type TabItem } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
 import { Modal } from '@/components/ui/modal'
@@ -28,7 +29,8 @@ export default function Marketplace() {
   const isPremium = useSessionStore((s) => s.user?.isPremium ?? false)
   const spendableXp = useWalletStore((s) => s.spendableXp)
   const spend = useWalletStore((s) => s.spend)
-  const { data: benefits } = useApi(() => api.getBenefits(), [])
+  const addCoupon = useCouponsStore((s) => s.add)
+  const { data: benefits, error, reload } = useApi(() => api.getBenefits(), [])
 
   const [filter, setFilter] = useState<Filter>('todos')
   const [pending, setPending] = useState<Benefit | null>(null)
@@ -47,6 +49,7 @@ export default function Marketplace() {
     setLoading(true)
     try {
       const c = await api.redeemBenefit(pending.id)
+      addCoupon(c)
       setPending(null)
       setCoupon(c)
       toast.success('¡Beneficio canjeado! 🎟️')
@@ -66,42 +69,43 @@ export default function Marketplace() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-extrabold leading-tight">Beneficios</h1>
-          <p className="text-sm text-muted-foreground">Canjeá tus XP por recompensas reales.</p>
-        </div>
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-eco-600 px-3 py-1.5 text-sm font-extrabold text-white">
-          <Coins size={15} /> {formatNumber(spendableXp)}
-        </span>
+      <div>
+        <h1 className="text-2xl font-extrabold leading-tight">Beneficios</h1>
+        <p className="text-sm text-muted-foreground">Canjeá tus XP por recompensas reales.</p>
       </div>
 
       <Tabs tabs={TABS} value={filter} onChange={setFilter} />
 
-      {!benefits && (
-        <div className="space-y-3">
-          {[0, 1, 2].map((i) => (
-            <Skeleton key={i} className="h-40 w-full" />
-          ))}
-        </div>
-      )}
+      {error && !benefits ? (
+        <ErrorState message={error} onRetry={reload} />
+      ) : (
+        <>
+          {!benefits && (
+            <div className="space-y-3">
+              {[0, 1, 2].map((i) => (
+                <Skeleton key={i} className="h-40 w-full" />
+              ))}
+            </div>
+          )}
 
-      <div className="grid gap-3">
-        {visible.map((b) => (
-          <BenefitCard
-            key={b.id}
-            benefit={b}
-            isPremium={isPremium}
-            spendableXp={spendableXp}
-            onRedeem={setPending}
-          />
-        ))}
-        {benefits && visible.length === 0 && (
-          <p className="rounded-xl bg-muted p-4 text-center text-sm text-muted-foreground">
-            No hay beneficios en esta categoría.
-          </p>
-        )}
-      </div>
+          <div className="grid gap-3">
+            {visible.map((b) => (
+              <BenefitCard
+                key={b.id}
+                benefit={b}
+                isPremium={isPremium}
+                spendableXp={spendableXp}
+                onRedeem={setPending}
+              />
+            ))}
+            {benefits && visible.length === 0 && (
+              <p className="rounded-xl bg-muted p-4 text-center text-sm text-muted-foreground">
+                No hay beneficios en esta categoría.
+              </p>
+            )}
+          </div>
+        </>
+      )}
 
       {/* Confirmación de canje */}
       <Modal open={!!pending} onClose={() => setPending(null)} title="Confirmar canje">

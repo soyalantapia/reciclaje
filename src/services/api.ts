@@ -1,9 +1,12 @@
 import type {
   Benefit,
   BenefitCategory,
+  Cause,
   Contribution,
   Coupon,
   ImpactProject,
+  PurchasePayload,
+  PurchaseResult,
   RankingResult,
   RecyclePoint,
   ScanPayload,
@@ -52,6 +55,24 @@ function isHtmlResponse(res: Response): boolean {
   return ct.toLowerCase().includes('text/html')
 }
 
+const MSW_RECOVER_KEY = 'reciclaxp-msw-recover'
+
+/**
+ * Recibir HTML donde esperábamos JSON = el SW de MSW dejó de controlar la
+ * página (pasa a veces tras navegación SPA). El único fix observado es un
+ * reload completo, que vuelve a arrancar MSW. Lo hacemos UNA vez por sesión
+ * (flag en sessionStorage); si tras el reload sigue fallando, no recargamos
+ * de nuevo y dejamos que la UI muestre el error con "Reintentar".
+ */
+function tryRecoverFromHtml(): boolean {
+  if (typeof window === 'undefined') return false
+  if (import.meta.env.VITE_USE_MSW === 'false') return false
+  if (sessionStorage.getItem(MSW_RECOVER_KEY) === '1') return false
+  sessionStorage.setItem(MSW_RECOVER_KEY, '1')
+  window.location.reload()
+  return true
+}
+
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   let res: Response
   try {
@@ -65,17 +86,22 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 
   // Si llega HTML, MSW no está controlando la página (caímos al SPA fallback).
   if (isHtmlResponse(res)) {
-    if (import.meta.env.DEV) {
-      console.error(
-        `[api] Recibí HTML en vez de JSON para ${path}. ` +
-          'Probablemente MSW no está controlando la página.',
-      )
+    // Intento de autorecuperación: reload único para re-arrancar MSW.
+    if (tryRecoverFromHtml()) {
+      // La página se está recargando; no resolvemos para no mostrar error.
+      return new Promise<T>(() => {})
     }
     throw new ApiError(
       'server',
-      'No pudimos cargar los datos. Probá refrescar (Cmd+Shift+R).',
+      'No pudimos cargar los datos. Probá reintentar.',
       res.status,
     )
+  }
+
+  // Llegó JSON: MSW (o el backend) responde bien. Limpiamos el flag de
+  // recuperación para permitir un nuevo intento ante un fallo futuro.
+  if (typeof window !== 'undefined') {
+    sessionStorage.removeItem(MSW_RECOVER_KEY)
   }
 
   if (!res.ok) {
@@ -125,4 +151,13 @@ export const api = {
 
   getRanking: (scope: 'global' | 'river' | 'ypf' = 'global') =>
     request<RankingResult>(`/ranking?scope=${scope}`),
+
+  getCauses: () => request<Cause[]>('/causes'),
+  getCause: (id: string) => request<Cause>(`/causes/${id}`),
+
+  purchase: (payload: PurchasePayload) =>
+    request<PurchaseResult>('/purchases', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }),
 }

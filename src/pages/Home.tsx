@@ -1,24 +1,32 @@
-import { Link } from 'react-router-dom'
-import { ChevronRight, QrCode, Sparkles, Trophy } from 'lucide-react'
+import { Link, useNavigate } from 'react-router-dom'
+import { ChevronRight, Leaf, QrCode, Sparkles, Trophy } from 'lucide-react'
 import { api } from '@/services/api'
 import { useApi } from '@/hooks/useApi'
 import { useSessionStore } from '@/store/session'
 import { useActivityStore } from '@/store/activity'
-import { MATERIAL_EMOJI, formatNumber, formatXp, timeAgo } from '@/lib/utils'
+import { MATERIAL_EMOJI, MATERIAL_UNIT, formatNumber, formatXp, timeAgo } from '@/lib/utils'
 import { XpWallet } from '@/components/features/XpWallet'
 import { ImpactProgress } from '@/components/features/ImpactProgress'
+import { CauseCard } from '@/components/features/CauseCard'
+import { ErrorState } from '@/components/features/ErrorState'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 
 export default function Home() {
+  const navigate = useNavigate()
   const user = useSessionStore((s) => s.user)
   const sessionContributions = useActivityStore((s) => s.sessionContributions)
-  const { data: projects } = useApi(() => api.getProjects(), [])
+  const { data: projects, error: projectsError, reload: reloadProjects } = useApi(
+    () => api.getProjects(),
+    [],
+  )
   const { data: history } = useApi(() => api.getContributions(), [])
+  const { data: causes } = useApi(() => api.getCauses(), [])
 
   const featured = projects?.[0]
+  const featuredCause = causes?.[0]
   const recent = [...sessionContributions, ...(history ?? [])].slice(0, 4)
 
   return (
@@ -39,7 +47,9 @@ export default function Home() {
       </Link>
 
       {/* Proyecto de impacto destacado */}
-      {featured ? (
+      {projectsError && !featured ? (
+        <ErrorState message={projectsError} onRetry={reloadProjects} />
+      ) : featured ? (
         <Card>
           <div className="flex items-center justify-between p-5 pb-3">
             <div className="flex items-center gap-2">
@@ -61,6 +71,38 @@ export default function Home() {
       ) : (
         <Skeleton className="h-72 w-full" />
       )}
+
+      {/* Causa destacada */}
+      {featuredCause && (
+        <div>
+          <div className="mb-2 flex items-center justify-between">
+            <h2 className="font-bold">Sumá a una causa</h2>
+            <Link
+              to="/causas"
+              className="inline-flex items-center text-sm font-semibold text-eco-700 dark:text-eco-300"
+            >
+              Ver todas <ChevronRight size={16} />
+            </Link>
+          </div>
+          <CauseCard cause={featuredCause} onClick={() => navigate(`/causa/${featuredCause.id}`)} />
+        </div>
+      )}
+
+      {/* Marcas de la red */}
+      <Link to="/marcas">
+        <div className="flex items-center gap-3 rounded-2xl border border-border bg-card p-4">
+          <span className="grid h-10 w-10 place-items-center rounded-xl bg-eco-100 text-eco-700 dark:bg-eco-900/40 dark:text-eco-300">
+            <Leaf size={18} />
+          </span>
+          <div className="flex-1">
+            <p className="font-bold">Marcas de la red</p>
+            <p className="text-xs text-muted-foreground">
+              Coca-Cola, McDonald's, Starbucks y más, con su Huella Verde
+            </p>
+          </div>
+          <ChevronRight size={20} className="text-muted-foreground" />
+        </div>
+      </Link>
 
       {/* Premio del mes */}
       <Link to="/ranking">
@@ -85,27 +127,40 @@ export default function Home() {
               Todavía no registraste aportes. ¡Escaneá tu primer QR!
             </p>
           )}
-          {recent.map((c) => (
-            <div
-              key={c.id}
-              className="flex items-center gap-3 rounded-xl border border-border bg-card p-3"
-            >
-              <span className="grid h-10 w-10 place-items-center rounded-lg bg-muted text-lg">
-                {MATERIAL_EMOJI[c.material]}
-              </span>
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-semibold">{c.pointName}</p>
-                <p className="text-xs text-muted-foreground">
-                  {c.units ? `${formatNumber(c.units)} u.` : `${c.weightKg} kg`} ·{' '}
-                  {timeAgo(c.createdAt)}
-                </p>
+          {recent.map((item) => {
+            const isRecycle = 'material' in item
+            return (
+              <div
+                key={item.id}
+                className="flex items-center gap-3 rounded-xl border border-border bg-card p-3"
+              >
+                <span className="grid h-10 w-10 place-items-center rounded-lg bg-muted text-lg">
+                  {isRecycle ? MATERIAL_EMOJI[item.material] : '🛍️'}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-semibold">
+                    {isRecycle ? item.pointName : `Compra · ${item.sponsorName}`}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {isRecycle
+                      ? item.units
+                        ? `${formatNumber(item.units)} ${MATERIAL_UNIT[item.material]}`
+                        : `${item.weightKg} kg`
+                      : `$${formatNumber(item.amountArs)}`}{' '}
+                    · {timeAgo(item.createdAt)}
+                  </p>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm font-extrabold text-eco-700 dark:text-eco-300">
+                    +{formatXp(item.xpEarned)}
+                  </p>
+                  {isRecycle && item.status === 'pendiente' && (
+                    <Badge variant="warning">Pendiente</Badge>
+                  )}
+                </div>
               </div>
-              <div className="text-right">
-                <p className="text-sm font-extrabold text-eco-700">+{formatXp(c.xpEarned)}</p>
-                {c.status === 'pendiente' && <Badge variant="warning">Pendiente</Badge>}
-              </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       </div>
     </div>

@@ -3,13 +3,14 @@ import { Route } from 'lucide-react'
 import { api } from '@/services/api'
 import { useApi } from '@/hooks/useApi'
 import { ImpactProgress } from '@/components/features/ImpactProgress'
+import { ErrorState } from '@/components/features/ErrorState'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 
 export default function ImpactProjectPage() {
   const { id = '' } = useParams()
-  const { data: project, loading, error } = useApi(() => api.getProject(id), [id])
+  const { data: project, loading, error, reload } = useApi(() => api.getProject(id), [id])
 
   if (loading) {
     return (
@@ -21,7 +22,18 @@ export default function ImpactProjectPage() {
     )
   }
 
-  if (error || !project) {
+  if (error) {
+    return (
+      <div className="space-y-4 pt-4">
+        <ErrorState message={error} onRetry={reload} />
+        <Link to="/" className="block text-center text-sm font-semibold text-eco-700">
+          Volver al inicio
+        </Link>
+      </div>
+    )
+  }
+
+  if (!project) {
     return (
       <div className="pt-10 text-center">
         <p className="text-4xl">🔍</p>

@@ -36,6 +36,7 @@ export type SponsorCategory =
   | 'complejo'
   | 'comercio'
   | 'municipio'
+  | 'marca'
 
 export interface Sponsor {
   id: string
@@ -45,6 +46,10 @@ export interface Sponsor {
   /** Color de marca para chips/acentos. */
   brandColor: string
   tagline: string
+  /** Huella Verde: puntaje 0-100 de reputación ambiental/RSE del aliado. */
+  greenScore: number
+  /** Kg de material recuperado a través de la red. */
+  kgRecovered: number
 }
 
 export type PointType = 'deposito' | 'maquina' | 'totem'
@@ -195,6 +200,7 @@ export interface SeriesPoint {
 export interface SponsorMetrics {
   sponsorId: string
   sponsorName: string
+  greenScore: number
   activeUsers: number
   contributions: number
   xpEmitted: number
@@ -229,3 +235,60 @@ export const XP_PER_UNIT: Record<MaterialType, number> = {
   papel: 1,
   aluminio: 4,
 }
+
+// ─── Causas / instituciones beneficiarias ─────────────────────────────
+export type CauseType = 'hospital' | 'ong' | 'escuela' | 'comedor'
+
+export interface CauseNeed {
+  id: string
+  label: string
+  emoji: string
+  costPoints: number
+  fundedPoints: number
+}
+
+export interface Cause {
+  id: string
+  name: string
+  slug: string
+  type: CauseType
+  brandColor: string
+  city: string
+  summary: string
+  story: string
+  material: MaterialType
+  unitLabel: string
+  kgGoal: number
+  kgCollected: number
+  /** Puntos que la causa acumuló por el material reciclado, para canjear insumos. */
+  pointsBalance: number
+  supporters: number
+  needs: CauseNeed[]
+}
+
+// ─── Ganar XP comprando (segunda vía además de reciclar) ──────────────
+export interface PurchasePayload {
+  sponsorId: string
+  amount: number
+}
+
+export interface Purchase {
+  id: string
+  kind: 'compra'
+  sponsorId: string
+  sponsorName: string
+  amountArs: number
+  xpEarned: number
+  createdAt: string
+}
+
+export interface PurchaseResult {
+  purchase: Purchase
+  xpEarned: number
+}
+
+/** XP que otorga consumir en comercios de la red (1 XP cada $50). */
+export const XP_PER_PESO = 1 / 50
+
+/** Item de actividad: aporte reciclado o compra. Discriminar con 'material' in item. */
+export type ActivityItem = Contribution | Purchase

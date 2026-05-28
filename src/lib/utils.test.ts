@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { cn, formatNumber, formatXp, pct, shortCode } from './utils'
+import { cn, formatNumber, formatXp, parsePointFromQr, pct, shortCode } from './utils'
 
 describe('pct', () => {
   it('calcula porcentaje redondeado', () => {
@@ -27,5 +27,22 @@ describe('cn', () => {
 describe('shortCode', () => {
   it('genera un código del largo pedido', () => {
     expect(shortCode(6)).toHaveLength(6)
+  })
+})
+
+describe('parsePointFromQr', () => {
+  it('extrae el id de un deep-link ?p=', () => {
+    expect(
+      parsePointFromQr('https://soyalantapia.github.io/reciclaje/?p=p_mcdonalds_palermo'),
+    ).toBe('p_mcdonalds_palermo')
+  })
+  it('extrae el id de reciclaxp:point:<id>', () => {
+    expect(parsePointFromQr('reciclaxp:point:p_ypf_libertador')).toBe('p_ypf_libertador')
+  })
+  it('acepta el id crudo', () => {
+    expect(parsePointFromQr('p_river_monumental')).toBe('p_river_monumental')
+  })
+  it('devuelve null si no reconoce', () => {
+    expect(parsePointFromQr('hola mundo')).toBeNull()
   })
 })

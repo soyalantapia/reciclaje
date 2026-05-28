@@ -3,12 +3,16 @@ import { ShieldCheck } from 'lucide-react'
 import { api } from '@/services/api'
 import { useApi } from '@/hooks/useApi'
 import { TraceabilityTimeline } from '@/components/features/TraceabilityTimeline'
+import { ErrorState } from '@/components/features/ErrorState'
 import { Skeleton } from '@/components/ui/skeleton'
 
 export default function Traceability() {
   const { projectId = '' } = useParams()
   const { data: project } = useApi(() => api.getProject(projectId), [projectId])
-  const { data: trace, loading } = useApi(() => api.getProjectTrace(projectId), [projectId])
+  const { data: trace, loading, error, reload } = useApi(
+    () => api.getProjectTrace(projectId),
+    [projectId],
+  )
 
   return (
     <div className="space-y-4">
@@ -21,29 +25,27 @@ export default function Traceability() {
         )}
       </div>
 
-      <div className="flex items-center gap-2 rounded-xl border border-eco-200 bg-eco-50 p-3 text-sm text-eco-800">
+      <div className="flex items-center gap-2 rounded-xl border border-eco-200 bg-eco-50 p-3 text-sm text-eco-800 dark:border-eco-700/40 dark:bg-eco-900/20 dark:text-eco-200">
         <ShieldCheck size={18} className="shrink-0" />
         Cada hito es un evento verificable: punto, lote, retiro, planta y producto final.
       </div>
 
-      {loading && (
+      {error && !trace ? (
+        <ErrorState message={error} onRetry={reload} />
+      ) : loading ? (
         <div className="space-y-3">
           {[0, 1, 2, 3].map((i) => (
             <Skeleton key={i} className="h-16 w-full" />
           ))}
         </div>
-      )}
-
-      {trace && trace.length > 0 ? (
+      ) : trace && trace.length > 0 ? (
         <div className="rounded-2xl border border-border bg-card p-5">
           <TraceabilityTimeline events={trace} />
         </div>
       ) : (
-        !loading && (
-          <p className="rounded-xl bg-muted p-4 text-center text-sm text-muted-foreground">
-            Este proyecto todavía no tiene eventos de trazabilidad.
-          </p>
-        )
+        <p className="rounded-xl bg-muted p-4 text-center text-sm text-muted-foreground">
+          Este proyecto todavía no tiene eventos de trazabilidad.
+        </p>
       )}
 
       <Link to={`/proyecto/${projectId}`} className="block text-center text-sm font-semibold text-eco-700">

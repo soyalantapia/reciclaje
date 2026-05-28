@@ -6,7 +6,10 @@ import { useApi } from '@/hooks/useApi'
 import { formatNumber } from '@/lib/utils'
 import { Logo } from '@/components/features/Logo'
 import { StatCard } from '@/components/features/StatCard'
+import { ErrorState } from '@/components/features/ErrorState'
+import { HuellaVerde } from '@/components/features/HuellaVerde'
 import { Tabs, type TabItem } from '@/components/ui/tabs'
+import { Progress } from '@/components/ui/progress'
 import { Skeleton } from '@/components/ui/skeleton'
 
 const SPONSORS: TabItem<string>[] = [
@@ -16,7 +19,10 @@ const SPONSORS: TabItem<string>[] = [
 
 export default function B2BDashboard() {
   const [sponsorId, setSponsorId] = useState('s_ypf')
-  const { data: m, loading } = useApi(() => api.getSponsorMetrics(sponsorId), [sponsorId])
+  const { data: m, loading, error, reload } = useApi(
+    () => api.getSponsorMetrics(sponsorId),
+    [sponsorId],
+  )
 
   const maxMonthly = m ? Math.max(...m.monthlySeries.map((s) => s.value)) : 1
   const maxPoint = m ? Math.max(...m.byPoint.map((s) => s.contributions)) : 1
@@ -43,7 +49,9 @@ export default function B2BDashboard() {
 
         <Tabs tabs={SPONSORS} value={sponsorId} onChange={setSponsorId} />
 
-        {loading || !m ? (
+        {error && !m ? (
+          <ErrorState message={error} onRetry={reload} />
+        ) : loading || !m ? (
           <div className="grid grid-cols-2 gap-3">
             {[0, 1, 2, 3].map((i) => (
               <Skeleton key={i} className="h-24 w-full" />
@@ -51,6 +59,15 @@ export default function B2BDashboard() {
           </div>
         ) : (
           <>
+            <div className="rounded-2xl border border-eco-200 bg-eco-50 p-5 dark:border-eco-700/40 dark:bg-eco-900/20">
+              <HuellaVerde score={m.greenScore} />
+              <Progress value={m.greenScore} className="mt-3" />
+              <p className="mt-2 text-xs text-muted-foreground">
+                Reputación ambiental de tu marca en la red. Comunicala en tus locales: tracciona
+                clientes y suma RSE verificable.
+              </p>
+            </div>
+
             <div className="grid grid-cols-2 gap-3">
               <StatCard icon={Users} label="Usuarios activos" value={formatNumber(m.activeUsers)} />
               <StatCard icon={Recycle} label="Aportes" value={formatNumber(m.contributions)} />
@@ -83,13 +100,11 @@ export default function B2BDashboard() {
               <div className="flex h-40 items-end justify-between gap-2">
                 {m.monthlySeries.map((s) => (
                   <div key={s.label} className="flex flex-1 flex-col items-center gap-2">
-                    <div className="flex w-full flex-1 items-end">
-                      <div
-                        className="w-full rounded-t-md bg-eco-500"
-                        style={{ height: `${(s.value / maxMonthly) * 100}%` }}
-                        title={formatNumber(s.value)}
-                      />
-                    </div>
+                    <div
+                      className="w-full rounded-t-md bg-eco-500"
+                      style={{ height: `${Math.max(4, (s.value / maxMonthly) * 120)}px` }}
+                      title={formatNumber(s.value)}
+                    />
                     <span className="text-xs font-semibold text-muted-foreground">{s.label}</span>
                   </div>
                 ))}

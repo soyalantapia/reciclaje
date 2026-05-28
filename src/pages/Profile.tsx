@@ -7,20 +7,27 @@ import {
   ChevronRight,
   Crown,
   LogOut,
+  Moon,
   Send,
+  Sun,
+  Ticket,
 } from 'lucide-react'
 import { api } from '@/services/api'
 import { useApi } from '@/hooks/useApi'
 import { useSessionStore } from '@/store/session'
 import { useWalletStore } from '@/store/wallet'
 import { useActivityStore } from '@/store/activity'
-import { formatDate, formatNumber } from '@/lib/utils'
+import { useUiStore } from '@/store/ui'
+import { useCouponsStore } from '@/store/coupons'
+import type { Coupon } from '@/types'
+import { cn, formatDate, formatNumber } from '@/lib/utils'
 import { Avatar } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Modal } from '@/components/ui/modal'
+import { QrCoupon } from '@/components/features/QrCoupon'
 
 const PREMIUM_PERKS = [
   'Mejores canjes por la misma cantidad de XP',
@@ -38,15 +45,21 @@ export default function Profile() {
   const resetWallet = useWalletStore((s) => s.reset)
   const sessionContributions = useActivityStore((s) => s.sessionContributions)
   const clearActivity = useActivityStore((s) => s.clear)
+  const theme = useUiStore((s) => s.theme)
+  const toggleTheme = useUiStore((s) => s.toggleTheme)
+  const coupons = useCouponsStore((s) => s.coupons)
+  const clearCoupons = useCouponsStore((s) => s.clear)
   const { data: history } = useApi(() => api.getContributions(), [])
 
   const [transferOpen, setTransferOpen] = useState(false)
   const [amount, setAmount] = useState('')
   const [recipient, setRecipient] = useState('')
+  const [viewCoupon, setViewCoupon] = useState<Coupon | null>(null)
 
   if (!user) return null
 
-  const totalAportes = (history?.length ?? 0) + sessionContributions.length
+  const totalAportes =
+    (history?.length ?? 0) + sessionContributions.filter((i) => 'material' in i).length
 
   function goPremium() {
     setPremium(true)
@@ -70,6 +83,7 @@ export default function Profile() {
     logout()
     resetWallet()
     clearActivity()
+    clearCoupons()
     navigate('/login', { replace: true })
   }
 
@@ -110,8 +124,8 @@ export default function Profile() {
 
       {/* Premium */}
       {user.isPremium ? (
-        <div className="rounded-2xl border border-xp-200 bg-xp-50 p-5">
-          <div className="flex items-center gap-2 font-extrabold text-xp-700">
+        <div className="rounded-2xl border border-xp-200 bg-xp-50 p-5 dark:border-xp-700/40 dark:bg-xp-700/10">
+          <div className="flex items-center gap-2 font-extrabold text-xp-700 dark:text-xp-300">
             <Crown size={20} /> Sos Premium
           </div>
           <ul className="mt-3 space-y-1.5">
@@ -140,6 +154,33 @@ export default function Profile() {
           <Button variant="xp" block size="lg" className="mt-4" onClick={goPremium}>
             Hacerme Premium
           </Button>
+        </div>
+      )}
+
+      {/* Mis cupones */}
+      {coupons.length > 0 && (
+        <div>
+          <p className="mb-2 font-bold">Mis cupones</p>
+          <div className="space-y-2">
+            {coupons.map((c) => (
+              <button
+                key={c.id}
+                onClick={() => setViewCoupon(c)}
+                className="flex w-full items-center gap-3 rounded-2xl border border-border bg-card p-3 text-left active:scale-[0.99]"
+              >
+                <span className="grid h-10 w-10 place-items-center rounded-xl bg-eco-100 text-eco-700 dark:bg-eco-900/40 dark:text-eco-300">
+                  <Ticket size={18} />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-semibold">{c.benefitTitle}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {c.sponsorName} · código {c.code}
+                  </p>
+                </div>
+                <ChevronRight size={18} className="text-muted-foreground" />
+              </button>
+            ))}
+          </div>
         </div>
       )}
 
@@ -174,6 +215,36 @@ export default function Profile() {
         </div>
         <ChevronRight size={20} className="text-muted-foreground" />
       </Link>
+
+      {/* Tema */}
+      <div className="flex items-center justify-between rounded-2xl border border-border bg-card p-4">
+        <div className="flex items-center gap-3">
+          <span className="grid h-10 w-10 place-items-center rounded-xl bg-muted text-foreground">
+            {theme === 'dark' ? <Moon size={18} /> : <Sun size={18} />}
+          </span>
+          <div>
+            <p className="font-bold">Tema {theme === 'dark' ? 'oscuro' : 'claro'}</p>
+            <p className="text-xs text-muted-foreground">Cambiá la apariencia de la app</p>
+          </div>
+        </div>
+        <button
+          onClick={toggleTheme}
+          role="switch"
+          aria-checked={theme === 'dark'}
+          aria-label="Cambiar tema"
+          className={cn(
+            'relative h-7 w-12 rounded-full transition-colors',
+            theme === 'dark' ? 'bg-eco-600' : 'bg-muted',
+          )}
+        >
+          <span
+            className={cn(
+              'absolute top-1 h-5 w-5 rounded-full bg-white shadow transition-transform',
+              theme === 'dark' ? 'left-1 translate-x-5' : 'left-1',
+            )}
+          />
+        </button>
+      </div>
 
       <Button variant="ghost" block onClick={doLogout} className="text-danger">
         <LogOut size={18} /> Cerrar sesión
@@ -212,6 +283,11 @@ export default function Profile() {
             Las transferencias tienen límites y auditoría antifraude (demo).
           </p>
         </div>
+      </Modal>
+
+      {/* Ver cupón guardado */}
+      <Modal open={!!viewCoupon} onClose={() => setViewCoupon(null)} title="Tu cupón">
+        {viewCoupon && <QrCoupon coupon={viewCoupon} />}
       </Modal>
     </div>
   )

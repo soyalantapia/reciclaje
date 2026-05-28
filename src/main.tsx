@@ -57,7 +57,30 @@ async function purgeOrphanServiceWorkers(): Promise<boolean> {
   return false
 }
 
+/**
+ * Captura el deep-link `?p=<pointId>` de un QR escaneado con la cámara nativa.
+ * Lo guarda para que el flujo de escaneo preseleccione el punto, y limpia la URL.
+ */
+function captureDeepLink() {
+  try {
+    const params = new URLSearchParams(window.location.search)
+    const p = params.get('p')
+    if (!p) return
+    sessionStorage.setItem('reciclaxp-scan-point', p)
+    params.delete('p')
+    const qs = params.toString()
+    window.history.replaceState(
+      null,
+      '',
+      window.location.pathname + (qs ? `?${qs}` : '') + window.location.hash,
+    )
+  } catch {
+    /* ignore */
+  }
+}
+
 async function bootstrap() {
+  captureDeepLink()
   if (await purgeOrphanServiceWorkers()) return
 
   if (import.meta.env.VITE_USE_MSW !== 'false') {

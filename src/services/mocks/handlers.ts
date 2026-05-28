@@ -1,8 +1,17 @@
 import { http, HttpResponse, delay } from 'msw'
-import { XP_PER_UNIT, type Coupon, type ScanResult, type ScanPayload } from '@/types'
+import {
+  XP_PER_UNIT,
+  XP_PER_PESO,
+  type Coupon,
+  type ScanResult,
+  type ScanPayload,
+  type PurchasePayload,
+  type PurchaseResult,
+} from '@/types'
 import { shortCode } from '@/lib/utils'
 import {
   benefits,
+  causes,
   contributions,
   currentUser,
   points,
@@ -143,5 +152,43 @@ export const handlers = [
       scope === 'river' ? rankingRiver : scope === 'ypf' ? rankingYpf : rankingGlobal
     const prize = prizes[scope] ?? prizes.global
     return HttpResponse.json({ scope, entries, prize })
+  }),
+
+  http.get(api('/causes'), async () => {
+    await delay(200)
+    return HttpResponse.json(causes)
+  }),
+
+  http.get(api('/causes/:id'), async ({ params }) => {
+    await delay(200)
+    const cause = causes.find((c) => c.id === params.id)
+    if (!cause) {
+      return HttpResponse.json({ message: 'Causa no encontrada' }, { status: 404 })
+    }
+    return HttpResponse.json(cause)
+  }),
+
+  http.post(api('/purchases'), async ({ request }) => {
+    await delay(400)
+    const body = (await request.json()) as PurchasePayload
+    const sponsor = sponsors.find((s) => s.id === body.sponsorId)
+    if (!sponsor) {
+      return HttpResponse.json({ message: 'Comercio no encontrado' }, { status: 404 })
+    }
+    const amount = Math.max(0, Math.round(body.amount))
+    const xpEarned = Math.max(1, Math.round(amount * XP_PER_PESO))
+    const result: PurchaseResult = {
+      xpEarned,
+      purchase: {
+        id: `pu_${shortCode(6)}`,
+        kind: 'compra',
+        sponsorId: sponsor.id,
+        sponsorName: sponsor.name,
+        amountArs: amount,
+        xpEarned,
+        createdAt: new Date().toISOString(),
+      },
+    }
+    return HttpResponse.json(result, { status: 201 })
   }),
 ]

@@ -42,6 +42,10 @@ const Marketplace = lazyWithRetry(() => import('@/pages/Marketplace'))
 const Ranking = lazyWithRetry(() => import('@/pages/Ranking'))
 const ImpactProjectPage = lazyWithRetry(() => import('@/pages/ImpactProjectPage'))
 const Traceability = lazyWithRetry(() => import('@/pages/Traceability'))
+const Causes = lazyWithRetry(() => import('@/pages/Causes'))
+const CauseDetail = lazyWithRetry(() => import('@/pages/CauseDetail'))
+const Marcas = lazyWithRetry(() => import('@/pages/Marcas'))
+const CommerceQr = lazyWithRetry(() => import('@/pages/CommerceQr'))
 const Profile = lazyWithRetry(() => import('@/pages/Profile'))
 const B2BDashboard = lazyWithRetry(() => import('@/pages/B2BDashboard'))
 const NotFound = lazyWithRetry(() => import('@/pages/NotFound'))
@@ -79,6 +83,10 @@ export const router = createBrowserRouter(
             { path: 'perfil', element: withSuspense(<Profile />) },
             { path: 'proyecto/:id', element: withSuspense(<ImpactProjectPage />) },
             { path: 'trazabilidad/:projectId', element: withSuspense(<Traceability />) },
+            { path: 'causas', element: withSuspense(<Causes />) },
+            { path: 'causa/:id', element: withSuspense(<CauseDetail />) },
+            { path: 'marcas', element: withSuspense(<Marcas />) },
+            { path: 'qr-comercios', element: withSuspense(<CommerceQr />) },
           ],
         },
         { path: 'empresas', element: withSuspense(<B2BDashboard />) },

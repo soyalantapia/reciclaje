@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { toast } from 'sonner'
@@ -8,18 +8,36 @@ import { useApi } from '@/hooks/useApi'
 import { useWalletStore } from '@/store/wallet'
 import { useActivityStore } from '@/store/activity'
 import type { MaterialType, RecyclePoint, ScanResult } from '@/types'
-import { MATERIAL_EMOJI, MATERIAL_LABEL, formatNumber, formatXp } from '@/lib/utils'
+import {
+  MATERIAL_EMOJI,
+  MATERIAL_LABEL,
+  MATERIAL_UNIT,
+  formatNumber,
+  formatXp,
+  parsePointFromQr,
+} from '@/lib/utils'
+import { BuyFlow } from '@/components/features/BuyFlow'
+import { QrScanner } from '@/components/features/QrScanner'
 import { Button } from '@/components/ui/button'
+import { Tabs, type TabItem } from '@/components/ui/tabs'
 import { Skeleton } from '@/components/ui/skeleton'
 
+const PENDING_POINT_KEY = 'reciclaxp-scan-point'
+
 type Step = 'scan' | 'form' | 'done'
+type Mode = 'reciclar' | 'comprar'
 const QUICK = [25, 50, 100, 200]
+const MODE_TABS: TabItem<Mode>[] = [
+  { value: 'reciclar', label: '♻️ Reciclar' },
+  { value: 'comprar', label: '🛒 Comprar' },
+]
 
 export default function Scan() {
   const { data: points } = useApi(() => api.getPoints(), [])
   const earn = useWalletStore((s) => s.earn)
   const addActivity = useActivityStore((s) => s.add)
 
+  const [mode, setMode] = useState<Mode>('reciclar')
   const [step, setStep] = useState<Step>('scan')
   const [point, setPoint] = useState<RecyclePoint | null>(null)
   const [material, setMaterial] = useState<MaterialType>('tapitas')
@@ -32,6 +50,31 @@ export default function Scan() {
     setMaterial(p.acceptedMaterials[0])
     setStep('form')
   }
+
+  function handleDecode(text: string) {
+    const id = parsePointFromQr(text)
+    const p = id ? points?.find((x) => x.id === id) : null
+    if (p) {
+      toast.success(`Punto detectado: ${p.name}`)
+      selectPoint(p)
+    } else {
+      toast.error('QR no reconocido. Probá con un punto de la red.')
+    }
+  }
+
+  // Deep-link: si llegamos por un QR escaneado con la cámara nativa (?p=<id>),
+  // preseleccionamos el punto cuando carga la lista.
+  useEffect(() => {
+    if (!points) return
+    const pending = sessionStorage.getItem(PENDING_POINT_KEY)
+    if (!pending) return
+    sessionStorage.removeItem(PENDING_POINT_KEY)
+    const p = points.find((x) => x.id === pending)
+    // selectPoint hace setState: es una inicialización única al cargar los puntos.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (p) selectPoint(p)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [points])
 
   async function submit() {
     if (!point) return
@@ -58,14 +101,14 @@ export default function Scan() {
   }
 
   // ─── Paso: resultado ────────────────────────────────────────────────
-  if (step === 'done' && result) {
+  if (mode === 'reciclar' && step === 'done' && result) {
     return (
       <div className="flex flex-col items-center pt-6 text-center">
         <motion.div
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ type: 'spring', damping: 12 }}
-          className="grid h-24 w-24 place-items-center rounded-full bg-eco-100 text-eco-600"
+          className="grid h-24 w-24 place-items-center rounded-full bg-eco-100 text-eco-600 dark:bg-eco-900/40 dark:text-eco-300"
         >
           <Check size={56} strokeWidth={3} />
         </motion.div>
@@ -76,13 +119,13 @@ export default function Scan() {
           <p className="text-sm text-eco-100">Sumaste</p>
           <p className="text-4xl font-extrabold">+{formatNumber(result.xpEarned)} XP</p>
           <p className="mt-1 text-sm text-eco-100">
-            {formatNumber(result.contribution.units ?? 0)} {MATERIAL_LABEL[material].toLowerCase()}
+            {formatNumber(result.contribution.units ?? 0)} {MATERIAL_UNIT[material]}
           </p>
         </div>
 
         {result.project && (
           <div className="mt-4 w-full rounded-2xl border border-border bg-card p-4 text-left">
-            <div className="flex items-center gap-2 text-sm font-semibold text-eco-700">
+            <div className="flex items-center gap-2 text-sm font-semibold text-eco-700 dark:text-eco-300">
               <Sparkles size={16} /> Tu aporte suma a un proyecto
             </div>
             <p className="mt-1 font-bold">{result.project.title}</p>
@@ -109,7 +152,7 @@ export default function Scan() {
   }
 
   // ─── Paso: formulario de aporte ─────────────────────────────────────
-  if (step === 'form' && point) {
+  if (mode === 'reciclar' && step === 'form' && point) {
     return (
       <div className="space-y-5">
         <button onClick={reset} className="text-sm font-semibold text-muted-foreground">
@@ -154,7 +197,7 @@ export default function Scan() {
             </button>
             <div className="text-center">
               <p className="text-4xl font-extrabold leading-none">{units}</p>
-              <p className="text-xs text-muted-foreground">unidades</p>
+              <p className="text-xs text-muted-foreground">{MATERIAL_UNIT[material]}</p>
             </div>
             <button
               onClick={() => setUnits((u) => u + 10)}
@@ -188,38 +231,25 @@ export default function Scan() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-2xl font-extrabold leading-tight">Escanear</h1>
+        <h1 className="text-2xl font-extrabold leading-tight">Sumar XP</h1>
         <p className="text-sm text-muted-foreground">
-          Apuntá al QR del punto de reciclaje. (Demo: elegí un punto abajo)
+          Reciclá o comprá en la red para sumar puntos.
         </p>
       </div>
 
-      <div className="relative mx-auto aspect-square w-full max-w-xs overflow-hidden rounded-3xl bg-ink-900">
-        <div className="absolute inset-6 rounded-2xl border-2 border-white/30" />
-        {/* esquinas */}
-        {['left-4 top-4', 'right-4 top-4', 'left-4 bottom-4', 'right-4 bottom-4'].map((pos) => (
-          <span
-            key={pos}
-            className={`absolute ${pos} h-8 w-8 rounded-md border-eco-400`}
-            style={{
-              borderTopWidth: pos.includes('top') ? 3 : 0,
-              borderBottomWidth: pos.includes('bottom') ? 3 : 0,
-              borderLeftWidth: pos.includes('left') ? 3 : 0,
-              borderRightWidth: pos.includes('right') ? 3 : 0,
-            }}
-          />
-        ))}
-        <motion.div
-          className="absolute inset-x-8 h-0.5 bg-eco-400 shadow-[0_0_12px_2px] shadow-eco-400"
-          initial={{ top: '12%' }}
-          animate={{ top: ['12%', '88%', '12%'] }}
-          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-        />
-        <QrCode className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white/20" size={120} />
-      </div>
+      <Tabs tabs={MODE_TABS} value={mode} onChange={setMode} />
 
-      <div>
-        <p className="mb-2 font-bold">Puntos cercanos</p>
+      {mode === 'comprar' ? (
+        <BuyFlow />
+      ) : (
+        <>
+          <QrScanner onDecode={handleDecode} />
+          <p className="text-center text-xs text-muted-foreground">
+            Apuntá la cámara al QR del punto de reciclaje.
+          </p>
+
+          <div>
+            <p className="mb-2 font-bold">¿Sin cámara? Elegí el punto</p>
         <div className="space-y-2">
           {!points &&
             [0, 1, 2].map((i) => <Skeleton key={i} className="h-16 w-full" />)}
@@ -238,8 +268,16 @@ export default function Scan() {
               </div>
             </button>
           ))}
-        </div>
-      </div>
+            </div>
+          </div>
+          <Link
+            to="/qr-comercios"
+            className="block rounded-xl border border-dashed border-border p-3 text-center text-sm font-semibold text-eco-700 dark:text-eco-300"
+          >
+            <QrCode size={15} className="mr-1 inline" /> ¿Sos comercio? Generá tu QR para probar
+          </Link>
+        </>
+      )}
     </div>
   )
 }

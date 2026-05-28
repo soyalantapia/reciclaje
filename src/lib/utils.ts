@@ -63,6 +63,15 @@ export const MATERIAL_EMOJI: Record<MaterialType, string> = {
   aluminio: '🥫',
 }
 
+/** Sustantivo contable por material (evita el genérico "unidades"). */
+export const MATERIAL_UNIT: Record<MaterialType, string> = {
+  tapitas: 'tapitas',
+  plastico: 'envases',
+  vidrio: 'botellas',
+  papel: 'hojas',
+  aluminio: 'latas',
+}
+
 /**
  * Genera un SVG de QR placeholder determinístico a partir del payload.
  * No es un QR escaneable real — alcanza para la demo / handoff a backend.
@@ -117,4 +126,35 @@ export function shortCode(len = 6): string {
     out += alphabet[Math.floor(Math.random() * alphabet.length)]
   }
   return out
+}
+
+/**
+ * Deep-link de un punto/comercio para codificar en el QR. Funciona escaneado
+ * con la cámara de la app (extrae `?p=`) y también con la cámara nativa del
+ * teléfono (abre la app en el flujo de escaneo de ese punto).
+ */
+export function pointDeepLink(pointId: string): string {
+  const base = import.meta.env.BASE_URL || '/'
+  const origin = typeof window !== 'undefined' ? window.location.origin : ''
+  return `${origin}${base}?p=${pointId}`
+}
+
+/**
+ * Extrae el id del punto desde el texto de un QR. Acepta:
+ *  - URL con `?p=<id>` (deep-link)
+ *  - `reciclaxp:point:<id>` o `point=<id>`
+ *  - el id crudo `p_xxx`
+ */
+export function parsePointFromQr(text: string): string | null {
+  const t = text.trim()
+  try {
+    const p = new URL(t).searchParams.get('p')
+    if (p) return p
+  } catch {
+    /* no es una URL */
+  }
+  const m = t.match(/point[:=]([\w-]+)/i)
+  if (m) return m[1]
+  if (/^p_[\w-]+$/.test(t)) return t
+  return null
 }

@@ -1,11 +1,11 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import type { Contribution } from '@/types'
+import type { ActivityItem } from '@/types'
 
 interface ActivityState {
-  /** Aportes registrados durante la sesión (se anteponen al historial). */
-  sessionContributions: Contribution[]
-  add: (c: Contribution) => void
+  /** Actividad de la sesión (aportes reciclados y compras), se antepone al historial. */
+  sessionContributions: ActivityItem[]
+  add: (c: ActivityItem) => void
   clear: () => void
 }
 

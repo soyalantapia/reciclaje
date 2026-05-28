@@ -2,6 +2,7 @@ import { MapPin } from 'lucide-react'
 import type { PointType, RecyclePoint, Sponsor } from '@/types'
 import { MATERIAL_LABEL } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
+import { HuellaVerde } from './HuellaVerde'
 
 const TYPE_LABEL: Record<PointType, string> = {
   deposito: 'Depósito de tapitas',
@@ -36,7 +37,10 @@ export function PointCard({ point, sponsor, onClick }: Props) {
             <Badge variant="neutral">Cerrado</Badge>
           )}
         </div>
-        <p className="text-xs font-semibold text-muted-foreground">{TYPE_LABEL[point.type]}</p>
+        <div className="flex items-center gap-2">
+          <p className="text-xs font-semibold text-muted-foreground">{TYPE_LABEL[point.type]}</p>
+          {sponsor && <HuellaVerde score={sponsor.greenScore} compact />}
+        </div>
         <p className="truncate text-xs text-muted-foreground">
           {point.address} · {point.city}
         </p>

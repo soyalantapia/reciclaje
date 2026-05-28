@@ -1,5 +1,6 @@
 import type { Coupon } from '@/types'
-import { qrDataUri, formatDate } from '@/lib/utils'
+import { formatDate } from '@/lib/utils'
+import { QrImage } from './QrImage'
 
 export function QrCoupon({ coupon }: { coupon: Coupon }) {
   return (
@@ -9,12 +10,7 @@ export function QrCoupon({ coupon }: { coupon: Coupon }) {
       <p className="text-sm text-muted-foreground">{coupon.sponsorName}</p>
 
       <div className="mt-4 rounded-2xl border border-border bg-white p-3">
-        <img
-          src={qrDataUri(coupon.qrPayload, 200)}
-          alt="Cupón QR"
-          width={200}
-          height={200}
-        />
+        <QrImage value={coupon.qrPayload} size={200} />
       </div>
 
       <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
