@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import {
   ArrowRight,
@@ -7,13 +6,13 @@ import {
   Leaf,
   QrCode,
   Recycle,
+  Rocket,
   ShieldCheck,
   Store,
   TrendingUp,
 } from 'lucide-react'
 import { api } from '@/services/api'
 import { useApi } from '@/hooks/useApi'
-import { formatNumber } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 
 const VALUES = [
@@ -59,12 +58,6 @@ const TIERS = [
 export default function CommerceLanding() {
   const { data: sponsors } = useApi(() => api.getSponsors(), [])
 
-  const stats = useMemo(() => {
-    const brands = sponsors?.length ?? 9
-    const kg = sponsors?.reduce((acc, s) => acc + s.kgRecovered, 0) ?? 24000
-    return { brands, kg }
-  }, [sponsors])
-
   return (
     <div className="mx-auto min-h-dvh max-w-md bg-background pb-12">
       {/* Hero */}
@@ -107,19 +100,16 @@ export default function CommerceLanding() {
             </Link>
           </div>
 
-          {/* stats de la red */}
-          <div className="mt-8 grid grid-cols-3 gap-2 text-center">
+          {/* Estado de lanzamiento — honesto, sin métricas infladas */}
+          <div className="mt-8 flex items-center gap-3 rounded-2xl bg-white/10 px-4 py-3 backdrop-blur">
+            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-white/15 text-white">
+              <Rocket size={20} />
+            </span>
             <div>
-              <p className="text-2xl font-extrabold leading-none">{stats.brands}</p>
-              <p className="text-[11px] text-eco-50/80">marcas aliadas</p>
-            </div>
-            <div>
-              <p className="text-2xl font-extrabold leading-none">+24k</p>
-              <p className="text-[11px] text-eco-50/80">usuarios reciclando</p>
-            </div>
-            <div>
-              <p className="text-2xl font-extrabold leading-none">{formatNumber(Math.round(stats.kg / 1000))} tn</p>
-              <p className="text-[11px] text-eco-50/80">recuperadas</p>
+              <p className="text-[11px] font-bold uppercase tracking-wide text-eco-50/80">
+                Por lanzarse
+              </p>
+              <p className="text-sm font-extrabold leading-tight">100 puntos en Córdoba Capital</p>
             </div>
           </div>
         </div>
@@ -166,7 +156,10 @@ export default function CommerceLanding() {
 
       {/* Marcas en la red */}
       <section className="px-6 pt-10">
-        <h2 className="text-xl font-extrabold">Marcas que ya están</h2>
+        <h2 className="text-xl font-extrabold">Marcas que queremos sumar</h2>
+        <p className="mt-1 text-sm text-muted-foreground">
+          El tipo de marcas con las que estamos construyendo la red.
+        </p>
         <div className="mt-4 flex flex-wrap gap-2">
           {(sponsors ?? []).map((s) => (
             <span
