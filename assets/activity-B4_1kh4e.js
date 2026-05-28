@@ -1,0 +1,1 @@
+import{T as e,w as t}from"./index-B36-l04W.js";var n=e()(t(e=>({sessionContributions:[],add:t=>e(e=>({sessionContributions:[t,...e.sessionContributions]})),clear:()=>e({sessionContributions:[]})}),{name:`reciclaxp-activity`,version:1}));export{n as t};
