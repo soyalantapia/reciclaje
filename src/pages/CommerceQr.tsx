@@ -1,11 +1,14 @@
 import { useMemo } from 'react'
-import { Printer, QrCode } from 'lucide-react'
+import { toast } from 'sonner'
+import { Download, Printer, QrCode } from 'lucide-react'
 import { api } from '@/services/api'
 import { useApi } from '@/hooks/useApi'
 import type { Sponsor } from '@/types'
 import { pointDeepLink } from '@/lib/utils'
+import { downloadQrPng, printQr } from '@/lib/qr'
 import { QrImage } from '@/components/features/QrImage'
 import { ErrorState } from '@/components/features/ErrorState'
+import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 
 export default function CommerceQr() {
@@ -59,6 +62,22 @@ export default function CommerceQr() {
 
                 <div className="my-4 rounded-2xl border border-border bg-white p-3">
                   <QrImage value={link} size={200} />
+                </div>
+
+                <div className="mb-3 flex w-full gap-2">
+                  <Button
+                    size="sm"
+                    block
+                    onClick={() => {
+                      downloadQrPng(link, `qr-${p.id}.png`)
+                      toast.success('QR descargado 🔳')
+                    }}
+                  >
+                    <Download size={15} /> Descargar
+                  </Button>
+                  <Button size="sm" variant="secondary" block onClick={() => printQr(link, p.name)}>
+                    <Printer size={15} /> Imprimir
+                  </Button>
                 </div>
 
                 <p className="break-all rounded-lg bg-muted px-3 py-1.5 text-[11px] text-muted-foreground">

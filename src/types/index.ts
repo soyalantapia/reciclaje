@@ -292,3 +292,17 @@ export const XP_PER_PESO = 1 / 50
 
 /** Item de actividad: aporte reciclado o compra. Discriminar con 'material' in item. */
 export type ActivityItem = Contribution | Purchase
+
+// ─── Campañas del comercio (B2B) ──────────────────────────────────────
+export type CampaignKind = 'premio' | 'multiplicador' | 'desafio'
+
+export interface Campaign {
+  id: string
+  sponsorId: string
+  kind: CampaignKind
+  title: string
+  detail: string
+  reward: string
+  active: boolean
+  createdAt: string
+}

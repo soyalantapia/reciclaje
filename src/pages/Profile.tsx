@@ -203,15 +203,15 @@ export default function Profile() {
 
       {/* Panel empresas */}
       <Link
-        to="/empresas"
+        to="/comercio"
         className="flex w-full items-center gap-3 rounded-2xl border border-border bg-card p-4"
       >
-        <span className="grid h-10 w-10 place-items-center rounded-xl bg-eco-100 text-eco-700">
+        <span className="grid h-10 w-10 place-items-center rounded-xl bg-eco-100 text-eco-700 dark:bg-eco-900/40 dark:text-eco-300">
           <BarChart3 size={18} />
         </span>
         <div className="flex-1">
-          <p className="font-bold">Panel para empresas</p>
-          <p className="text-xs text-muted-foreground">Dashboard de impacto B2B (demo)</p>
+          <p className="font-bold">Panel del comercio</p>
+          <p className="text-xs text-muted-foreground">Gestioná tu comercio adherido (demo)</p>
         </div>
         <ChevronRight size={20} className="text-muted-foreground" />
       </Link>

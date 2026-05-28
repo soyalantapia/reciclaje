@@ -158,3 +158,38 @@ export function parsePointFromQr(text: string): string | null {
   if (/^p_[\w-]+$/.test(t)) return t
   return null
 }
+
+/** Dispara la descarga de un archivo desde un string o Blob. */
+export function downloadBlob(
+  filename: string,
+  content: string | Blob,
+  mime = 'text/plain;charset=utf-8',
+): void {
+  if (typeof window === 'undefined') return
+  const blob = content instanceof Blob ? content : new Blob([content], { type: mime })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = filename
+  document.body.appendChild(a)
+  a.click()
+  document.body.removeChild(a)
+  setTimeout(() => URL.revokeObjectURL(url), 1000)
+}
+
+/** Convierte un array de objetos a CSV (con header). */
+export function objectsToCsv<T extends Record<string, unknown>>(rows: T[]): string {
+  if (rows.length === 0) return ''
+  const headers = Object.keys(rows[0])
+  const escape = (v: unknown): string => {
+    if (v === null || v === undefined) return ''
+    const s = String(v)
+    if (/[",\n;]/.test(s)) return `"${s.replace(/"/g, '""')}"`
+    return s
+  }
+  const lines = [headers.join(',')]
+  for (const r of rows) {
+    lines.push(headers.map((h) => escape(r[h])).join(','))
+  }
+  return lines.join('\n')
+}

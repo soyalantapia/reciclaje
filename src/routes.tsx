@@ -1,7 +1,9 @@
 import { lazy, Suspense, type ComponentType, type ReactNode } from 'react'
-import { createBrowserRouter } from 'react-router-dom'
+import { createBrowserRouter, Navigate } from 'react-router-dom'
 import { AppLayout } from '@/components/features/AppLayout'
 import { RequireAuth } from '@/components/features/RequireAuth'
+import { RequireCommerce } from '@/components/features/RequireCommerce'
+import { CommerceLayout } from '@/components/features/CommerceLayout'
 import { Skeleton } from '@/components/ui/skeleton'
 
 /**
@@ -47,8 +49,16 @@ const CauseDetail = lazyWithRetry(() => import('@/pages/CauseDetail'))
 const Marcas = lazyWithRetry(() => import('@/pages/Marcas'))
 const CommerceQr = lazyWithRetry(() => import('@/pages/CommerceQr'))
 const Profile = lazyWithRetry(() => import('@/pages/Profile'))
-const B2BDashboard = lazyWithRetry(() => import('@/pages/B2BDashboard'))
 const NotFound = lazyWithRetry(() => import('@/pages/NotFound'))
+
+// Comercio (B2B)
+const CommerceLogin = lazyWithRetry(() => import('@/pages/commerce/CommerceLogin'))
+const CommerceResumen = lazyWithRetry(() => import('@/pages/commerce/CommerceResumen'))
+const CommerceBenefits = lazyWithRetry(() => import('@/pages/commerce/CommerceBenefits'))
+const CommerceCampaigns = lazyWithRetry(() => import('@/pages/commerce/CommerceCampaigns'))
+const CommercePoints = lazyWithRetry(() => import('@/pages/commerce/CommercePoints'))
+const CommerceReports = lazyWithRetry(() => import('@/pages/commerce/CommerceReports'))
+const CommercePlan = lazyWithRetry(() => import('@/pages/commerce/CommercePlan'))
 
 function PageFallback() {
   return (
@@ -89,9 +99,28 @@ export const router = createBrowserRouter(
             { path: 'qr-comercios', element: withSuspense(<CommerceQr />) },
           ],
         },
-        { path: 'empresas', element: withSuspense(<B2BDashboard />) },
       ],
     },
+    { path: '/comercio/login', element: withSuspense(<CommerceLogin />) },
+    {
+      path: '/comercio',
+      element: <RequireCommerce />,
+      children: [
+        {
+          path: '/comercio',
+          element: <CommerceLayout />,
+          children: [
+            { index: true, element: withSuspense(<CommerceResumen />) },
+            { path: 'beneficios', element: withSuspense(<CommerceBenefits />) },
+            { path: 'campanias', element: withSuspense(<CommerceCampaigns />) },
+            { path: 'puntos', element: withSuspense(<CommercePoints />) },
+            { path: 'reportes', element: withSuspense(<CommerceReports />) },
+            { path: 'plan', element: withSuspense(<CommercePlan />) },
+          ],
+        },
+      ],
+    },
+    { path: '/empresas', element: <Navigate to="/comercio" replace /> },
     { path: '*', element: withSuspense(<NotFound />) },
   ],
   { basename: import.meta.env.BASE_URL.replace(/\/$/, '') || undefined },

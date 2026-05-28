@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -114,10 +114,16 @@ export default function Login() {
         <button
           onClick={doLogin}
           disabled={loading}
-          className="mt-6 inline-flex items-center justify-center gap-1.5 text-sm font-semibold text-eco-700"
+          className="mt-6 inline-flex items-center justify-center gap-1.5 text-sm font-semibold text-eco-700 dark:text-eco-300"
         >
           <Leaf size={15} /> Entrar a la demo sin registro
         </button>
+
+        <div className="mt-5 border-t border-border pt-4 text-center">
+          <Link to="/comercio/login" className="text-sm font-semibold text-eco-700 dark:text-eco-300">
+            🏪 ¿Sos comercio? Ingresá a tu panel →
+          </Link>
+        </div>
       </div>
 
       <p className="mt-6 text-center text-xs text-muted-foreground">
