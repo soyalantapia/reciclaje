@@ -97,7 +97,7 @@ export default function CommerceOnboarding() {
   }
 
   return (
-    <div className="mx-auto min-h-dvh max-w-md bg-background px-6 pb-10 pt-safe">
+    <div className="mx-auto flex min-h-dvh max-w-md flex-col bg-background px-6 pb-10 pt-safe md:justify-center">
       <div className="flex flex-col pt-8">
         <div className="mb-5">
           <div className="mb-4 flex justify-center">

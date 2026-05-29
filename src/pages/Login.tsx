@@ -53,7 +53,7 @@ export default function Login() {
   }
 
   return (
-    <div className="mx-auto flex min-h-dvh max-w-md flex-col bg-eco-grid bg-background px-6 pb-10 pt-safe">
+    <div className="mx-auto flex min-h-dvh max-w-md flex-col bg-eco-grid bg-background px-6 pb-10 pt-safe md:justify-center">
       <div className="flex flex-1 flex-col justify-center">
         <div className="mb-8 text-center">
           <div className="mb-4 flex justify-center">

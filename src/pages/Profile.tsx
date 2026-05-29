@@ -88,7 +88,7 @@ export default function Profile() {
   }
 
   return (
-    <div className="space-y-5">
+    <div className="mx-auto max-w-2xl space-y-5">
       {/* Header de perfil */}
       <div className="flex items-center gap-4">
         <Avatar name={user.name} color={user.avatarColor} size="lg" />

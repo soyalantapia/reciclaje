@@ -41,7 +41,7 @@ export default function CommercePlan() {
   nextCharge.setDate(1)
 
   return (
-    <div className="space-y-4">
+    <div className="mx-auto max-w-2xl space-y-4">
       <div>
         <h1 className="text-2xl font-extrabold leading-tight">Tu plan</h1>
         <p className="text-sm text-muted-foreground">Qué incluye tu suscripción y cómo escalar.</p>

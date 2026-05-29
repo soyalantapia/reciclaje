@@ -70,6 +70,7 @@ export default function CommerceCampaigns() {
         </Button>
       </div>
 
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
       {mine.map((c) => {
         const k = KIND_MAP[c.kind]
         const Icon = k.icon
@@ -120,6 +121,7 @@ export default function CommerceCampaigns() {
           </div>
         )
       })}
+      </div>
 
       {mine.length === 0 && (
         <div className="rounded-2xl border border-dashed border-border p-8 text-center">
