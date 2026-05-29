@@ -1,0 +1,1 @@
+import{T as e,w as t}from"./index-DQGLIGNQ.js";var n=e()(t(e=>({commerce:null,point:null,plan:`Pro`,set:(t,n,r)=>e({commerce:t,point:n,plan:r}),clear:()=>e({commerce:null,point:null,plan:`Pro`})}),{name:`reciclaxp-created-commerce`,version:1}));export{n as t};
