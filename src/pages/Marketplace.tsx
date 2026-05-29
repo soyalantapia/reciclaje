@@ -14,6 +14,7 @@ import { Tabs, type TabItem } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
 import { Modal } from '@/components/ui/modal'
 import { Skeleton } from '@/components/ui/skeleton'
+import { CardGrid } from '@/components/ui/card-grid'
 
 type Filter = 'todos' | BenefitCategory
 const TABS: TabItem<Filter>[] = [
@@ -88,7 +89,7 @@ export default function Marketplace() {
             </div>
           )}
 
-          <div className="grid gap-3">
+          <CardGrid cols={3}>
             {visible.map((b) => (
               <BenefitCard
                 key={b.id}
@@ -99,11 +100,11 @@ export default function Marketplace() {
               />
             ))}
             {benefits && visible.length === 0 && (
-              <p className="rounded-xl bg-muted p-4 text-center text-sm text-muted-foreground">
+              <p className="rounded-xl bg-muted p-4 text-center text-sm text-muted-foreground sm:col-span-2 lg:col-span-3">
                 No hay beneficios en esta categoría.
               </p>
             )}
-          </div>
+          </CardGrid>
         </>
       )}
 

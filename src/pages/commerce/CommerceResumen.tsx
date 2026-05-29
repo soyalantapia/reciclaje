@@ -86,7 +86,7 @@ export default function CommerceResumen() {
       </div>
 
       {/* KPIs */}
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
         <StatCard
           icon={Recycle}
           label="Aportes"
@@ -128,6 +128,7 @@ export default function CommerceResumen() {
         />
       </div>
 
+      <div className="grid gap-5 lg:grid-cols-2">
       {/* Aportes por mes */}
       <div className="rounded-2xl border border-border bg-card p-5">
         <p className="mb-4 font-bold">Aportes por mes</p>
@@ -166,6 +167,7 @@ export default function CommerceResumen() {
             </div>
           ))}
         </div>
+      </div>
       </div>
 
       <Link to="/comercio/reportes">

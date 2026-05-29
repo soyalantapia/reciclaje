@@ -7,6 +7,7 @@ import { formatNumber } from '@/lib/utils'
 import { HuellaVerde } from '@/components/features/HuellaVerde'
 import { ErrorState } from '@/components/features/ErrorState'
 import { Skeleton } from '@/components/ui/skeleton'
+import { CardGrid } from '@/components/ui/card-grid'
 
 const CATEGORY_LABEL: Record<SponsorCategory, string> = {
   estacion: 'Estación',
@@ -44,7 +45,7 @@ export default function Marcas() {
       {error && !sponsors ? (
         <ErrorState message={error} onRetry={reload} />
       ) : (
-        <div className="space-y-3">
+        <CardGrid cols={3}>
           {loading && [0, 1, 2, 3].map((i) => <Skeleton key={i} className="h-24 w-full" />)}
           {sorted.map((s) => (
             <div key={s.id} className="rounded-2xl border border-border bg-card p-4 shadow-sm">
@@ -72,7 +73,7 @@ export default function Marcas() {
               </div>
             </div>
           ))}
-        </div>
+        </CardGrid>
       )}
     </div>
   )

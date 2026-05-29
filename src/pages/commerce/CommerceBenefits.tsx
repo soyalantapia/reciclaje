@@ -86,6 +86,7 @@ export default function CommerceBenefits() {
 
       {loading && [0, 1].map((i) => <Skeleton key={i} className="h-24 w-full" />)}
 
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
       {all.map((b) => {
         const isCreated = createdMine.some((c) => c.id === b.id)
         const paused = pausedIds.includes(b.id)
@@ -137,6 +138,7 @@ export default function CommerceBenefits() {
           </div>
         )
       })}
+      </div>
 
       {!loading && all.length === 0 && (
         <div className="rounded-2xl border border-dashed border-border p-8 text-center">

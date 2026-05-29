@@ -53,7 +53,8 @@ export default function CommercePoints() {
           </p>
         </div>
       ) : (
-        mine.map((p) => {
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {mine.map((p) => {
           const link = pointDeepLink(p.id)
           return (
             <div
@@ -80,7 +81,8 @@ export default function CommercePoints() {
               </div>
             </div>
           )
-        })
+        })}
+        </div>
       )}
     </div>
   )

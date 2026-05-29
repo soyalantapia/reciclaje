@@ -20,7 +20,7 @@ export default function Ranking() {
   const me = data?.entries.find((e) => e.isCurrentUser)
 
   return (
-    <div className="space-y-4">
+    <div className="mx-auto max-w-2xl space-y-4">
       <div>
         <h1 className="text-2xl font-extrabold leading-tight">Ranking del mes</h1>
         <p className="text-sm text-muted-foreground">Sumá XP y subí posiciones por sede.</p>

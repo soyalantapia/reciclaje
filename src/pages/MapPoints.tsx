@@ -37,9 +37,9 @@ export default function MapPoints() {
       {error && !points ? (
         <ErrorState message={error} onRetry={reload} />
       ) : (
-        <>
+        <div className="grid gap-4 lg:grid-cols-5">
           {/* Mapa esquemático */}
-          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl border border-border bg-eco-50 bg-eco-grid dark:bg-eco-950">
+          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl border border-border bg-eco-50 bg-eco-grid dark:bg-eco-950 lg:col-span-3 lg:sticky lg:top-6 lg:self-start">
             <div className="absolute inset-0 bg-gradient-to-br from-eco-100/40 to-transparent dark:from-eco-900/30" />
             {!points && <Skeleton className="absolute inset-0" />}
             {points?.map((p) => {
@@ -85,7 +85,7 @@ export default function MapPoints() {
           </div>
 
           {/* Lista (abiertos primero) */}
-          <div className="space-y-2">
+          <div className="space-y-2 lg:col-span-2">
             {sortedPoints.map((p) => (
               <PointCard
                 key={p.id}
@@ -95,7 +95,7 @@ export default function MapPoints() {
               />
             ))}
           </div>
-        </>
+        </div>
       )}
     </div>
   )

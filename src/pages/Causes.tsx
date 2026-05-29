@@ -5,6 +5,7 @@ import { useApi } from '@/hooks/useApi'
 import { CauseCard } from '@/components/features/CauseCard'
 import { ErrorState } from '@/components/features/ErrorState'
 import { Skeleton } from '@/components/ui/skeleton'
+import { CardGrid } from '@/components/ui/card-grid'
 
 export default function Causes() {
   const navigate = useNavigate()
@@ -28,12 +29,12 @@ export default function Causes() {
       {error && !causes ? (
         <ErrorState message={error} onRetry={reload} />
       ) : (
-        <div className="space-y-3">
+        <CardGrid cols={3}>
           {loading && [0, 1, 2].map((i) => <Skeleton key={i} className="h-44 w-full" />)}
           {causes?.map((c) => (
             <CauseCard key={c.id} cause={c} onClick={() => navigate(`/causa/${c.id}`)} />
           ))}
-        </div>
+        </CardGrid>
       )}
     </div>
   )
