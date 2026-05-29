@@ -1,4 +1,4 @@
-import type { HTMLAttributes } from 'react'
+import type { ElementType, HTMLAttributes } from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
 
@@ -22,8 +22,11 @@ const container = cva('mx-auto w-full px-4 sm:px-6 lg:px-8', {
 
 export interface ContainerProps
   extends HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof container> {}
+    VariantProps<typeof container> {
+  /** Etiqueta a renderizar (div por defecto): section, header, footer, etc. */
+  as?: ElementType
+}
 
-export function Container({ size, className, ...props }: ContainerProps) {
-  return <div className={cn(container({ size }), className)} {...props} />
+export function Container({ size, className, as: As = 'div', ...props }: ContainerProps) {
+  return <As className={cn(container({ size }), className)} {...props} />
 }

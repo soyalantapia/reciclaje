@@ -19,6 +19,7 @@ import {
 import { api } from '@/services/api'
 import { useApi } from '@/hooks/useApi'
 import { Button } from '@/components/ui/button'
+import { Container } from '@/components/ui/container'
 
 // TODO: reemplazá por tus datos reales antes de publicar.
 const CONTACT = {
@@ -96,12 +97,12 @@ export default function CommerceLanding() {
   const { data: sponsors } = useApi(() => api.getSponsors(), [])
 
   return (
-    <div className="mx-auto min-h-dvh max-w-md bg-background pb-12">
+    <div className="min-h-dvh bg-background pb-12">
       {/* Hero */}
-      <header className="relative overflow-hidden bg-gradient-to-b from-eco-600 to-eco-800 px-6 pb-10 pt-safe text-white">
+      <header className="relative overflow-hidden bg-gradient-to-b from-eco-600 to-eco-800 pt-safe text-white">
         <div className="bg-eco-grid absolute inset-0 opacity-20" />
-        <div className="relative pt-8">
-          <div className="flex items-center justify-between">
+        <Container size="wide" className="relative">
+          <div className="flex items-center justify-between py-5">
             <div className="flex items-center gap-2">
               <span className="grid h-9 w-9 place-items-center rounded-xl bg-white/15 text-white">
                 <Recycle size={20} strokeWidth={2.4} />
@@ -113,51 +114,71 @@ export default function CommerceLanding() {
             </Link>
           </div>
 
-          <div className="mt-8 inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-xs font-bold backdrop-blur">
-            <Store size={14} /> Para comercios y marcas
-          </div>
-          <h1 className="mt-3 text-3xl font-extrabold leading-tight">
-            Tu comercio, parte de la economía circular.
-          </h1>
-          <p className="mt-3 text-sm text-eco-50/90">
-            Sumate a ReciclaXP: tus clientes reciclan, ganan XP y vuelven por sus beneficios. Vos
-            ganás RSE verificable, tráfico y tu Huella Verde.
-          </p>
-
-          <div className="mt-6 space-y-2">
-            <Link to="/comercio/onboarding" className="block">
-              <Button variant="xp" block size="lg">
-                Registrá tu comercio <ArrowRight size={18} />
-              </Button>
-            </Link>
-            <a href={waLink} target="_blank" rel="noreferrer" className="block">
-              <Button variant="secondary" block size="lg">
-                <MessageCircle size={18} /> Hablar con un asesor
-              </Button>
-            </a>
-          </div>
-
-          {/* Estado de lanzamiento — honesto, convertido en ventaja de early adopter */}
-          <div className="mt-8 flex items-center gap-3 rounded-2xl bg-white/10 px-4 py-3 backdrop-blur">
-            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-white/15 text-white">
-              <Rocket size={20} />
-            </span>
+          <div className="grid items-center gap-10 pb-12 pt-2 lg:grid-cols-2 lg:gap-12 lg:pb-20 lg:pt-8">
+            {/* Copy */}
             <div>
-              <p className="text-[11px] font-bold uppercase tracking-wide text-eco-50/80">
-                Por lanzarse · cupos fundadores
+              <div className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-xs font-bold backdrop-blur">
+                <Store size={14} /> Para comercios y marcas
+              </div>
+              <h1 className="mt-3 font-extrabold leading-tight [font-size:clamp(1.9rem,5vw,3.25rem)]">
+                Tu comercio, parte de la economía circular.
+              </h1>
+              <p className="mt-3 max-w-prose text-sm text-eco-50/90 sm:text-base">
+                Sumate a ReciclaXP: tus clientes reciclan, ganan XP y vuelven por sus beneficios.
+                Vos ganás RSE verificable, tráfico y tu Huella Verde.
               </p>
-              <p className="text-sm font-extrabold leading-tight">
-                Sé uno de los primeros 100 puntos en Córdoba Capital
-              </p>
+
+              <div className="mt-6 space-y-2 sm:flex sm:max-w-xl sm:gap-3 sm:space-y-0">
+                <Link to="/comercio/onboarding" className="block sm:flex-1">
+                  <Button variant="xp" block size="lg">
+                    Registrá tu comercio <ArrowRight size={18} />
+                  </Button>
+                </Link>
+                <a href={waLink} target="_blank" rel="noreferrer" className="block sm:flex-1">
+                  <Button variant="secondary" block size="lg">
+                    <MessageCircle size={18} /> Hablar con un asesor
+                  </Button>
+                </a>
+              </div>
+
+              {/* Estado de lanzamiento — honesto, convertido en ventaja de early adopter */}
+              <div className="mt-8 flex items-center gap-3 rounded-2xl bg-white/10 px-4 py-3 backdrop-blur sm:max-w-md">
+                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-white/15 text-white">
+                  <Rocket size={20} />
+                </span>
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-wide text-eco-50/80">
+                    Por lanzarse · cupos fundadores
+                  </p>
+                  <p className="text-sm font-extrabold leading-tight">
+                    Sé uno de los primeros 100 puntos en Córdoba Capital
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Visual (desktop) */}
+            <div className="hidden lg:block">
+              <div className="rounded-3xl border border-white/20 bg-white/10 p-6 backdrop-blur">
+                <p className="text-sm font-bold text-eco-50/90">Todo en un panel</p>
+                <div className="mt-4 grid grid-cols-2 gap-3">
+                  {VALUES.map((v) => (
+                    <div key={v.title} className="rounded-2xl bg-white/10 p-4">
+                      <v.icon size={22} />
+                      <p className="mt-2 text-sm font-bold leading-tight">{v.title}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
-        </div>
+        </Container>
       </header>
 
       {/* Qué ganás */}
-      <section className="px-6 pt-10">
-        <h2 className="text-xl font-extrabold">Qué gana tu comercio</h2>
-        <div className="mt-4 grid grid-cols-1 gap-3">
+      <Container size="wide" as="section" className="pt-12 lg:pt-16">
+        <h2 className="text-xl font-extrabold lg:text-2xl">Qué gana tu comercio</h2>
+        <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-4">
           {VALUES.map((v) => (
             <div key={v.title} className="flex items-start gap-3 rounded-2xl border border-border bg-card p-4">
               <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-eco-100 text-eco-700 dark:bg-eco-900/40 dark:text-eco-300">
@@ -170,12 +191,12 @@ export default function CommerceLanding() {
             </div>
           ))}
         </div>
-      </section>
+      </Container>
 
       {/* Cómo funciona */}
-      <section className="px-6 pt-10">
-        <h2 className="text-xl font-extrabold">Cómo funciona</h2>
-        <div className="mt-4 space-y-3">
+      <Container size="wide" as="section" className="pt-12 lg:pt-16">
+        <h2 className="text-xl font-extrabold lg:text-2xl">Cómo funciona</h2>
+        <div className="mt-4 grid gap-3 lg:grid-cols-3 lg:gap-4">
           {STEPS.map((s, i) => (
             <div key={s.title} className="flex items-start gap-3">
               <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-eco-600 text-sm font-extrabold text-white">
@@ -191,25 +212,25 @@ export default function CommerceLanding() {
             </div>
           ))}
         </div>
-      </section>
+      </Container>
 
       {/* Impacto real — el alma del producto */}
-      <section className="px-6 pt-10">
-        <div className="rounded-2xl border border-eco-200 bg-eco-50 p-5 dark:border-eco-700/40 dark:bg-eco-900/20">
+      <Container size="wide" as="section" className="pt-12 lg:pt-16">
+        <div className="rounded-2xl border border-eco-200 bg-eco-50 p-5 dark:border-eco-700/40 dark:bg-eco-900/20 lg:p-8">
           <div className="flex items-center gap-2">
             <HeartHandshake size={18} className="text-eco-600" />
-            <p className="font-bold">Tu RSE se vuelve una historia real</p>
+            <p className="font-bold lg:text-lg">Tu RSE se vuelve una historia real</p>
           </div>
-          <p className="mt-2 text-sm text-muted-foreground">
+          <p className="mt-2 max-w-3xl text-sm text-muted-foreground lg:text-base">
             Lo que reciclan tus clientes queda trazado y suma a causas concretas, como el reciclado
             de tapitas para hospitales. Comunicás impacto que se puede verificar, no promesas.
           </p>
         </div>
-      </section>
+      </Container>
 
       {/* Marcas en la red */}
-      <section className="px-6 pt-10">
-        <h2 className="text-xl font-extrabold">Marcas que queremos sumar</h2>
+      <Container size="wide" as="section" className="pt-12 lg:pt-16">
+        <h2 className="text-xl font-extrabold lg:text-2xl">Marcas que queremos sumar</h2>
         <p className="mt-1 text-sm text-muted-foreground">
           El tipo de marcas con las que estamos construyendo la red.
         </p>
@@ -229,18 +250,18 @@ export default function CommerceLanding() {
             </span>
           ))}
         </div>
-      </section>
+      </Container>
 
       {/* Pricing */}
-      <section className="px-6 pt-10">
-        <h2 className="text-xl font-extrabold">Planes</h2>
-        <div className="mt-4 space-y-3">
+      <Container size="wide" as="section" className="pt-12 lg:pt-16">
+        <h2 className="text-xl font-extrabold lg:text-2xl">Planes</h2>
+        <div className="mt-4 grid gap-3 md:grid-cols-3 md:gap-4">
           {TIERS.map((t) => (
             <div
               key={t.name}
               className={
                 t.featured
-                  ? 'rounded-2xl border border-eco-500 bg-eco-50 p-5 ring-1 ring-eco-500 dark:bg-eco-900/20'
+                  ? 'rounded-2xl border border-eco-500 bg-eco-50 p-5 ring-1 ring-eco-500 dark:bg-eco-900/20 md:-translate-y-1 md:shadow-lg'
                   : 'rounded-2xl border border-border bg-card p-5'
               }
             >
@@ -270,12 +291,12 @@ export default function CommerceLanding() {
           </a>
           .
         </p>
-      </section>
+      </Container>
 
       {/* FAQ — mata objeciones */}
-      <section className="px-6 pt-10">
-        <h2 className="text-xl font-extrabold">Preguntas frecuentes</h2>
-        <div className="mt-4 space-y-2">
+      <Container size="wide" as="section" className="pt-12 lg:pt-16">
+        <h2 className="text-xl font-extrabold lg:text-2xl">Preguntas frecuentes</h2>
+        <div className="mt-4 grid gap-2 lg:grid-cols-2 lg:items-start lg:gap-3">
           {FAQS.map((f) => (
             <details key={f.q} className="group rounded-2xl border border-border bg-card p-4">
               <summary className="flex cursor-pointer list-none items-center justify-between gap-3 font-bold [&::-webkit-details-marker]:hidden">
@@ -289,17 +310,19 @@ export default function CommerceLanding() {
             </details>
           ))}
         </div>
-      </section>
+      </Container>
 
       {/* CTA final */}
-      <section className="px-6 pt-10">
-        <div className="rounded-3xl bg-gradient-to-br from-eco-600 to-eco-800 p-6 text-center text-white">
+      <Container size="wide" as="section" className="pt-12 lg:pt-16">
+        <div className="mx-auto max-w-2xl rounded-3xl bg-gradient-to-br from-eco-600 to-eco-800 p-6 text-center text-white lg:p-10">
           <Leaf size={28} className="mx-auto" />
-          <h2 className="mt-2 text-2xl font-extrabold leading-tight">Sumá tu comercio hoy</h2>
+          <h2 className="mt-2 text-2xl font-extrabold leading-tight lg:text-3xl">
+            Sumá tu comercio hoy
+          </h2>
           <p className="mt-1 text-sm text-eco-50/90">
             En minutos tenés tu QR, tus beneficios y tu panel de impacto.
           </p>
-          <Link to="/comercio/onboarding" className="mt-4 block">
+          <Link to="/comercio/onboarding" className="mx-auto mt-4 block max-w-sm">
             <Button variant="xp" block size="lg">
               Registrarse <ArrowRight size={18} />
             </Button>
@@ -313,39 +336,40 @@ export default function CommerceLanding() {
             <MessageCircle size={15} /> O hablá con un asesor
           </a>
         </div>
-      </section>
+      </Container>
 
       {/* Footer — legitimidad y contacto */}
-      <footer className="mt-10 border-t border-border px-6 pt-6 text-center">
-        <div className="flex items-center justify-center gap-2 text-eco-700 dark:text-eco-300">
-          <Recycle size={18} strokeWidth={2.4} />
-          <span className="font-extrabold">ReciclaXP</span>
-        </div>
-        <p className="mt-1 inline-flex items-center justify-center gap-1 text-xs text-muted-foreground">
-          <MapPin size={12} /> Córdoba, Argentina
-        </p>
-        <div className="mt-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-sm font-semibold">
-          <a
-            href={waLink}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-1 text-eco-700 dark:text-eco-300"
-          >
-            <MessageCircle size={14} /> WhatsApp
-          </a>
-          <a
-            href={`mailto:${CONTACT.email}`}
-            className="inline-flex items-center gap-1 text-eco-700 dark:text-eco-300"
-          >
-            <Mail size={14} /> {CONTACT.email}
-          </a>
-        </div>
-        <Link
-          to="/"
-          className="mt-4 block text-sm font-semibold text-eco-700 dark:text-eco-300"
-        >
-          ¿Sos usuario? Entrá a la app →
-        </Link>
+      <footer className="mt-12 border-t border-border lg:mt-16">
+        <Container size="wide" className="py-8 text-center md:flex md:items-center md:justify-between md:text-left">
+          <div>
+            <div className="flex items-center justify-center gap-2 text-eco-700 dark:text-eco-300 md:justify-start">
+              <Recycle size={18} strokeWidth={2.4} />
+              <span className="font-extrabold">ReciclaXP</span>
+            </div>
+            <p className="mt-1 inline-flex items-center justify-center gap-1 text-xs text-muted-foreground md:justify-start">
+              <MapPin size={12} /> Córdoba, Argentina
+            </p>
+          </div>
+          <div className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-sm font-semibold md:mt-0">
+            <a
+              href={waLink}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-1 text-eco-700 dark:text-eco-300"
+            >
+              <MessageCircle size={14} /> WhatsApp
+            </a>
+            <a
+              href={`mailto:${CONTACT.email}`}
+              className="inline-flex items-center gap-1 text-eco-700 dark:text-eco-300"
+            >
+              <Mail size={14} /> {CONTACT.email}
+            </a>
+            <Link to="/" className="text-eco-700 dark:text-eco-300">
+              ¿Sos usuario? Entrá a la app →
+            </Link>
+          </div>
+        </Container>
       </footer>
     </div>
   )
