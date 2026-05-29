@@ -5,6 +5,7 @@ import { useWalletStore } from '@/store/wallet'
 import { formatNumber } from '@/lib/utils'
 import { Logo } from './Logo'
 import { BottomNav } from './BottomNav'
+import { SideNav } from './SideNav'
 
 export function AppLayout() {
   const navigate = useNavigate()
@@ -17,9 +18,14 @@ export function AppLayout() {
   }, [navigate])
 
   return (
-    <div className="min-h-dvh bg-background md:bg-eco-50 md:bg-eco-grid md:dark:bg-eco-950">
-      <div className="mx-auto flex min-h-dvh max-w-md flex-col bg-background md:border-x md:border-border md:shadow-2xl">
-        <header className="pt-safe sticky top-0 z-30 border-b border-border bg-background/90 backdrop-blur-md">
+    <div className="min-h-dvh bg-background md:flex">
+      {/* Navegación lateral (tablet/desktop) */}
+      <SideNav className="hidden md:flex" />
+
+      {/* Columna de contenido */}
+      <div className="flex min-h-dvh min-w-0 flex-1 flex-col">
+        {/* Header mobile (en md+ los controles viven en la sidebar) */}
+        <header className="pt-safe sticky top-0 z-30 border-b border-border bg-background/90 backdrop-blur-md md:hidden">
           <div className="flex items-center justify-between px-4 py-3">
             <button onClick={() => navigate('/')} aria-label="Ir al inicio">
               <Logo />
@@ -46,12 +52,13 @@ export function AppLayout() {
           </div>
         </header>
 
-        <main className="flex-1 px-4 pb-28 pt-3">
+        <main className="mx-auto w-full max-w-5xl flex-1 px-4 pb-28 pt-3 md:px-8 md:pb-12 md:pt-8">
           <Outlet />
         </main>
-
-        <BottomNav />
       </div>
+
+      {/* Tab bar (solo mobile) */}
+      <BottomNav />
     </div>
   )
 }

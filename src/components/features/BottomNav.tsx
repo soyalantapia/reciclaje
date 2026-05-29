@@ -12,7 +12,7 @@ const items = [
 
 export function BottomNav() {
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 mx-auto max-w-md">
+    <nav className="fixed inset-x-0 bottom-0 z-40 mx-auto max-w-md md:hidden">
       <div className="pb-safe border-t border-border bg-card/95 backdrop-blur-md">
         <ul className="grid grid-cols-5 items-end px-2 pt-1.5">
           {items.map(({ to, label, icon: Icon, end, center }) => (
