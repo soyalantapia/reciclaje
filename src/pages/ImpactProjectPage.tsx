@@ -46,7 +46,7 @@ export default function ImpactProjectPage() {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="mx-auto max-w-3xl space-y-4">
       <div>
         <Badge variant="eco">{project.sponsorName}</Badge>
         <h1 className="mt-2 text-2xl font-extrabold leading-tight">{project.title}</h1>

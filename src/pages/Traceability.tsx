@@ -15,7 +15,7 @@ export default function Traceability() {
   )
 
   return (
-    <div className="space-y-4">
+    <div className="mx-auto max-w-3xl space-y-4">
       <div>
         <h1 className="text-2xl font-extrabold leading-tight">Trazabilidad</h1>
         {project && (

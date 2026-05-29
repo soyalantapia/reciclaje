@@ -77,7 +77,7 @@ export default function CauseDetail() {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="mx-auto max-w-3xl space-y-4">
       <div className="flex items-start gap-3">
         <span
           className="grid h-12 w-12 shrink-0 place-items-center rounded-xl text-white"
