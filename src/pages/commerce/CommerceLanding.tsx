@@ -3,7 +3,12 @@ import {
   ArrowRight,
   BarChart3,
   Check,
+  ChevronDown,
+  HeartHandshake,
   Leaf,
+  Mail,
+  MapPin,
+  MessageCircle,
   QrCode,
   Recycle,
   Rocket,
@@ -15,16 +20,25 @@ import { api } from '@/services/api'
 import { useApi } from '@/hooks/useApi'
 import { Button } from '@/components/ui/button'
 
+// TODO: reemplazá por tus datos reales antes de publicar.
+const CONTACT = {
+  whatsapp: '5493510000000', // formato internacional, sin "+" ni espacios
+  email: 'hola@reciclaxp.app',
+}
+const waLink = `https://wa.me/${CONTACT.whatsapp}?text=${encodeURIComponent(
+  'Hola! Quiero sumar mi comercio a ReciclaXP 🌿',
+)}`
+
 const VALUES = [
+  {
+    icon: TrendingUp,
+    title: 'Clientes que vuelven',
+    desc: 'Beneficios y premios que traen gente nueva a tu local y la hacen volver por más.',
+  },
   {
     icon: ShieldCheck,
     title: 'RSE verificable',
     desc: 'Reportes de impacto descargables (CSV/PDF) para auditoría y comunicación, con datos reales.',
-  },
-  {
-    icon: TrendingUp,
-    title: 'Tráfico de clientes',
-    desc: 'Beneficios y premios que traen gente a tu local y la hacen volver.',
   },
   {
     icon: Leaf,
@@ -53,6 +67,29 @@ const TIERS = [
     includes: ['Hasta 5 puntos', 'Campañas ilimitadas', 'Reportes RSE', 'Huella Verde + placa'],
   },
   { name: 'Enterprise', fee: 'A medida', includes: ['Multi-sede', 'API', 'Datos agregados', 'Account manager'] },
+]
+
+const FAQS = [
+  {
+    q: '¿Quién instala el punto de reciclaje?',
+    a: 'Coordinamos con vos la instalación del depósito, máquina o tótem, y te generamos el QR de tu comercio para que tus clientes empiecen a aportar.',
+  },
+  {
+    q: '¿De quién son los datos?',
+    a: 'Tuyos. Ves usuarios, aportes y kg en tu panel en vivo, y te llevás reportes en CSV/PDF para RSE o auditoría.',
+  },
+  {
+    q: '¿Qué pasa con lo que reciclan mis clientes?',
+    a: 'Cada aporte queda trazado y suma a causas reales, como el reciclado de tapitas para hospitales. Esa historia la podés comunicar con tu marca.',
+  },
+  {
+    q: '¿Puedo cambiar o pausar mi plan?',
+    a: 'Sí. Empezás con un punto y escalás cuando quieras. Gestionás beneficios, campañas y tu plan desde el panel.',
+  },
+  {
+    q: '¿Cuánto tardo en arrancar?',
+    a: 'En minutos creás tu cuenta y tenés tu QR y tu panel. La instalación del punto la coordinamos a continuación.',
+  },
 ]
 
 export default function CommerceLanding() {
@@ -93,23 +130,25 @@ export default function CommerceLanding() {
                 Registrá tu comercio <ArrowRight size={18} />
               </Button>
             </Link>
-            <Link to="/comercio/login" className="block">
+            <a href={waLink} target="_blank" rel="noreferrer" className="block">
               <Button variant="secondary" block size="lg">
-                Ya tengo cuenta
+                <MessageCircle size={18} /> Hablar con un asesor
               </Button>
-            </Link>
+            </a>
           </div>
 
-          {/* Estado de lanzamiento — honesto, sin métricas infladas */}
+          {/* Estado de lanzamiento — honesto, convertido en ventaja de early adopter */}
           <div className="mt-8 flex items-center gap-3 rounded-2xl bg-white/10 px-4 py-3 backdrop-blur">
             <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-white/15 text-white">
               <Rocket size={20} />
             </span>
             <div>
               <p className="text-[11px] font-bold uppercase tracking-wide text-eco-50/80">
-                Por lanzarse
+                Por lanzarse · cupos fundadores
               </p>
-              <p className="text-sm font-extrabold leading-tight">100 puntos en Córdoba Capital</p>
+              <p className="text-sm font-extrabold leading-tight">
+                Sé uno de los primeros 100 puntos en Córdoba Capital
+              </p>
             </div>
           </div>
         </div>
@@ -151,6 +190,20 @@ export default function CommerceLanding() {
               </div>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* Impacto real — el alma del producto */}
+      <section className="px-6 pt-10">
+        <div className="rounded-2xl border border-eco-200 bg-eco-50 p-5 dark:border-eco-700/40 dark:bg-eco-900/20">
+          <div className="flex items-center gap-2">
+            <HeartHandshake size={18} className="text-eco-600" />
+            <p className="font-bold">Tu RSE se vuelve una historia real</p>
+          </div>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Lo que reciclan tus clientes queda trazado y suma a causas concretas, como el reciclado
+            de tapitas para hospitales. Comunicás impacto que se puede verificar, no promesas.
+          </p>
         </div>
       </section>
 
@@ -205,6 +258,37 @@ export default function CommerceLanding() {
             </div>
           ))}
         </div>
+        <p className="mt-3 text-center text-xs text-muted-foreground">
+          Precios + IVA. Coordinamos la instalación de tu punto.{' '}
+          <a
+            href={waLink}
+            target="_blank"
+            rel="noreferrer"
+            className="font-semibold text-eco-700 dark:text-eco-300"
+          >
+            ¿Dudas con el plan? Escribinos
+          </a>
+          .
+        </p>
+      </section>
+
+      {/* FAQ — mata objeciones */}
+      <section className="px-6 pt-10">
+        <h2 className="text-xl font-extrabold">Preguntas frecuentes</h2>
+        <div className="mt-4 space-y-2">
+          {FAQS.map((f) => (
+            <details key={f.q} className="group rounded-2xl border border-border bg-card p-4">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-3 font-bold [&::-webkit-details-marker]:hidden">
+                {f.q}
+                <ChevronDown
+                  size={18}
+                  className="shrink-0 text-muted-foreground transition-transform group-open:rotate-180"
+                />
+              </summary>
+              <p className="mt-2 text-sm text-muted-foreground">{f.a}</p>
+            </details>
+          ))}
+        </div>
       </section>
 
       {/* CTA final */}
@@ -220,14 +304,49 @@ export default function CommerceLanding() {
               Registrarse <ArrowRight size={18} />
             </Button>
           </Link>
+          <a
+            href={waLink}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-3 inline-flex items-center justify-center gap-1.5 text-sm font-semibold text-white/90"
+          >
+            <MessageCircle size={15} /> O hablá con un asesor
+          </a>
+        </div>
+      </section>
+
+      {/* Footer — legitimidad y contacto */}
+      <footer className="mt-10 border-t border-border px-6 pt-6 text-center">
+        <div className="flex items-center justify-center gap-2 text-eco-700 dark:text-eco-300">
+          <Recycle size={18} strokeWidth={2.4} />
+          <span className="font-extrabold">ReciclaXP</span>
+        </div>
+        <p className="mt-1 inline-flex items-center justify-center gap-1 text-xs text-muted-foreground">
+          <MapPin size={12} /> Córdoba, Argentina
+        </p>
+        <div className="mt-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-sm font-semibold">
+          <a
+            href={waLink}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-1 text-eco-700 dark:text-eco-300"
+          >
+            <MessageCircle size={14} /> WhatsApp
+          </a>
+          <a
+            href={`mailto:${CONTACT.email}`}
+            className="inline-flex items-center gap-1 text-eco-700 dark:text-eco-300"
+          >
+            <Mail size={14} /> {CONTACT.email}
+          </a>
         </div>
         <Link
           to="/"
-          className="mt-6 block text-center text-sm font-semibold text-eco-700 dark:text-eco-300"
+          className="mt-4 block text-sm font-semibold text-eco-700 dark:text-eco-300"
         >
           ¿Sos usuario? Entrá a la app →
         </Link>
-      </section>
+      </footer>
     </div>
   )
 }
