@@ -1,0 +1,1 @@
+import{W as e,Y as t}from"./index-De2FFXsk.js";import{a as n,i as r,o as i}from"./proxy-BnB_88VY.js";var a=t(e(),1);function o(){!n.current&&r();let[e]=(0,a.useState)(i.current);return e}export{o as t};
