@@ -86,7 +86,7 @@ El proyecto **reciclaXP** de Railway (workspace «Ticketera») tiene un solo ser
   - el chequeo de salud está en `/healthz`;
   - **si falta el `index.html` de alguna de las dos apps, no arranca**: el chequeo de salud falla y Railway deja el deploy anterior en pie.
 - **Direcciones:**
-  - app general: https://reciclaxp.xnod.tech (y https://web-production-781cc.up.railway.app mientras tanto);
+  - app general: https://reciclaxp.xnod.tech (la dirección propia de Railway, https://web-production-781cc.up.railway.app, también sirve);
   - caso club: https://reciclaxp.xnod.tech/club.
 
 **La configuración vive en el servicio, no sólo en `railway.json`.** El 10/10/2026 `railway up` no aplicó
@@ -106,7 +106,7 @@ Todavía **no** se publica solo con cada push: la app de GitHub de Railway no ti
 `soyalantapia/reciclaje`. Para tenerlo, hay que darle acceso al repo desde GitHub y después conectar el
 servicio a `main` en Railway (Settings → Source).
 
-**DNS de `reciclaxp.xnod.tech`** (Cloudflare, zona `xnod.tech`, igual que `crm.xnod.tech`):
+**DNS de `reciclaxp.xnod.tech`** (Cloudflare, zona `xnod.tech`, igual que `crm.xnod.tech`; cargados el 10/10/2026):
 
 | Tipo | Nombre | Valor | Proxy |
 |---|---|---|---|
