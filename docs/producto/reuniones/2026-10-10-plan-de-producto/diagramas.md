@@ -73,16 +73,16 @@ flowchart LR
 flowchart TD
   n1["T1 · Matriz de lo prometido contra lo que existe · el socio de producto · hecha"]
   n2["T2 · Una sola tabla de precios acordada entre los socios · todos los socios · pendiente"]
-  n3["T3 · Versión de demostración del caso club para el martes · el socio de producto · en curso"]
+  n3["T3 · Versión de demostración del caso club para el martes · el socio de producto · hecha"]
   n4["T4 · Página de posición antes del martes · los socios · pendiente"]
-  n5["T5 · Desglose técnico por entregable alineado a las cuatro etapa… · el socio de producto · pendiente"]
+  n5["T5 · Desglose técnico por entregable alineado a las cuatro etapa… · el socio de producto · hecha"]
   n6["T6 · Plan piloto, acuerdo preliminar y presupuesto con montos pa… · el socio de ventas · bloqueada"]
   n7["T7 · Backend del piloto detrás de la capa de API actual · el socio de producto · bloqueada"]
   n8["T8 · Carga de pesajes por lote desde el panel · el socio de producto · bloqueada"]
   n9["T9 · Productos de la institución con meta, Punto R y constancia… · el socio de producto · bloqueada"]
   n10["T10 · Elección de producto al escanear · el socio de producto · bloqueada"]
   n11["T11 · Espacio de la institución dentro de ReciclaXP · el socio de producto · bloqueada"]
-  n12["T12 · Que el socio de ventas vuelva a ver el proyecto · el socio de producto · pendiente"]
+  n12["T12 · Que el socio de ventas vuelva a ver el proyecto · el socio de producto · hecha"]
   n1 --> n3
   n1 --> n5
   n2 --> n6
@@ -101,8 +101,7 @@ flowchart TD
   classDef bloqueada fill:#fbdcd6,stroke:#b0402a,color:#1f1f1f
   classDef descartada fill:#ececec,stroke:#9a9a9a,color:#6b6b6b,stroke-dasharray: 4 3
   classDef desconocido fill:#ffffff,stroke:#555555,color:#1f1f1f,stroke-dasharray: 2 2
-  class n2,n4,n5,n12 pendiente
-  class n3 en_curso
-  class n1 hecha
+  class n2,n4 pendiente
+  class n1,n3,n5,n12 hecha
   class n6,n7,n8,n9,n10,n11 bloqueada
 ```
