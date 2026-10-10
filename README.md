@@ -55,7 +55,9 @@ y las recompensas del club. El club de ejemplo de la demo general no aparece.
 - Guarda su estado con claves propias (`reciclaxp-club-*`): abrirlo en el mismo navegador no
   toca la demo general.
 - Todas las pantallas llevan el aviso «Demo · los números son de ejemplo».
-- Para publicarlo hace falta otra dirección: `npm run deploy` publica sobre la demo vigente.
+- Se publica aparte con `npm run deploy:club` en https://soyalantapia.github.io/reciclaje-club/
+  (repo `soyalantapia/reciclaje-club`), con el nombre genérico «Tu club». `npm run deploy` sigue
+  publicando la demo general en su dirección de siempre.
 - Qué existe y qué falta respecto de lo prometido: `docs/producto/prometido-vs-demo.md`.
 
 ## Funcionalidades (MVP)

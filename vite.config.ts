@@ -5,7 +5,10 @@ import { VitePWA } from 'vite-plugin-pwa'
 import path from 'path'
 
 // En GitHub Pages el sitio vive bajo /reciclaje/. En dev, bajo /.
-const BASE = '/reciclaje/'
+// RECICLAXP_BASE la cambia para publicar en otra dirección (el escenario club va en
+// /reciclaje-club/, otro repo): así no pisa la demo vigente ni comparte su service worker.
+// Tiene que ser un solo segmento, porque public/404.html conserva uno (pathSegmentsToKeep = 1).
+const BASE = process.env.RECICLAXP_BASE || '/reciclaje/'
 
 export default defineConfig(({ command }) => ({
   base: command === 'build' ? BASE : '/',

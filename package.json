@@ -13,6 +13,8 @@
     "preview": "vite preview",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
+    "build:club": "VITE_ESCENARIO=club RECICLAXP_BASE=/reciclaje-club/ npm run build",
+    "deploy:club": "npm run build:club && gh-pages -d dist -r https://github.com/soyalantapia/reciclaje-club.git",
     "test": "vitest run",
     "test:watch": "vitest"
   },
