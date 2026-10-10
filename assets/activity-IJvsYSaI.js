@@ -1,1 +1,0 @@
-import{D as e,M as t,S as n,j as r}from"./index-COtpGxqq.js";var i=t()(r(e=>({sessionContributions:[],add:t=>e(e=>({sessionContributions:[t,...e.sessionContributions]})),clear:()=>e({sessionContributions:[]})}),{name:e(`activity`),...n()}));export{i as t};

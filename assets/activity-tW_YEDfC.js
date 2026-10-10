@@ -1,0 +1,1 @@
+import{N as e,P as t,k as n,w as r}from"./index-COq4Mms-.js";var i=t()(e(e=>({sessionContributions:[],add:t=>e(e=>({sessionContributions:[t,...e.sessionContributions]})),clear:()=>e({sessionContributions:[]})}),{name:n(`activity`),...r()}));export{i as t};
