@@ -5,7 +5,7 @@ import { createServer } from 'node:http'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import { crearManejador, resolverRuta } from './estatico.mjs'
+import { appsSinPublicar, crearManejador, resolverRuta } from './estatico.mjs'
 
 const ARCHIVOS = new Set(['index.html', 'assets/index-abc.js', 'mockServiceWorker.js', 'club/index.html', 'club/assets/index-def.js'])
 const existe = (rel) => ARCHIVOS.has(rel)
@@ -102,5 +102,45 @@ describe('crearManejador', () => {
   it('comprime cuando el navegador lo acepta', async () => {
     const r = await pedir('/assets/index-abc.js', { 'accept-encoding': 'gzip' })
     expect(r.headers['content-encoding']).toBe('gzip')
+  })
+})
+
+describe('cuando falta el build de una app', () => {
+  let servidor
+  let base
+  let raiz
+  beforeAll(async () => {
+    raiz = mkdtempSync(join(tmpdir(), 'reciclaxp-incompleto-'))
+    writeFileSync(join(raiz, 'index.html'), '<!doctype html><title>general</title>')
+    servidor = createServer(crearManejador(raiz))
+    await new Promise((ok) => servidor.listen(0, ok))
+    base = `http://127.0.0.1:${servidor.address().port}`
+  })
+  afterAll(() => new Promise((ok) => servidor.close(ok)))
+
+  it('appsSinPublicar nombra el index.html que falta, para que el servidor no arranque a medias', () => {
+    expect(appsSinPublicar(raiz)).toEqual(['club/index.html'])
+  })
+
+  it('appsSinPublicar no nombra nada cuando las dos apps están', () => {
+    const completa = mkdtempSync(join(tmpdir(), 'reciclaxp-completo-'))
+    mkdirSync(join(completa, 'club'))
+    writeFileSync(join(completa, 'index.html'), 'g')
+    writeFileSync(join(completa, 'club', 'index.html'), 'c')
+    expect(appsSinPublicar(completa)).toEqual([])
+  })
+
+  it('una ruta del club sin su build da 503 con un texto, no una conexión cortada', async () => {
+    const r = await new Promise((ok, mal) => {
+      const req = request(`${base}/club/ranking`, (res) => {
+        let cuerpo = ''
+        res.on('data', (c) => (cuerpo += c))
+        res.on('end', () => ok({ estado: res.statusCode, cuerpo }))
+      })
+      req.on('error', mal)
+      req.end()
+    })
+    expect(r.estado).toBe(503)
+    expect(r.cuerpo).toContain('no está publicada')
   })
 })

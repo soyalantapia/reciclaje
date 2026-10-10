@@ -103,6 +103,14 @@ WhatsApp del proyecto y de la reunión del 03/08 (acta en `docs/producto/reunion
 - `7676a8f` **docs(producto)**: desglose técnico del piloto por entregable
   (`docs/producto/desglose-piloto.md`).
 
+### 16. Octubre 2026 — publicación en Railway (proyecto «reciclaXP»)
+- PR #3 (`baa0e52`): `server.mjs` + `server/estatico.mjs` sirven las dos apps desde un solo servicio
+  (general en `/`, club en `/club/`), con `build:railway` y `railway.json`.
+- Primer deploy (10/10): `railway up` no aplicó el `railway.json`, corrió `npm run build` y `/club/` dio
+  502 con el chequeo de salud en verde. Se cargó la configuración en el servicio y se republicó.
+- Rama `fix/railway-arranque-verifica-builds`: el servidor no arranca si falta el `index.html` de una de
+  las dos apps, y una app sin build responde 503 en vez de cortar la conexión.
+
 ---
 
 ## Trabajo hecho que NO quedó en commits

@@ -62,15 +62,27 @@ export function resolverRuta(pathname, existe) {
   return { archivo: posix.join(app.carpeta, 'index.html'), fallback: true }
 }
 
+const existeEn = (raiz) => (rel) => {
+  try {
+    return statSync(join(raiz, rel)).isFile()
+  } catch {
+    return false
+  }
+}
+
+/**
+ * Los index.html de APPS que no están en `raiz`. El arranque lo usa para no levantar el servidor
+ * con una app a medias: el 10/10/2026 Railway corrió `npm run build` en vez de `build:railway`,
+ * la app general salió bien y /club/ daba 502 sin que el chequeo de salud lo notara.
+ */
+export function appsSinPublicar(raiz) {
+  const existe = existeEn(raiz)
+  return APPS.map((a) => posix.join(a.carpeta, 'index.html')).filter((rel) => !existe(rel))
+}
+
 /** Manejador HTTP que sirve `raiz` (la carpeta dist/). */
 export function crearManejador(raiz) {
-  const existe = (rel) => {
-    try {
-      return statSync(join(raiz, rel)).isFile()
-    } catch {
-      return false
-    }
-  }
+  const existe = existeEn(raiz)
 
   return (req, res) => {
     if (req.method !== 'GET' && req.method !== 'HEAD') {
@@ -94,6 +106,13 @@ export function crearManejador(raiz) {
     if ('redirigir' in r) {
       res.writeHead(301, { location: r.redirigir + url.search })
       res.end()
+      return
+    }
+
+    // Sin este chequeo, el 200 sale antes de abrir el archivo y la conexión se corta (502 en Railway).
+    if (!existe(r.archivo)) {
+      res.writeHead(r.fallback ? 503 : 404, { 'content-type': 'text/plain; charset=utf-8', 'cache-control': 'no-store' })
+      res.end(r.fallback ? 'Esta parte de la app no está publicada' : 'No encontrado')
       return
     }
 

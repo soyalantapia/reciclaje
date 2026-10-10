@@ -1,10 +1,17 @@
 // Arranque del servidor estático en Railway (ver server/estatico.mjs y railway.json).
 import { createServer } from 'node:http'
 import { fileURLToPath } from 'node:url'
-import { crearManejador } from './server/estatico.mjs'
+import { appsSinPublicar, crearManejador } from './server/estatico.mjs'
 
 const raiz = fileURLToPath(new URL('./dist/', import.meta.url))
 const puerto = Number(process.env.PORT) || 8080
+
+const faltan = appsSinPublicar(raiz)
+if (faltan.length > 0) {
+  // Sin servidor no pasa el chequeo de salud y Railway deja el deploy anterior en pie.
+  console.error(`ReciclaXP: no arranco, faltan ${faltan.join(', ')} en ${raiz}. ¿El build corrió «npm run build:railway»?`)
+  process.exit(1)
+}
 
 createServer(crearManejador(raiz)).listen(puerto, () => {
   console.log(`ReciclaXP: sirviendo ${raiz} en el puerto ${puerto} (app general en / y caso club en /club/)`)
