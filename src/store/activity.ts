@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { ActivityItem } from '@/types'
+import { claveDeAlmacenamiento } from '@/lib/escenario'
 
 interface ActivityState {
   /** Actividad de la sesión (aportes reciclados y compras), se antepone al historial. */
@@ -17,6 +18,6 @@ export const useActivityStore = create<ActivityState>()(
         set((s) => ({ sessionContributions: [c, ...s.sessionContributions] })),
       clear: () => set({ sessionContributions: [] }),
     }),
-    { name: 'reciclaxp-activity', version: 1 },
+    { name: claveDeAlmacenamiento('activity'), version: 1 },
   ),
 )

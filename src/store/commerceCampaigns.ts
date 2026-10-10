@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { Campaign } from '@/types'
+import { claveDeAlmacenamiento } from '@/lib/escenario'
 
 interface CommerceCampaignsState {
   campaigns: Campaign[]
@@ -22,6 +23,6 @@ export const useCommerceCampaignsStore = create<CommerceCampaignsState>()(
           ),
         })),
     }),
-    { name: 'reciclaxp-commerce-campaigns', version: 1 },
+    { name: claveDeAlmacenamiento('commerce-campaigns'), version: 1 },
   ),
 )

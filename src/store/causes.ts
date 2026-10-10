@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import { claveDeAlmacenamiento } from '@/lib/escenario'
 
 interface CausesState {
   /** XP que el usuario donó a cada causa (causeId → puntos). */
@@ -21,6 +22,6 @@ export const useCausesStore = create<CausesState>()(
         })),
       clear: () => set({ donatedByCause: {} }),
     }),
-    { name: 'reciclaxp-causes', version: 1 },
+    { name: claveDeAlmacenamiento('causes'), version: 1 },
   ),
 )

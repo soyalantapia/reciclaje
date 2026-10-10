@@ -5,6 +5,7 @@ import { Toaster } from 'sonner'
 import { router } from './routes'
 import { useThemeEffect } from './hooks/useThemeEffect'
 import './index.css'
+import { claveDeAlmacenamiento } from '@/lib/escenario'
 
 function AppShell() {
   useThemeEffect()
@@ -66,7 +67,7 @@ function captureDeepLink() {
     const params = new URLSearchParams(window.location.search)
     const p = params.get('p')
     if (!p) return
-    sessionStorage.setItem('reciclaxp-scan-point', p)
+    sessionStorage.setItem(claveDeAlmacenamiento('scan-point'), p)
     params.delete('p')
     const qs = params.toString()
     window.history.replaceState(

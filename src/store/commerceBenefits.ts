@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { Benefit } from '@/types'
+import { claveDeAlmacenamiento } from '@/lib/escenario'
 
 interface CommerceBenefitsState {
   /** Beneficios creados por el comercio (se suman a los del seed). */
@@ -30,6 +31,6 @@ export const useCommerceBenefitsStore = create<CommerceBenefitsState>()(
             : [...s.pausedIds, id],
         })),
     }),
-    { name: 'reciclaxp-commerce-benefits', version: 1 },
+    { name: claveDeAlmacenamiento('commerce-benefits'), version: 1 },
   ),
 )
