@@ -7,10 +7,17 @@ import { ErrorState } from '@/components/features/ErrorState'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
+import { conAportesDeLaSesion } from '@/lib/aportesDeLaSesion'
+import { useActivityStore } from '@/store/activity'
+import { useSessionStore } from '@/store/session'
 
 export default function ImpactProjectPage() {
   const { id = '' } = useParams()
-  const { data: project, loading, error, reload } = useApi(() => api.getProject(id), [id])
+  const { data: proyectoBase, loading, error, reload } = useApi(() => api.getProject(id), [id])
+  const actividad = useActivityStore((s) => s.sessionContributions)
+  const nombre = useSessionStore((s) => s.user?.name)
+  // Los totales fijos del simulador, más lo que la persona aportó en esta sesión.
+  const project = proyectoBase && conAportesDeLaSesion(proyectoBase, actividad, nombre)
 
   if (loading) {
     return (

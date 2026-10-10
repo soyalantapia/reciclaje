@@ -7,6 +7,7 @@ import { useActivityStore } from '@/store/activity'
 import { MATERIAL_EMOJI, MATERIAL_UNIT, formatNumber, formatXp, timeAgo } from '@/lib/utils'
 import { XpWallet } from '@/components/features/XpWallet'
 import { ImpactProgress } from '@/components/features/ImpactProgress'
+import { conAportesDeLaSesion } from '@/lib/aportesDeLaSesion'
 import { CauseCard } from '@/components/features/CauseCard'
 import { ErrorState } from '@/components/features/ErrorState'
 import { Badge } from '@/components/ui/badge'
@@ -25,7 +26,8 @@ export default function Home() {
   const { data: history } = useApi(() => api.getContributions(), [])
   const { data: causes } = useApi(() => api.getCauses(), [])
 
-  const featured = projects?.[0]
+  // El proyecto destacado suma los aportes de esta sesión (ver src/lib/aportesDeLaSesion.ts).
+  const featured = projects?.[0] && conAportesDeLaSesion(projects[0], sessionContributions, user?.name)
   const featuredCause = causes?.[0]
   const recent = [...sessionContributions, ...(history ?? [])].slice(0, 4)
 
