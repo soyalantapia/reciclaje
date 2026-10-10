@@ -214,7 +214,7 @@ export default function CommerceOnboarding() {
             <p className="text-sm text-muted-foreground">Podés cambiarlo cuando quieras.</p>
             {[
               { name: 'Básico', fee: '$45.000/mes', desc: '1 punto · beneficios básicos · reporte mensual' },
-              { name: 'Pro', fee: '$90.000/mes', desc: 'Hasta 5 puntos · campañas · reportes RSE · Huella Verde' },
+              { name: 'Pro', fee: '$90.000/mes', desc: 'Hasta 5 puntos · campañas · reportes de impacto · Huella Verde' },
               { name: 'Enterprise', fee: 'A medida', desc: 'Multi-sede · API · datos agregados · account manager' },
             ].map((p) => (
               <button

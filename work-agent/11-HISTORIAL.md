@@ -122,6 +122,11 @@ WhatsApp del proyecto y de la reunión del 03/08 (acta en `docs/producto/reunion
   del ranking del mes (el global cuenta todo; cada sede, sólo lo ganado ahí) y reordena las posiciones.
   Las pestañas declaran su sede (`pestanasDelRanking`) y una prueba verifica, en los dos escenarios,
   que cada una tenga su ranking y que su sede exista.
+- Rama `fix/demo-club-panel-y-traza`: repaso del panel del club antes del martes.
+  - En el gráfico por mes, los meses terminan en el actual (en octubre mostraba Ene…May).
+  - Los aportes por punto suman el total (antes daban 766 contra 828).
+  - La trazabilidad muestra el aporte recién registrado y no promete «hitos verificables».
+  - Ninguna pantalla dice «Reportes RSE» (lo vigila `src/pages/promesas.test.ts`).
 
 ---
 

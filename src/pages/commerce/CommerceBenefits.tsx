@@ -77,7 +77,7 @@ export default function CommerceBenefits() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-extrabold leading-tight">Beneficios</h1>
-          <p className="text-sm text-muted-foreground">Lo que tus clientes pueden canjear con XP.</p>
+          <p className="text-sm text-muted-foreground">Lo que tu comunidad puede canjear con XP.</p>
         </div>
         <Button size="sm" onClick={() => setOpen(true)}>
           <Plus size={16} /> Crear
