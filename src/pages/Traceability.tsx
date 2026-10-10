@@ -5,6 +5,8 @@ import { useApi } from '@/hooks/useApi'
 import { TraceabilityTimeline } from '@/components/features/TraceabilityTimeline'
 import { ErrorState } from '@/components/features/ErrorState'
 import { Skeleton } from '@/components/ui/skeleton'
+import { conAporteDeLaSesionEnLaTraza } from '@/lib/aportesDeLaSesion'
+import { useActivityStore } from '@/store/activity'
 
 export default function Traceability() {
   const { projectId = '' } = useParams()
@@ -13,6 +15,9 @@ export default function Traceability() {
     () => api.getProjectTrace(projectId),
     [projectId],
   )
+  const actividad = useActivityStore((s) => s.sessionContributions)
+  // El hito «Tu aporte» muestra el último aporte de esta sesión a este proyecto, si lo hubo.
+  const eventos = trace && project ? conAporteDeLaSesionEnLaTraza(trace, project, actividad) : trace
 
   return (
     <div className="mx-auto max-w-3xl space-y-4">
@@ -27,7 +32,7 @@ export default function Traceability() {
 
       <div className="flex items-center gap-2 rounded-xl border border-eco-200 bg-eco-50 p-3 text-sm text-eco-800 dark:border-eco-700/40 dark:bg-eco-900/20 dark:text-eco-200">
         <ShieldCheck size={18} className="shrink-0" />
-        Cada hito es un evento verificable: punto, lote, retiro, planta y producto final.
+        Cada hito es una etapa del recorrido: punto, lote, retiro, planta y producto final.
       </div>
 
       {error && !trace ? (
@@ -40,7 +45,7 @@ export default function Traceability() {
         </div>
       ) : trace && trace.length > 0 ? (
         <div className="rounded-2xl border border-border bg-card p-5">
-          <TraceabilityTimeline events={trace} />
+          <TraceabilityTimeline events={eventos ?? trace} />
         </div>
       ) : (
         <p className="rounded-xl bg-muted p-4 text-center text-sm text-muted-foreground">

@@ -1,4 +1,4 @@
-import type { ActivityItem, Contribution, ImpactProject, RankingEntry } from '@/types'
+import type { ActivityItem, Contribution, ImpactProject, RankingEntry, TraceEvent } from '@/types'
 
 /** «Camila Ríos» → «Camila R.», como figura la persona en los rankings y entre los que más aportan. */
 export function nombreCorto(nombre: string): string {
@@ -66,4 +66,31 @@ export function rankingConXpDeLaSesion(
     .map((e) => (e.isCurrentUser ? { ...e, xpThisMonth: e.xpThisMonth + xp } : e))
     .sort((a, b) => b.xpThisMonth - a.xpThisMonth)
     .map((e, i) => ({ ...e, position: i + 1 }))
+}
+
+const fechaLocal = (iso: string) => {
+  const d = new Date(iso)
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+
+/**
+ * La traza del proyecto con el último aporte de la sesión en el hito «Tu aporte»: la tercera gemela.
+ * La pantalla de éxito manda a «Trazabilidad» y ahí el hito seguía con el aporte de ejemplo
+ * (640 tapitas, 04/10), no con el que la persona acababa de registrar.
+ */
+export function conAporteDeLaSesionEnLaTraza(
+  traza: TraceEvent[],
+  project: ImpactProject,
+  actividad: ActivityItem[],
+): TraceEvent[] {
+  const ultimo = actividad
+    .filter(esAporte)
+    .filter((c) => c.projectId === project.id && c.material === project.material)
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))[0]
+  if (!ultimo) return traza
+  return traza.map((e) =>
+    e.stage === 'aporte'
+      ? { ...e, detail: `${ultimo.units ?? 0} ${project.unitLabel} en ${ultimo.pointName}.`, date: fechaLocal(ultimo.createdAt), done: true }
+      : e,
+  )
 }
