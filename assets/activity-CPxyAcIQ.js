@@ -1,0 +1,1 @@
+import{N as e,P as t,k as n,w as r}from"./index-CJl_q8c9.js";var i=t()(e(e=>({sessionContributions:[],add:t=>e(e=>({sessionContributions:[t,...e.sessionContributions]})),clear:()=>e({sessionContributions:[]})}),{name:n(`activity`),...r()}));export{i as t};

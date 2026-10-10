@@ -1,0 +1,1 @@
+import{$ as e,it as t}from"./index-CJl_q8c9.js";import{a as n,i as r,o as i}from"./proxy-Bc18k1-Q.js";var a=t(e(),1);function o(){!n.current&&r();let[e]=(0,a.useState)(i.current);return e}export{o as t};
