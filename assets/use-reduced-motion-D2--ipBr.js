@@ -1,1 +1,0 @@
-import{Y as e,et as t}from"./index-DIRJch8P.js";import{a as n,i as r,o as i}from"./proxy-CBwCBSvh.js";var a=t(e(),1);function o(){!n.current&&r();let[e]=(0,a.useState)(i.current);return e}export{o as t};

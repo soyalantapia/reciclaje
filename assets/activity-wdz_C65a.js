@@ -1,0 +1,1 @@
+import{A as e,E as t,k as n}from"./index-PEtjlXzP.js";var r=e()(n(e=>({sessionContributions:[],add:t=>e(e=>({sessionContributions:[t,...e.sessionContributions]})),clear:()=>e({sessionContributions:[]})}),{name:t(`activity`),version:1}));export{r as t};
