@@ -18,8 +18,8 @@
   en https://soyalantapia.github.io/reciclaje-club/ con el nombre genérico «Tu club». El nombre
   real del club va en `.env.local` y no se publica sin su permiso escrito.
 - **Regla de honestidad aplicada**: todas las pantallas dicen que los números son de ejemplo.
-- **Railway**: proyecto «reciclaXP», servicio `web`, publicado a mano con `railway up` desde `origin/main`
-  (no se publica solo: Railway no tiene acceso al repo). En https://reciclaxp.xnod.tech (app general)
+- **Railway**: proyecto «reciclaXP», servicio `web`. Cada push a `main` se publica solo con GitHub Actions
+  (`.github/workflows/railway.yml`), que antes corre tipos, pruebas y el build. En https://reciclaxp.xnod.tech (app general)
   y https://reciclaxp.xnod.tech/club (caso club); los registros de Cloudflare se cargaron el 10/10/2026.
   Ver README, «Deploy en Railway».
 
@@ -28,8 +28,6 @@
 2. Plan piloto, acuerdo preliminar y presupuesto con montos (socio de ventas, después de la reunión).
 3. Si el club firma: backend del piloto (E1.1) como primer entregable, después pesaje y producto
    del club. **No construir el backend antes de firmar.**
-4. Darle a la app de GitHub de Railway acceso al repo y conectar el servicio a `main`, para que cada push
-   se publique solo (hoy se publica a mano con `railway up`).
 
 ---
 

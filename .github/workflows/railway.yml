@@ -1,0 +1,56 @@
+# Publica la demo en Railway (reciclaxp.xnod.tech) con cada push a main.
+# Primero verifica: tipos, pruebas y el build de las dos apps. Si algo falla, no publica.
+# RAILWAY_TOKEN es un token del proyecto «reciclaXP» (entorno production), no de la cuenta:
+# se revoca en Railway → proyecto → Settings → Tokens («github-actions-reciclaje»).
+name: Publicar en Railway
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Dos pushes seguidos no publican en paralelo: el segundo espera al primero.
+concurrency:
+  group: railway-produccion
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  verificar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npx tsc -b
+      - run: npx vitest run
+      - run: npm run build:railway
+      - name: Las dos apps salieron del build
+        run: test -f dist/index.html && test -f dist/club/index.html
+
+  publicar:
+    needs: verificar
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - name: railway up
+        run: npx --yes @railway/cli@4.29.0 up --ci --service web
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+      - name: El sitio responde
+        run: |
+          for ruta in /healthz / /club/; do
+            codigo=$(curl -s -o /dev/null -w '%{http_code}' --retry 5 --retry-delay 10 --retry-all-errors "https://reciclaxp.xnod.tech$ruta")
+            echo "$ruta → $codigo"
+            test "$codigo" = 200
+          done
