@@ -41,18 +41,25 @@ export function claveDeAlmacenamiento(nombre: string, escenario: Escenario = ESC
 }
 
 /** Pestañas del ranking: en el club, la de la hinchada reemplaza a la del club de ejemplo. */
-export const RANKING_TABS: { value: string; label: string }[] =
-  ESCENARIO === 'club'
+/**
+ * Las pestañas del ranking de cada escenario. `sponsorId` es la sede de la pestaña, para sumarle
+ * sólo el XP ganado ahí (el global no tiene).
+ */
+export function pestanasDelRanking(escenario: Escenario = ESCENARIO): { value: string; label: string; sponsorId?: string }[] {
+  return escenario === 'club'
     ? [
         { value: 'global', label: 'Global' },
-        { value: 'club', label: 'Hinchada' },
-        { value: 'ypf', label: 'YPF' },
+        { value: 'club', label: 'Hinchada', sponsorId: 's_club' },
+        { value: 'ypf', label: 'YPF', sponsorId: 's_ypf' },
       ]
     : [
         { value: 'global', label: 'Global' },
-        { value: 'river', label: 'River' },
-        { value: 'ypf', label: 'YPF' },
+        { value: 'river', label: 'River', sponsorId: 's_river' },
+        { value: 'ypf', label: 'YPF', sponsorId: 's_ypf' },
       ]
+}
+
+export const RANKING_TABS = pestanasDelRanking()
 
 /** Comercio al que entra la cuenta de prueba principal del panel. */
 export const SLUG_COMERCIO_DEMO = ESCENARIO === 'club' ? 'club' : 'mcdonalds'

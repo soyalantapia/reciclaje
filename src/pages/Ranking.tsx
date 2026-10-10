@@ -6,6 +6,8 @@ import { ErrorState } from '@/components/features/ErrorState'
 import { Tabs, type TabItem } from '@/components/ui/tabs'
 import { Skeleton } from '@/components/ui/skeleton'
 import { RANKING_TABS } from '@/lib/escenario'
+import { rankingConXpDeLaSesion } from '@/lib/aportesDeLaSesion'
+import { useActivityStore } from '@/store/activity'
 
 type Scope = string
 const TABS: TabItem<Scope>[] = RANKING_TABS
@@ -13,8 +15,12 @@ const TABS: TabItem<Scope>[] = RANKING_TABS
 export default function Ranking() {
   const [scope, setScope] = useState<Scope>('global')
   const { data, loading, error, reload } = useApi(() => api.getRanking(scope), [scope])
+  const actividad = useActivityStore((s) => s.sessionContributions)
 
-  const me = data?.entries.find((e) => e.isCurrentUser)
+  // El ranking fijo del simulador, más el XP que la persona ganó en esta sesión (en esta sede).
+  const sede = RANKING_TABS.find((t) => t.value === scope)?.sponsorId
+  const entries = data ? rankingConXpDeLaSesion(data.entries, actividad, sede) : undefined
+  const me = entries?.find((e) => e.isCurrentUser)
 
   return (
     <div className="mx-auto max-w-2xl space-y-4">
@@ -55,7 +61,7 @@ export default function Ranking() {
 
           <div className="space-y-1.5">
             {loading && [0, 1, 2, 3, 4].map((i) => <Skeleton key={i} className="h-12 w-full" />)}
-            {data?.entries.map((e) => (
+            {entries?.map((e) => (
               <RankingRow key={e.userId} entry={e} />
             ))}
           </div>

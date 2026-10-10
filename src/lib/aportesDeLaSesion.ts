@@ -1,4 +1,4 @@
-import type { ActivityItem, Contribution, ImpactProject } from '@/types'
+import type { ActivityItem, Contribution, ImpactProject, RankingEntry } from '@/types'
 
 /** «Camila Ríos» → «Camila R.», como figura la persona en los rankings y entre los que más aportan. */
 export function nombreCorto(nombre: string): string {
@@ -38,4 +38,32 @@ export function conAportesDeLaSesion(
     myContributionUnits: project.myContributionUnits + suma,
     topContributors,
   }
+}
+
+const mismoMes = (iso: string, hoy: Date) => {
+  const d = new Date(iso)
+  return d.getFullYear() === hoy.getFullYear() && d.getMonth() === hoy.getMonth()
+}
+
+/**
+ * El ranking del mes con el XP que la persona ganó en esta sesión: la gemela de
+ * `conAportesDeLaSesion`. El ranking viene fijo del simulador, así que después de sumar XP la
+ * billetera subía y la fila «vos» del ranking seguía igual. Con `sponsorId` (el ranking de una
+ * sede) cuenta sólo lo ganado ahí; sin él (el global), todo. Reordena y renumera las posiciones.
+ */
+export function rankingConXpDeLaSesion(
+  entries: RankingEntry[],
+  actividad: ActivityItem[],
+  sponsorId?: string,
+  hoy: Date = new Date(),
+): RankingEntry[] {
+  const xp = actividad
+    .filter((i) => (!sponsorId || i.sponsorId === sponsorId) && mismoMes(i.createdAt, hoy))
+    .reduce((total, i) => total + i.xpEarned, 0)
+  if (xp === 0) return entries
+
+  return entries
+    .map((e) => (e.isCurrentUser ? { ...e, xpThisMonth: e.xpThisMonth + xp } : e))
+    .sort((a, b) => b.xpThisMonth - a.xpThisMonth)
+    .map((e, i) => ({ ...e, position: i + 1 }))
 }
