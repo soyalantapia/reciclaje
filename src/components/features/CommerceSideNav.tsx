@@ -10,6 +10,7 @@ import {
 } from 'lucide-react'
 import { useSessionStore } from '@/store/session'
 import { cn } from '@/lib/utils'
+import { ESCENARIO, muestraPrecios, type Escenario } from '@/lib/escenario'
 
 export const COMMERCE_NAV = [
   { to: '/comercio', label: 'Resumen', end: true, icon: LayoutDashboard },
@@ -19,6 +20,19 @@ export const COMMERCE_NAV = [
   { to: '/comercio/reportes', label: 'Reportes', icon: FileText },
   { to: '/comercio/plan', label: 'Plan', icon: CreditCard },
 ]
+
+/**
+ * El menú del panel: el del escritorio y el del celular salen de acá, para que no difieran.
+ * En la demo del club no está «Plan» (ver `muestraPrecios`).
+ */
+export function navDelPanel(escenario: Escenario = ESCENARIO) {
+  return muestraPrecios(escenario) ? COMMERCE_NAV : COMMERCE_NAV.filter((i) => i.to !== '/comercio/plan')
+}
+
+/** Cómo se llama el panel: un club o un estadio no son un comercio. */
+export function etiquetaDelPanel(category?: string): string {
+  return category === 'club' || category === 'estadio' ? 'Panel de la institución' : 'Panel del comercio'
+}
 
 /**
  * Navegación lateral del hub de comercio para desktop (lg+).
@@ -47,12 +61,12 @@ export function CommerceSideNav({ className }: { className?: string }) {
         </span>
         <div className="min-w-0">
           <p className="truncate font-extrabold leading-tight">{commerce.name}</p>
-          <p className="text-[11px] text-muted-foreground">Panel · ReciclaXP</p>
+          <p className="text-[11px] text-muted-foreground">{etiquetaDelPanel(commerce.category)} · ReciclaXP</p>
         </div>
       </div>
 
       <nav className="flex flex-1 flex-col gap-1">
-        {COMMERCE_NAV.map(({ to, label, end, icon: Icon }) => (
+        {navDelPanel().map(({ to, label, end, icon: Icon }) => (
           <NavLink
             key={to}
             to={to}

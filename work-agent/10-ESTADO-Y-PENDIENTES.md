@@ -18,6 +18,9 @@
   en https://soyalantapia.github.io/reciclaje-club/ con el nombre genérico «Tu club». El nombre
   real del club va en `.env.local` y no se publica sin su permiso escrito.
 - **Regla de honestidad aplicada**: todas las pantallas dicen que los números son de ejemplo.
+- **La demo del club no muestra precios de lista** (decidido el 10/10/2026): el panel no tiene «Plan», y la
+  landing y el alta dicen «A convenir». El plan del club sale de la propuesta. Se revisa al cerrar la tabla de
+  precios. La regla está en `muestraPrecios` (`src/lib/escenario.ts`).
 - **Railway**: proyecto «reciclaXP», servicio `web`. Cada push a `main` se publica solo con GitHub Actions
   (`.github/workflows/railway.yml`), que antes corre tipos, pruebas y el build. En https://reciclaxp.xnod.tech (app general)
   y https://reciclaxp.xnod.tech/club (caso club); los registros de Cloudflare se cargaron el 10/10/2026.

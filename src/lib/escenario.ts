@@ -63,3 +63,16 @@ export const RANKING_TABS = pestanasDelRanking()
 
 /** Comercio al que entra la cuenta de prueba principal del panel. */
 export const SLUG_COMERCIO_DEMO = ESCENARIO === 'club' ? 'club' : 'mcdonalds'
+
+/**
+ * La demo del club no muestra precios de lista: el club tiene un plan aparte, que sale de la
+ * propuesta (decidido el 10/10/2026, antes de cerrar la tabla de precios). La demo general sí.
+ */
+export function muestraPrecios(escenario: Escenario = ESCENARIO): boolean {
+  return escenario !== 'club'
+}
+
+/** El precio de un plan, o «A convenir» donde la demo no muestra precios. */
+export function precioVisible(precio: string, escenario: Escenario = ESCENARIO): string {
+  return muestraPrecios(escenario) ? precio : 'A convenir'
+}

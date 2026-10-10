@@ -127,6 +127,10 @@ WhatsApp del proyecto y de la reunión del 03/08 (acta en `docs/producto/reunion
   - Los aportes por punto suman el total (antes daban 766 contra 828).
   - La trazabilidad muestra el aporte recién registrado y no promete «hitos verificables».
   - Ninguna pantalla dice «Reportes RSE» (lo vigila `src/pages/promesas.test.ts`).
+- Rama `fix/demo-club-sin-precios`, decidido el 10/10:
+  - La demo del club no muestra precios de lista: el panel no tiene «Plan» y la landing y el alta dicen «A convenir».
+  - La demo general sigue igual.
+  - El menú del panel y su etiqueta salen de un solo lugar para escritorio y celular, y en escritorio ya dice «Panel de la institución».
 
 ---
 

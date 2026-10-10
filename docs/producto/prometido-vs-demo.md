@@ -51,7 +51,7 @@ Fuentes de lo prometido: la presentación general, el resumen ejecutivo para el 
 | Exportar en planilla o PDF | A medias | `src/pages/commerce/CommerceReports.tsx:29`, `:71` | Sale de la fórmula y no trae la trazabilidad | S | piloto |
 | Certificado de RSE | Falta | — | Constancia por producto hecha con aportes y pesajes registrados, con identificador verificable | M | piloto, etapa 4 |
 | «RSE verificable», reportes «para auditoría», panel «en vivo» (landing y reporte) | Dejar de prometer hasta el piloto | `src/pages/commerce/CommerceLanding.tsx:65`, `:105`; `src/pages/commerce/CommerceReports.tsx:45`, `:81` | Resuelto el 10/10/2026: el reporte dice que son datos de ejemplo y ninguna pantalla lo afirma: tampoco «Reportes RSE» en los planes ni «hitos verificables» en la trazabilidad. Lo vigilan `src/pages/commerce/CommerceLanding.test.tsx` y `src/pages/promesas.test.ts` | S | demo |
-| Plan activo, próximo cobro y cambio de plan | A medias | `src/pages/commerce/CommercePlan.tsx` | No hay cobro; los precios no coinciden con los que se recuerdan | M | fase 2 |
+| Plan activo, próximo cobro y cambio de plan | A medias | `src/pages/commerce/CommercePlan.tsx` | No hay cobro; los precios no coinciden con los que se recuerdan. En la demo del club no se muestran: sin «Plan» en el panel y «A convenir» en la landing y el alta (decidido el 10/10/2026, hasta cerrar la tabla de precios) | M | fase 2 |
 | Login con código por mail | A medias | Código fijo: `src/pages/commerce/CommerceLogin.tsx:17` | Login real por institución | M | piloto |
 
 ## Lo que pide el piloto (mapa de 90 días)
