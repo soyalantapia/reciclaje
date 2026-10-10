@@ -113,6 +113,8 @@ WhatsApp del proyecto y de la reunión del 03/08 (acta en `docs/producto/reunion
 - `reciclaxp.xnod.tech` activo (10/10): registros CNAME y TXT en Cloudflare, certificado de Let's Encrypt.
 - Rama `fix/landing-sin-promesas-del-piloto`: la landing de comercios deja de afirmar «RSE verificable»,
   «en vivo», «tiempo real», «auditoría» y el multiplicador; un candado de render lo vigila.
+- Rama `ci/railway-publica-desde-main`: cada push a `main` corre tipos, pruebas y build en GitHub Actions
+  y, si pasa, publica en Railway con un token del proyecto (secreto `RAILWAY_TOKEN`).
 
 ---
 

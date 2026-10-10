@@ -95,16 +95,24 @@ quedó en 502 con el chequeo de salud en verde. Desde entonces el comando de bui
 chequeo de salud están cargados en el servicio (Settings). `railway.json` repite los mismos valores: si
 cambiás uno, cambiá los dos.
 
-**Cómo se publica hoy:** desde un checkout limpio de `origin/main`, con el CLI vinculado al servicio:
+**Cómo se publica: cada push a `main` se publica solo**, con GitHub Actions
+(`.github/workflows/railway.yml`):
+1. `verificar`: `npm ci`, `tsc -b`, `vitest run` y `build:railway`, con las dos apps presentes. Si algo falla, no se publica.
+2. `publicar`: `railway up --ci --service web` y después un chequeo de que `/healthz`, `/` y `/club/` respondan 200 en `reciclaxp.xnod.tech`.
+
+El secreto `RAILWAY_TOKEN` del repo es un token **del proyecto** reciclaXP (entorno production), no de la
+cuenta: se llama `github-actions-reciclaje` y se revoca en Railway → proyecto → Settings → Tokens.
+Se eligió Actions y no la conexión directa de Railway con GitHub porque así las pruebas frenan un
+deploy roto, y porque la app de GitHub de Railway no tiene acceso a este repo. **No conectes además el
+servicio al repo en Railway (Settings → Source):** cada push se publicaría dos veces.
+
+Para volver a publicar sin un push: Actions → «Publicar en Railway» → *Run workflow*. A mano, desde un
+checkout limpio de `origin/main`:
 
 ```bash
 railway link --project d5c0ac8a-d08d-4f71-9c5a-cdb94ab0b2c8 --environment production --service web
 railway up --ci --service web
 ```
-
-Todavía **no** se publica solo con cada push: la app de GitHub de Railway no tiene acceso a
-`soyalantapia/reciclaje`. Para tenerlo, hay que darle acceso al repo desde GitHub y después conectar el
-servicio a `main` en Railway (Settings → Source).
 
 **DNS de `reciclaxp.xnod.tech`** (Cloudflare, zona `xnod.tech`, igual que `crm.xnod.tech`; cargados el 10/10/2026):
 
