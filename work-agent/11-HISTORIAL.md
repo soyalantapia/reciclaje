@@ -89,6 +89,20 @@ de auth (login usuario, login comercio, onboarding) centrados verticalmente en `
   secciones (incluye mockup del panel sin números falsos, problema/solución, verticales,
   "por qué ahora" y FAQ ampliada).
 
+### 15. Octubre 2026 — plan de producto y escenario club (rama `tarea/T1-T3-demo-caso-club`)
+Preparación de la reunión con un club por el piloto de 90 días. El plan sale de los grupos de
+WhatsApp del proyecto y de la reunión del 03/08 (acta en `docs/producto/reuniones/`).
+- `171cfae` **docs(producto)**: lista de lo prometido contra lo que existe
+  (`docs/producto/prometido-vs-demo.md`).
+- `cd2e597` **feat(demo)**: escenario club (`npm run dev:club`): Punto R, banco de suplentes de la
+  hinchada, ranking de la hinchada, recompensas del club; claves de almacenamiento propias.
+- `ec4b17e` **fix(demo)**: aviso «Demo · los números son de ejemplo» en todas las pantallas;
+  multiplicador de XP como «próximamente»; reporte sin «auditoría»; Premium sin cobro rotulado.
+- `cbf983b` **fix**: las fechas sin hora ya no se muestran un día antes.
+- `a30358c` **build**: `deploy:club` publica el escenario club en otro repo (`reciclaje-club`).
+- `7676a8f` **docs(producto)**: desglose técnico del piloto por entregable
+  (`docs/producto/desglose-piloto.md`).
+
 ---
 
 ## Trabajo hecho que NO quedó en commits
