@@ -2,7 +2,7 @@ import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { LogOut } from 'lucide-react'
 import { useSessionStore } from '@/store/session'
 import { cn } from '@/lib/utils'
-import { CommerceSideNav, COMMERCE_NAV } from './CommerceSideNav'
+import { CommerceSideNav, etiquetaDelPanel, navDelPanel } from './CommerceSideNav'
 import { AvisoDemo } from './AvisoDemo'
 
 export function CommerceLayout() {
@@ -11,7 +11,6 @@ export function CommerceLayout() {
   const logoutCommerce = useSessionStore((s) => s.logoutCommerce)
 
   if (!commerce) return null
-  const esInstitucion = commerce.category === 'club' || commerce.category === 'estadio'
 
   function salir() {
     logoutCommerce()
@@ -38,7 +37,7 @@ export function CommerceLayout() {
               <div className="min-w-0">
                 <p className="truncate font-extrabold leading-tight">{commerce.name}</p>
                 <p className="text-[11px] text-muted-foreground">
-                  {esInstitucion ? 'Panel de la institución' : 'Panel del comercio'} · ReciclaXP
+                  {etiquetaDelPanel(commerce.category)} · ReciclaXP
                 </p>
               </div>
             </div>
@@ -51,7 +50,7 @@ export function CommerceLayout() {
           </div>
 
           <nav className="no-scrollbar flex gap-1 overflow-x-auto px-3 pb-2">
-            {COMMERCE_NAV.map(({ to, label, end, icon: Icon }) => (
+            {navDelPanel().map(({ to, label, end, icon: Icon }) => (
               <NavLink
                 key={to}
                 to={to}

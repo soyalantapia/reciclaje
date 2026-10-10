@@ -5,7 +5,7 @@ import { RequireAuth } from '@/components/features/RequireAuth'
 import { RequireCommerce } from '@/components/features/RequireCommerce'
 import { CommerceLayout } from '@/components/features/CommerceLayout'
 import { Skeleton } from '@/components/ui/skeleton'
-import { claveDeAlmacenamiento } from '@/lib/escenario'
+import { claveDeAlmacenamiento, muestraPrecios } from '@/lib/escenario'
 
 /**
  * lazy() con retry: tras un deploy, el index cacheado puede apuntar a chunks
@@ -121,7 +121,8 @@ export const router = createBrowserRouter(
             { path: 'campanias', element: withSuspense(<CommerceCampaigns />) },
             { path: 'puntos', element: withSuspense(<CommercePoints />) },
             { path: 'reportes', element: withSuspense(<CommerceReports />) },
-            { path: 'plan', element: withSuspense(<CommercePlan />) },
+            // En la demo del club no hay pantalla de planes (ver muestraPrecios en src/lib/escenario.ts).
+            { path: 'plan', element: muestraPrecios() ? withSuspense(<CommercePlan />) : <Navigate to="/comercio" replace /> },
           ],
         },
       ],

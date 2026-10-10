@@ -32,6 +32,7 @@ import { useApi } from '@/hooks/useApi'
 import { Button } from '@/components/ui/button'
 import { Container } from '@/components/ui/container'
 import { LandingHeader } from '@/components/landing/LandingHeader'
+import { precioVisible } from '@/lib/escenario'
 
 // TODO: reemplazá por tus datos reales antes de publicar.
 const CONTACT = {
@@ -85,10 +86,10 @@ const VERTICALS = [
 ]
 
 const TIERS = [
-  { name: 'Básico', fee: '$45.000/mes', includes: ['1 punto', 'Beneficios básicos', 'Reporte mensual'] },
+  { name: 'Básico', fee: precioVisible('$45.000/mes'), includes: ['1 punto', 'Beneficios básicos', 'Reporte mensual'] },
   {
     name: 'Pro',
-    fee: '$90.000/mes',
+    fee: precioVisible('$90.000/mes'),
     featured: true,
     includes: ['Hasta 5 puntos', 'Campañas ilimitadas', 'Reportes de impacto', 'Huella Verde + placa'],
   },
