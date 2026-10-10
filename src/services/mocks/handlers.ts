@@ -10,7 +10,7 @@ import {
   type SponsorMetrics,
 } from '@/types'
 import { shortCode } from '@/lib/utils'
-import { metricsFor } from '@/lib/metrics'
+import { conMesesHastaHoy, metricsFor } from '@/lib/metrics'
 import { datos } from './datos'
 
 // Los datos dependen del escenario elegido al compilar (ver src/lib/escenario.ts).
@@ -40,7 +40,7 @@ const api = (path: string) => `${BASE}/api${path}`
  */
 function buildMetrics(sponsorId: string): SponsorMetrics | null {
   const seeded = sponsorMetrics[sponsorId]
-  if (seeded) return seeded
+  if (seeded) return conMesesHastaHoy(seeded)
   const sponsor = sponsors.find((s) => s.id === sponsorId)
   if (!sponsor) return null
   return metricsFor(sponsor, points)

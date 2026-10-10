@@ -64,7 +64,7 @@ export default function CommerceResumen() {
     <div className="space-y-5">
       <div>
         <h1 className="text-2xl font-extrabold leading-tight">Resumen</h1>
-        <p className="text-sm text-muted-foreground">Tu impacto y comunidad este mes.</p>
+        <p className="text-sm text-muted-foreground">Tu impacto y tu comunidad, desde que te sumaste.</p>
       </div>
 
       {/* Huella Verde accionable */}
