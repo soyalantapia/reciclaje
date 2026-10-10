@@ -145,6 +145,11 @@ WhatsApp del proyecto y de la reunión del 03/08 (acta en `docs/producto/reunion
   - La demo del club pasa en Córdoba: los puntos de la red y el historial del hincha, con fechas de septiembre. Se va el municipio de Vicente López.
   - 13 grillas sin columnas de base en el celular: tres se desbordaban (el mapa, y Beneficios y Campañas del panel). El candado es `src/lib/grillas.test.ts`.
   - Textos: se van «recicladores certificados» y «subí posiciones por sede».
+- Rama `fix/panel-ve-lo-de-la-sesion`, la cuarta gemela: el hincha aportaba y veía el banco en 42.890, pero el panel del club, en el mismo navegador, seguía en 42.840. Ahora el resumen y el reporte del panel suman lo que la comunidad hizo en la sesión (`metricasConLaSesion` en `src/lib/aportesDeLaSesion.ts`):
+  - aportes, tapitas, kilos y la cuenta por punto y por mes;
+  - el XP de aportes y compras;
+  - los canjes de sus beneficios.
+- En la demo del club, el login y la pantalla de escanear del hincha ya no dicen «¿Sos comercio?».
 
 ---
 

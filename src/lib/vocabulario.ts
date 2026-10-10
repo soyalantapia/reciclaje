@@ -24,6 +24,10 @@ export interface Vocabulario {
   noEsta: string
   /** La bajada del acceso al panel desde el perfil del hincha. */
   gestiona: string
+  /** El enlace al panel desde el login del hincha. */
+  accesoAlPanel: string
+  /** El enlace a los QR de prueba desde la pantalla de escanear. */
+  qrParaProbar: string
 }
 
 const COMERCIO: Vocabulario = {
@@ -36,6 +40,8 @@ const COMERCIO: Vocabulario = {
   otrosDemo: 'Otros comercios demo',
   noEsta: '🏪 ¿Tu comercio no está? Conocé la red y registrate →',
   gestiona: 'Gestioná tu comercio adherido (demo)',
+  accesoAlPanel: '🏪 ¿Sos comercio? Ingresá a tu panel →',
+  qrParaProbar: '¿Sos comercio? Generá tu QR para probar',
 }
 
 const INSTITUCION: Vocabulario = {
@@ -48,6 +54,8 @@ const INSTITUCION: Vocabulario = {
   otrosDemo: 'Otros paneles de la demo',
   noEsta: '🏟️ ¿Tu institución no está? Conocé la red y sumate →',
   gestiona: 'Gestioná tu institución en la red (demo)',
+  accesoAlPanel: '🏟️ ¿Sos de una institución? Ingresá a tu panel →',
+  qrParaProbar: '¿Sos de una institución? Generá tu QR para probar',
 }
 
 export function esInstitucion(categoria?: string): boolean {

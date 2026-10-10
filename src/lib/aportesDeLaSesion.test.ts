@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import type { ActivityItem, Contribution, ImpactProject, RankingEntry, TraceEvent } from '@/types'
-import { conAporteDeLaSesionEnLaTraza, conAportesDeLaSesion, nombreCorto, rankingConXpDeLaSesion } from './aportesDeLaSesion'
+import type { ActivityItem, Contribution, Coupon, ImpactProject, RankingEntry, SponsorMetrics, TraceEvent } from '@/types'
+import {
+  conAporteDeLaSesionEnLaTraza,
+  conAportesDeLaSesion,
+  metricasConLaSesion,
+  nombreCorto,
+  rankingConXpDeLaSesion,
+} from './aportesDeLaSesion'
 
 const proyecto: ImpactProject = {
   id: 'pr_banco_club',
@@ -144,5 +150,85 @@ describe('trazaConAporteDeLaSesion', () => {
   it('sin aportes de la sesión a ese proyecto y material, la traza queda igual', () => {
     expect(conAporteDeLaSesionEnLaTraza(traza, proyecto, [])).toBe(traza)
     expect(conAporteDeLaSesionEnLaTraza(traza, proyecto, [aporte({ projectId: 'otro' }), aporte({ material: 'plastico' })])).toBe(traza)
+  })
+})
+
+describe('metricasConLaSesion: lo que la hinchada hizo en esta sesión lo ve el panel del club', () => {
+  const hoy = new Date('2026-10-13T15:00:00-03:00')
+  const base: SponsorMetrics = {
+    sponsorId: 's_club',
+    sponsorName: 'Talleres',
+    greenScore: 64,
+    activeUsers: 162,
+    contributions: 828,
+    xpEmitted: 56304,
+    benefitsRedeemed: 28,
+    kgRecovered: 180,
+    capsRecovered: 42840,
+    monthlySeries: [
+      { label: 'Sep', value: 100 },
+      { label: 'Oct', value: 120 },
+    ],
+    byPoint: [
+      { point: 'Punto R · Estadio', contributions: 380 },
+      { point: 'Punto R · Sede social', contributions: 448 },
+    ],
+  }
+  const aporte = (c: Partial<Contribution> = {}): Contribution => ({
+    id: 'c_s1',
+    userId: 'u_me',
+    pointId: 'p_club_estadio',
+    pointName: 'Punto R · Estadio',
+    sponsorId: 's_club',
+    sponsorName: 'Talleres',
+    material: 'tapitas',
+    units: 50,
+    xpEarned: 100,
+    status: 'pendiente',
+    createdAt: '2026-10-13T14:00:00-03:00',
+    ...c,
+  })
+  const cupon = (sponsorName: string): Coupon => ({
+    id: `cp_${sponsorName}`,
+    benefitId: 'b_1',
+    benefitTitle: 'Visita guiada al estadio',
+    sponsorName,
+    code: 'ABC123',
+    qrPayload: '',
+    expiresAt: '2026-11-13T00:00:00Z',
+  })
+
+  it('sin nada en la sesión, queda igual', () => {
+    expect(metricasConLaSesion(base, [], [], hoy)).toEqual(base)
+  })
+
+  it('un aporte de 50 tapitas en el Punto R · Estadio suma en todos los indicadores donde corresponde', () => {
+    const m = metricasConLaSesion(base, [aporte()], [], hoy)
+    expect(m.contributions).toBe(829)
+    expect(m.capsRecovered).toBe(42890)
+    expect(m.xpEmitted).toBe(56404)
+    expect(m.byPoint).toEqual([
+      { point: 'Punto R · Estadio', contributions: 381 },
+      { point: 'Punto R · Sede social', contributions: 448 },
+    ])
+    expect(m.monthlySeries.at(-1)).toEqual({ label: 'Oct', value: 121 })
+    expect(m.activeUsers).toBe(162)
+  })
+
+  it('el plástico suma kilos, no tapitas', () => {
+    const m = metricasConLaSesion(base, [aporte({ material: 'plastico', units: undefined, weightKg: 2.4 })], [], hoy)
+    expect(m.capsRecovered).toBe(42840)
+    expect(m.kgRecovered).toBe(182)
+  })
+
+  it('lo de otro sponsor no se mezcla; una compra en el club suma XP pero no es un aporte', () => {
+    const compra = { id: 'pu_1', kind: 'compra', sponsorId: 's_club', sponsorName: 'Talleres', amountArs: 5000, xpEarned: 100, createdAt: '2026-10-13T14:30:00-03:00' } as const
+    const m = metricasConLaSesion(base, [aporte({ sponsorId: 's_ypf', pointName: 'YPF Av. Colón 1500' }), compra], [], hoy)
+    expect(m.contributions).toBe(828)
+    expect(m.xpEmitted).toBe(56404)
+  })
+
+  it('un canje de un beneficio del club suma a beneficios canjeados; el de otro sponsor no', () => {
+    expect(metricasConLaSesion(base, [], [cupon('Talleres'), cupon('YPF')], hoy).benefitsRedeemed).toBe(29)
   })
 })
