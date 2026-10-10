@@ -28,8 +28,7 @@
 2. Plan piloto, acuerdo preliminar y presupuesto con montos (socio de ventas, después de la reunión).
 3. Si el club firma: backend del piloto (E1.1) como primer entregable, después pesaje y producto
    del club. **No construir el backend antes de firmar.**
-4. La landing de comercios todavía afirma «RSE verificable» y «en vivo»: rotular o cambiar.
-5. Darle a la app de GitHub de Railway acceso al repo y conectar el servicio a `main`, para que cada push
+4. Darle a la app de GitHub de Railway acceso al repo y conectar el servicio a `main`, para que cada push
    se publique solo (hoy se publica a mano con `railway up`).
 
 ---

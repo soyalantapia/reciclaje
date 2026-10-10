@@ -110,6 +110,9 @@ WhatsApp del proyecto y de la reunión del 03/08 (acta en `docs/producto/reunion
   502 con el chequeo de salud en verde. Se cargó la configuración en el servicio y se republicó.
 - Rama `fix/railway-arranque-verifica-builds`: el servidor no arranca si falta el `index.html` de una de
   las dos apps, y una app sin build responde 503 en vez de cortar la conexión.
+- `reciclaxp.xnod.tech` activo (10/10): registros CNAME y TXT en Cloudflare, certificado de Let's Encrypt.
+- Rama `fix/landing-sin-promesas-del-piloto`: la landing de comercios deja de afirmar «RSE verificable»,
+  «en vivo», «tiempo real», «auditoría» y el multiplicador; un candado de render lo vigila.
 
 ---
 

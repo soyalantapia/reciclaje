@@ -46,11 +46,11 @@ Fuentes de lo prometido: la presentación general, el resumen ejecutivo para el 
 | Resumen con Huella Verde, seis indicadores y aportes por mes y por punto | A medias | `src/pages/commerce/CommerceResumen.tsx`; números de una fórmula en `src/lib/metrics.ts:9-34` | Datos reales | M | piloto |
 | Publicar beneficios | Existe | `src/pages/commerce/CommerceBenefits.tsx` | Se guardan en el navegador | S | piloto |
 | Campañas: premio del mes y desafíos | A medias | `src/pages/commerce/CommerceCampaigns.tsx` | No impactan en nada fuera del panel | M | fase 2 |
-| Campaña «Multiplicador XP» | Dejar de prometer por ahora | `src/pages/commerce/CommerceCampaigns.tsx:16` | No cambia los XP de nadie; hay que ocultarla o rotularla «próximamente» | S | demo |
+| Campaña «Multiplicador XP» | Dejar de prometer por ahora | `src/pages/commerce/CommerceCampaigns.tsx:16` | Resuelto el 10/10/2026: se muestra «próximamente», no se puede lanzar y la landing ya no la ofrece | S | demo |
 | QR de cada punto para descargar e imprimir | Existe | `src/pages/commerce/CommercePoints.tsx:36-38` | — | — | — |
 | Exportar en planilla o PDF | A medias | `src/pages/commerce/CommerceReports.tsx:29`, `:71` | Sale de la fórmula y no trae la trazabilidad | S | piloto |
 | Certificado de RSE | Falta | — | Constancia por producto hecha con aportes y pesajes registrados, con identificador verificable | M | piloto, etapa 4 |
-| «RSE verificable», reportes «para auditoría», panel «en vivo» (landing y reporte) | Dejar de prometer hasta el piloto | `src/pages/commerce/CommerceLanding.tsx:65`, `:105`; `src/pages/commerce/CommerceReports.tsx:45`, `:81` | Hoy los datos son de ejemplo: rotular o cambiar el texto | S | demo |
+| «RSE verificable», reportes «para auditoría», panel «en vivo» (landing y reporte) | Dejar de prometer hasta el piloto | `src/pages/commerce/CommerceLanding.tsx:65`, `:105`; `src/pages/commerce/CommerceReports.tsx:45`, `:81` | Resuelto el 10/10/2026: el reporte dice que son datos de ejemplo y la landing ya no lo afirma. Lo vigila `src/pages/commerce/CommerceLanding.test.tsx` | S | demo |
 | Plan activo, próximo cobro y cambio de plan | A medias | `src/pages/commerce/CommercePlan.tsx` | No hay cobro; los precios no coinciden con los que se recuerdan | M | fase 2 |
 | Login con código por mail | A medias | Código fijo: `src/pages/commerce/CommerceLogin.tsx:17` | Login real por institución | M | piloto |
 
@@ -81,3 +81,4 @@ Fuentes de lo prometido: la presentación general, el resumen ejecutivo para el 
   - datos de los hinchas;
   - informe del piloto.
 - **Hay que dejar de afirmar ya** «RSE verificable», «para auditoría», «en vivo», «la máquina pesó» y el multiplicador de XP. En la demo del caso club van rotulados o fuera.
+  Hecho el 10/10/2026 en las dos demos: reporte, campañas, trazabilidad y landing de comercios.
