@@ -1,1 +1,0 @@
-import{A as e,E as t,j as n}from"./index-BVWw34kd.js";var r=n()(e(e=>({sessionContributions:[],add:t=>e(e=>({sessionContributions:[t,...e.sessionContributions]})),clear:()=>e({sessionContributions:[]})}),{name:t(`activity`),version:1}));export{r as t};
