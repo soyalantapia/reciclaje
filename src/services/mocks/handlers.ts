@@ -11,6 +11,8 @@ import {
 } from '@/types'
 import { shortCode } from '@/lib/utils'
 import { conMesesHastaHoy, metricsFor } from '@/lib/metrics'
+import { buscarBeneficio } from '@/lib/beneficiosDeLaRed'
+import { useCommerceBenefitsStore } from '@/store/commerceBenefits'
 import { datos } from './datos'
 
 // Los datos dependen del escenario elegido al compilar (ver src/lib/escenario.ts).
@@ -106,7 +108,8 @@ export const handlers = [
 
   http.post(api('/benefits/:id/redeem'), async ({ params }) => {
     await delay(400)
-    const benefit = benefits.find((b) => b.id === params.id)
+    // En la demo, los beneficios que publica el panel viven en el navegador: el simulador los busca ahí también.
+    const benefit = buscarBeneficio(String(params.id), benefits, useCommerceBenefitsStore.getState().created)
     if (!benefit) {
       return HttpResponse.json({ message: 'Beneficio no encontrado' }, { status: 404 })
     }

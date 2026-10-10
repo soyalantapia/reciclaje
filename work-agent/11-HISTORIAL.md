@@ -131,6 +131,9 @@ WhatsApp del proyecto y de la reunión del 03/08 (acta en `docs/producto/reunion
   - La demo del club no muestra precios de lista: el panel no tiene «Plan» y la landing y el alta dicen «A convenir».
   - La demo general sigue igual.
   - El menú del panel y su etiqueta salen de un solo lugar para escritorio y celular, y en escritorio ya dice «Panel de la institución».
+- Rama `fix/beneficios-del-panel-llegan-al-hincha`, en el mismo navegador:
+  - un beneficio publicado en el panel aparece en la app del hincha y se puede canjear (antes el simulador respondía «Beneficio no encontrado»);
+  - uno pausado deja de verse.
 
 ---
 

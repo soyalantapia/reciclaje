@@ -44,7 +44,7 @@ Fuentes de lo prometido: la presentación general, el resumen ejecutivo para el 
 | Panel de institución (club) | A medias | El club usa el mismo panel del comercio | Vistas propias: producto con meta, hinchada, pesajes y constancia | M | piloto |
 | La institución crea su producto con meta de kilos | Falta | Los proyectos son fijos: `src/services/mocks/data.ts:239` | Alta de producto desde el panel | M | piloto |
 | Resumen con Huella Verde, seis indicadores y aportes por mes y por punto | A medias | `src/pages/commerce/CommerceResumen.tsx`; números de una fórmula en `src/lib/metrics.ts:9-34` | Datos reales | M | piloto |
-| Publicar beneficios | Existe | `src/pages/commerce/CommerceBenefits.tsx` | Se guardan en el navegador | S | piloto |
+| Publicar beneficios | Existe | `src/pages/commerce/CommerceBenefits.tsx` | Se guardan en el navegador. Desde el 10/10/2026 la app del hincha los muestra y los deja canjear, y lo pausado no se ve, en el mismo navegador; entre aparatos distintos hace falta el servidor (E1.1) | S | piloto |
 | Campañas: premio del mes y desafíos | A medias | `src/pages/commerce/CommerceCampaigns.tsx` | No impactan en nada fuera del panel | M | fase 2 |
 | Campaña «Multiplicador XP» | Dejar de prometer por ahora | `src/pages/commerce/CommerceCampaigns.tsx:16` | Resuelto el 10/10/2026: se muestra «próximamente», no se puede lanzar y la landing ya no la ofrece | S | demo |
 | QR de cada punto para descargar e imprimir | Existe | `src/pages/commerce/CommercePoints.tsx:36-38` | — | — | — |
