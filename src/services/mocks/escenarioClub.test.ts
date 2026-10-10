@@ -26,6 +26,31 @@ describe('el club de las demos es Talleres', () => {
   })
 })
 
+describe('la demo del club pasa en Córdoba', () => {
+  const FUERA_DE_CORDOBA = /Vicente López|Palermo|Recoleta|Lanús|Pilar|CABA|Libertador|Cabildo|Panamericana/
+
+  it('los puntos de la red, el historial, las métricas y los beneficios no quedan en Buenos Aires', () => {
+    expect(club.points.every((p) => p.city === 'Córdoba')).toBe(true)
+    const lugares = JSON.stringify([club.points, club.contributions, club.sponsorMetrics, club.benefits, club.sponsors])
+    expect(lugares).not.toMatch(FUERA_DE_CORDOBA)
+  })
+
+  it('el historial del hincha es reciente y nombra puntos que existen en la demo', () => {
+    const nombres = new Set(club.points.map((p) => p.name))
+    for (const c of club.contributions) {
+      expect(nombres.has(c.pointName)).toBe(true)
+      expect(c.createdAt >= '2026-09-01').toBe(true)
+    }
+  })
+})
+
+describe('textos que la demo no puede sostener', () => {
+  it('no dice que los recicladores están certificados', () => {
+    expect(JSON.stringify(datosGenerales.causes)).not.toMatch(/certificad/i)
+    expect(JSON.stringify(club.causes)).not.toMatch(/certificad/i)
+  })
+})
+
 describe('escenario club', () => {
   it('cada pestaña del ranking tiene su ranking y su sede es un sponsor que existe, en los dos escenarios', () => {
     const escenarios = [['club', club], ['general', datosGenerales]] as const

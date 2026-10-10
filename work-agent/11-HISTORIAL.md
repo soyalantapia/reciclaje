@@ -138,6 +138,13 @@ WhatsApp del proyecto y de la reunión del 03/08 (acta en `docs/producto/reunion
   - las dos demos dicen Talleres;
   - la demo general ya no tiene a River: el sponsor, el punto, el proyecto, los beneficios, el ranking, el premio y las métricas, también en los ids;
   - lo guardado en el navegador con los nombres viejos se descarta al cargar (`src/store/versionDeDatos.ts`).
+- Rama `fix/demo-club-detalles`, después de recorrer las dos demos pantalla por pantalla en el celular y en la compu:
+  - Campañas, la gemela de los beneficios: el panel muestra el premio que la hinchada ya ve, y lo que lanza o pausa (premio del mes y desafíos) aparece en el ranking de la hinchada (`src/lib/campanasDeLaRed.ts`).
+  - El «Top 12% de la red» estaba escrito fijo para todos; ahora se calcula el puesto real por Huella Verde (`src/lib/posicionEnLaRed.ts`).
+  - El panel de una institución ya no habla de «comercio», «clientes», «vidriera» ni «local», tampoco en el login ni en el perfil (`src/lib/vocabulario.ts`).
+  - La demo del club pasa en Córdoba: los puntos de la red y el historial del hincha, con fechas de septiembre. Se va el municipio de Vicente López.
+  - 13 grillas sin columnas de base en el celular: tres se desbordaban (el mapa, y Beneficios y Campañas del panel). El candado es `src/lib/grillas.test.ts`.
+  - Textos: se van «recicladores certificados» y «subí posiciones por sede».
 
 ---
 

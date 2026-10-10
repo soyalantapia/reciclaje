@@ -165,7 +165,7 @@ export default function CommerceLanding() {
       <section className="relative overflow-hidden bg-gradient-to-b from-eco-600 to-eco-800 text-white">
         <div className="bg-eco-grid absolute inset-0 opacity-20" />
         <Container size="wide" className="relative">
-          <div className="grid items-center gap-10 py-14 lg:grid-cols-2 lg:gap-12 lg:py-24">
+          <div className="grid grid-cols-1 items-center gap-10 py-14 lg:grid-cols-2 lg:gap-12 lg:py-24">
             <div>
               <div className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-xs font-bold backdrop-blur">
                 <Store size={14} /> Para comercios y marcas
@@ -275,7 +275,7 @@ export default function CommerceLanding() {
             Hoy fidelizar y mostrar impacto van por carriles separados. Por eso cuesta tanto.
           </p>
         </Reveal>
-        <div className="mt-8 grid gap-3 md:grid-cols-3">
+        <div className="mt-8 grid grid-cols-1 gap-3 md:grid-cols-3">
           {PROBLEMS.map((p, i) => (
             <Reveal key={p.title} delay={i * 0.05}>
               <div className="h-full rounded-2xl border border-border bg-card p-5">
@@ -306,7 +306,7 @@ export default function CommerceLanding() {
             </p>
           </Reveal>
 
-          <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {FEATURES.map((f, i) => (
               <Reveal key={f.title} delay={(i % 3) * 0.05}>
                 <div className="h-full rounded-2xl border border-border bg-card p-5">
@@ -329,7 +329,7 @@ export default function CommerceLanding() {
             <h2 className="font-extrabold [font-size:clamp(1.6rem,3vw,2.5rem)]">Cómo funciona</h2>
             <p className="mt-2 text-muted-foreground">En tres pasos, sin complicaciones.</p>
           </Reveal>
-          <div className="mt-8 grid gap-4 lg:grid-cols-3">
+          <div className="mt-8 grid grid-cols-1 gap-4 lg:grid-cols-3">
             {STEPS.map((s, i) => (
               <Reveal key={s.title} delay={i * 0.06}>
                 <div className="flex h-full items-start gap-3">
@@ -393,7 +393,7 @@ export default function CommerceLanding() {
           <h2 className="font-extrabold [font-size:clamp(1.6rem,3vw,2.5rem)]">Para tu rubro</h2>
           <p className="mt-2 text-muted-foreground">Un mismo programa, adaptado a cómo trabajás.</p>
         </Reveal>
-        <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {VERTICALS.map((v, i) => (
             <Reveal key={v.title} delay={(i % 3) * 0.05}>
               <div className="flex h-full items-start gap-3 rounded-2xl border border-border bg-card p-5">
@@ -438,7 +438,7 @@ export default function CommerceLanding() {
             <h2 className="font-extrabold [font-size:clamp(1.6rem,3vw,2.5rem)]">Planes</h2>
             <p className="mt-2 text-muted-foreground">Empezás con un punto y escalás cuando quieras.</p>
           </Reveal>
-          <div className="mt-8 grid items-start gap-4 md:grid-cols-3">
+          <div className="mt-8 grid grid-cols-1 items-start gap-4 md:grid-cols-3">
             {TIERS.map((t, i) => (
               <Reveal key={t.name} delay={i * 0.06}>
                 <div
@@ -513,7 +513,7 @@ export default function CommerceLanding() {
             <h2 className="font-extrabold [font-size:clamp(1.6rem,3vw,2.5rem)]">Preguntas frecuentes</h2>
             <p className="mt-2 text-muted-foreground">Lo que todo comercio nos pregunta antes de empezar.</p>
           </Reveal>
-          <div className="mt-8 grid gap-2 lg:grid-cols-2 lg:items-start lg:gap-3">
+          <div className="mt-8 grid grid-cols-1 gap-2 lg:grid-cols-2 lg:items-start lg:gap-3">
             {FAQS.map((f) => (
               <details key={f.q} className="group rounded-2xl border border-border bg-card p-4">
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-3 font-bold [&::-webkit-details-marker]:hidden">

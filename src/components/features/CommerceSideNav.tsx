@@ -11,6 +11,7 @@ import {
 import { useSessionStore } from '@/store/session'
 import { cn } from '@/lib/utils'
 import { ESCENARIO, muestraPrecios, type Escenario } from '@/lib/escenario'
+import { vocabularioDelPanel } from '@/lib/vocabulario'
 
 export const COMMERCE_NAV = [
   { to: '/comercio', label: 'Resumen', end: true, icon: LayoutDashboard },
@@ -31,7 +32,7 @@ export function navDelPanel(escenario: Escenario = ESCENARIO) {
 
 /** Cómo se llama el panel: un club o un estadio no son un comercio. */
 export function etiquetaDelPanel(category?: string): string {
-  return category === 'club' || category === 'estadio' ? 'Panel de la institución' : 'Panel del comercio'
+  return vocabularioDelPanel(category).panel
 }
 
 /**

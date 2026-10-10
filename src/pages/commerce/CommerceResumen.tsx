@@ -7,6 +7,8 @@ import { useApi } from '@/hooks/useApi'
 import { useSessionStore } from '@/store/session'
 import { useCreatedCommerceStore } from '@/store/createdCommerce'
 import { metricsFor } from '@/lib/metrics'
+import { posicionEnLaRed, textoDePosicion } from '@/lib/posicionEnLaRed'
+import { vocabularioDelPanel } from '@/lib/vocabulario'
 import { downloadBlob, formatNumber } from '@/lib/utils'
 import { StatCard } from '@/components/features/StatCard'
 import { HuellaVerde } from '@/components/features/HuellaVerde'
@@ -24,6 +26,8 @@ export default function CommerceResumen() {
   const createdCommerce = useCreatedCommerceStore((s) => s.commerce)
   const createdPoint = useCreatedCommerceStore((s) => s.point)
   const { data: points, loading, error, reload } = useApi(() => api.getPoints(), [])
+  const { data: red } = useApi(() => api.getSponsors(), [])
+  const v = vocabularioDelPanel(commerce?.category)
 
   const m = useMemo(() => {
     if (!commerce || !points) return null
@@ -77,11 +81,11 @@ export default function CommerceResumen() {
         </div>
         <Progress value={m.greenScore} className="mt-3" />
         <p className="mt-2 text-xs font-semibold text-eco-700 dark:text-eco-300">
-          Top 12% de la red 🌎
+          {red && textoDePosicion(posicionEnLaRed(commerce.id, m.greenScore, red))}
         </p>
         <p className="mt-2 text-xs text-muted-foreground">
           Cómo subirla: sumá puntos de reciclaje, publicá beneficios y mantené tus puntos activos.
-          Descargá la placa para tu vidriera y redes.
+          Descargá la placa para {v.dondeVaLaPlaca}.
         </p>
       </div>
 
@@ -105,7 +109,7 @@ export default function CommerceResumen() {
           icon={Coins}
           label="XP emitidos"
           value={formatNumber(m.xpEmitted)}
-          hint="XP por canjear de tus clientes"
+          hint={`XP por canjear de ${v.comunidad}`}
           tooltip="XP que entregaste; representan beneficios que tu comunidad puede canjear."
         />
         <StatCard
@@ -128,7 +132,7 @@ export default function CommerceResumen() {
         />
       </div>
 
-      <div className="grid gap-5 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
       {/* Aportes por mes */}
       <div className="rounded-2xl border border-border bg-card p-5">
         <p className="mb-4 font-bold">Aportes por mes</p>

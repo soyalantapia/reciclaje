@@ -6,6 +6,7 @@ import { useApi } from '@/hooks/useApi'
 import { useSessionStore } from '@/store/session'
 import { useCreatedCommerceStore } from '@/store/createdCommerce'
 import { pointDeepLink } from '@/lib/utils'
+import { vocabularioDelPanel } from '@/lib/vocabulario'
 import { downloadQrPng, printQr } from '@/lib/qr'
 import { QrImage } from '@/components/features/QrImage'
 import { ErrorState } from '@/components/features/ErrorState'
@@ -35,7 +36,7 @@ export default function CommercePoints() {
       <div>
         <h1 className="text-2xl font-extrabold leading-tight">Puntos / QR</h1>
         <p className="text-sm text-muted-foreground">
-          El QR de cada uno de tus puntos. Descargalo o imprimilo para el local.
+          El QR de cada uno de tus puntos. Descargalo o imprimilo para {vocabularioDelPanel(commerce?.category).dondeVaElQr}.
         </p>
       </div>
 
@@ -53,7 +54,7 @@ export default function CommercePoints() {
           </p>
         </div>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {mine.map((p) => {
           const link = pointDeepLink(p.id)
           return (

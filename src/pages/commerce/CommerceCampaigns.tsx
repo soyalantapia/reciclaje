@@ -3,6 +3,10 @@ import { toast } from 'sonner'
 import { Pause, Play, Plus, Target, Trash2, Trophy, Zap, type LucideIcon } from 'lucide-react'
 import { useSessionStore } from '@/store/session'
 import { useCommerceCampaignsStore } from '@/store/commerceCampaigns'
+import { api } from '@/services/api'
+import { useApi } from '@/hooks/useApi'
+import { RANKING_TABS } from '@/lib/escenario'
+import { campanasDelPanel, idDelPremio } from '@/lib/campanasDeLaRed'
 import type { CampaignKind } from '@/types'
 import { cn, shortCode } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
@@ -28,6 +32,15 @@ export default function CommerceCampaigns() {
   const add = useCommerceCampaignsStore((s) => s.add)
   const remove = useCommerceCampaignsStore((s) => s.remove)
   const toggle = useCommerceCampaignsStore((s) => s.toggle)
+  const pausedIds = useCommerceCampaignsStore((s) => s.pausedIds)
+  const togglePause = useCommerceCampaignsStore((s) => s.togglePause)
+
+  // La pestaña del ranking donde la comunidad ve las campañas de este comercio o institución.
+  const pestana = RANKING_TABS.find((t) => t.sponsorId && t.sponsorId === commerce?.id)
+  const { data: ranking } = useApi(
+    () => (pestana ? api.getRanking(pestana.value) : Promise.resolve(null)),
+    [pestana?.value],
+  )
 
   const [open, setOpen] = useState(false)
   const [kind, setKind] = useState<CampaignKind>('premio')
@@ -37,7 +50,8 @@ export default function CommerceCampaigns() {
 
   if (!commerce) return null
 
-  const mine = campaigns.filter((c) => c.sponsorId === commerce.id)
+  // Las propias y, si lo tiene, el premio del mes que la comunidad ya ve en el ranking.
+  const mine = campanasDelPanel(commerce.id, campaigns, ranking?.prize, pausedIds)
 
   function create() {
     if (!title.trim()) return toast.error('Poné un título a la campaña')
@@ -46,7 +60,7 @@ export default function CommerceCampaigns() {
       sponsorId: commerce!.id,
       kind,
       title: title.trim(),
-      detail: detail.trim() || 'Campaña del comercio',
+      detail: detail.trim() || `Campaña de ${commerce!.name}`,
       reward: reward.trim() || 'Premio a definir',
       active: true,
       createdAt: new Date().toISOString(),
@@ -65,16 +79,22 @@ export default function CommerceCampaigns() {
         <div>
           <h1 className="text-2xl font-extrabold leading-tight">Campañas</h1>
           <p className="text-sm text-muted-foreground">Premios del mes y desafíos.</p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            {pestana
+              ? `Tu comunidad las ve en la app, en Ranking → ${pestana.label}.`
+              : 'En la demo, la app todavía no muestra las campañas de los comercios sin ranking propio.'}
+          </p>
         </div>
         <Button size="sm" onClick={() => setOpen(true)}>
           <Plus size={16} /> Crear
         </Button>
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
       {mine.map((c) => {
         const k = KIND_MAP[c.kind]
         const Icon = k.icon
+        const delSimulador = c.id === idDelPremio(commerce.id)
         return (
           <div
             key={c.id}
@@ -90,6 +110,7 @@ export default function CommerceCampaigns() {
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
                   <p className="truncate font-bold leading-tight">{c.title}</p>
+                  {!delSimulador && <Badge variant="eco">Tuya</Badge>}
                   {c.active ? (
                     <Badge variant="success">Activa</Badge>
                   ) : (
@@ -98,13 +119,19 @@ export default function CommerceCampaigns() {
                 </div>
                 <p className="text-xs font-semibold text-muted-foreground">{k.label}</p>
                 <p className="mt-1 text-sm text-muted-foreground">{c.detail}</p>
-                <p className="mt-1 text-sm font-semibold text-eco-700 dark:text-eco-300">
-                  🎁 {c.reward}
-                </p>
+                {c.reward !== c.title && (
+                  <p className="mt-1 text-sm font-semibold text-eco-700 dark:text-eco-300">
+                    🎁 {c.reward}
+                  </p>
+                )}
               </div>
             </div>
             <div className="mt-3 flex gap-2">
-              <Button size="sm" variant="secondary" onClick={() => toggle(c.id)}>
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={() => (delSimulador ? togglePause(c.id) : toggle(c.id))}
+              >
                 {c.active ? (
                   <>
                     <Pause size={14} /> Pausar
@@ -115,9 +142,11 @@ export default function CommerceCampaigns() {
                   </>
                 )}
               </Button>
-              <Button size="sm" variant="ghost" className="text-danger" onClick={() => remove(c.id)}>
-                <Trash2 size={14} /> Eliminar
-              </Button>
+              {!delSimulador && (
+                <Button size="sm" variant="ghost" className="text-danger" onClick={() => remove(c.id)}>
+                  <Trash2 size={14} /> Eliminar
+                </Button>
+              )}
             </div>
           </div>
         )
