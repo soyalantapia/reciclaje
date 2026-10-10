@@ -108,7 +108,7 @@ export default function Home() {
               <div className="flex-1">
                 <p className="font-bold">Marcas de la red</p>
                 <p className="text-xs text-muted-foreground">
-                  Coca-Cola, McDonald's, Starbucks y más, con su Huella Verde
+                  Empresas y comercios de la red, con su Huella Verde
                 </p>
               </div>
               <ChevronRight size={20} className="text-muted-foreground" />
