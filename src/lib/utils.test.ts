@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { cn, formatNumber, formatXp, parsePointFromQr, pct, shortCode } from './utils'
+import { cn, formatDate, formatNumber, formatXp, parsePointFromQr, pct, shortCode } from './utils'
 
 describe('pct', () => {
   it('calcula porcentaje redondeado', () => {
@@ -44,5 +44,18 @@ describe('parsePointFromQr', () => {
   })
   it('devuelve null si no reconoce', () => {
     expect(parsePointFromQr('hola mundo')).toBeNull()
+  })
+})
+
+describe('formatDate', () => {
+  it('una fecha sola (AAAA-MM-DD) se muestra ese mismo día, sin correrse por el huso horario', () => {
+    const antes = process.env.TZ
+    process.env.TZ = 'America/Argentina/Cordoba'
+    try {
+      expect(formatDate('2026-10-04')).toMatch(/^04\b/)
+    } finally {
+      if (antes === undefined) delete process.env.TZ
+      else process.env.TZ = antes
+    }
   })
 })
