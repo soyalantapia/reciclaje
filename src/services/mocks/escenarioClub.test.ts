@@ -26,6 +26,35 @@ describe('el club de las demos es Talleres', () => {
   })
 })
 
+describe('Talleres dice lo mismo en las dos demos', () => {
+  // La demo general está en la dirección corta (reciclaxp.xnod.tech): si alguien del club entra
+  // ahí, tiene que ver el mismo Talleres que en /club, no otro con máquinas y al 62 %.
+  const enLaDelClub = datosDelClub(datosGenerales, { nombre: 'Talleres', estadio: 'Estadio', sede: 'Sede social' })
+  const bancoGeneral = datosGenerales.projects.find((p) => p.sponsorId === 's_talleres')!
+  const bancoDelClub = enLaDelClub.projects[0]
+  const lo = (p: typeof bancoGeneral) => [p.title, p.goalUnits, p.collectedUnits, p.myContributionUnits, p.estimatedDate]
+
+  it('el banco de suplentes tiene la misma meta, el mismo avance y la misma fecha', () => {
+    expect(lo(bancoGeneral)).toEqual(lo(bancoDelClub))
+  })
+
+  it('el club, sus puntos y su traza son los del piloto: Punto R, sin máquinas ni sensores', () => {
+    const talleres = datosGenerales.sponsors.find((s) => s.id === 's_talleres')!
+    expect([talleres.greenScore, talleres.kgRecovered]).toEqual([enLaDelClub.sponsors[0].greenScore, enLaDelClub.sponsors[0].kgRecovered])
+    const puntos = datosGenerales.points.filter((p) => p.sponsorId === 's_talleres')
+    expect(puntos.map((p) => p.name)).toEqual(['Punto R · Estadio', 'Punto R · Sede social'])
+    expect(JSON.stringify(datosGenerales.traceByProject[bancoGeneral.id])).not.toMatch(/IoT|Sensor|Máquina|máquina/)
+  })
+
+  it('el panel de Talleres calcula como el del club (sin métricas cargadas a mano que lo contradigan)', () => {
+    expect(datosGenerales.sponsorMetrics.s_talleres).toBeUndefined()
+  })
+
+  it('el QR del estadio de Talleres conserva su id', () => {
+    expect(datosGenerales.points.some((p) => p.id === 'p_talleres_estadio')).toBe(true)
+  })
+})
+
 describe('la demo del club no muestra marcas reales como aliadas', () => {
   it('ninguna marca real de la demo general aparece en la del club, tampoco en la pestaña del ranking', () => {
     expect(JSON.stringify(club)).not.toMatch(/YPF|Coca-Cola|McDonald|Starbucks|Adidas|Grido/)
@@ -144,6 +173,7 @@ describe('fechas estimadas', () => {
 describe('demo general', () => {
   it('queda igual: sigue teniendo su club de ejemplo y sus pestañas de ranking', () => {
     expect(datosGenerales.sponsors.some((s) => s.slug === 'talleres')).toBe(true)
-    expect(Object.keys(datosGenerales.rankings)).toEqual(['global', 'talleres', 'ypf'])
+    // El orden de las pestañas sale de pestanasDelRanking; acá importa que estén las tres.
+    expect(Object.keys(datosGenerales.rankings).sort()).toEqual(['global', 'talleres', 'ypf'])
   })
 })

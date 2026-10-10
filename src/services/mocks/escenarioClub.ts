@@ -68,17 +68,36 @@ const ID_PRODUCTO = 'pr_banco_club'
 /** Verde de ReciclaXP: los colores y el escudo del club no se usan sin su permiso escrito. */
 const COLOR_CLUB = '#059669'
 
+/** Los ids con que el caso del club entra en una demo. */
+export interface IdsDelCaso {
+  sponsor: string
+  slug: string
+  /** Prefijo de los ids de los puntos y las recompensas: `p_<prefijo>_estadio`, `b_<prefijo>_entrada`. */
+  prefijo: string
+  producto: string
+}
+
+const IDS_DEMO_DEL_CLUB: IdsDelCaso = { sponsor: ID_CLUB, slug: 'club', prefijo: 'club', producto: ID_PRODUCTO }
+
+/** Talleres en la demo general: el mismo caso, con sus ids de siempre (el QR del estadio es `p_talleres_estadio`). */
+export const IDS_DE_TALLERES: IdsDelCaso = {
+  sponsor: CLUB_DE_EJEMPLO,
+  slug: 'talleres',
+  prefijo: 'talleres',
+  producto: 'pr_banco_talleres',
+}
+
 /**
- * Escenario del caso club para la reunión del piloto: «el club» reemplaza al club de ejemplo,
- * con dos Punto R, un producto con meta (el banco de suplentes), la trazabilidad tal como
- * funcionaría en el piloto (el club pesa el lote de cada partido), sus recompensas y el ranking
- * de la hinchada. Todos los números son de ejemplo y la app lo rotula en cada pantalla.
+ * El caso del club: el club con sus dos Punto R, el banco de suplentes con meta, la traza tal como
+ * funcionaría en el piloto (el club pesa el lote de cada partido), las recompensas, el aporte de la
+ * persona, el ranking de la hinchada y su premio. Es el mismo en las dos demos: antes la general
+ * tenía otro Talleres, con máquinas en el estadio, sensores y el banco al 62 %.
  */
-export function datosDelClub(base: DatosDemo, club: DatosDelClub): DatosDemo {
+export function casoDelClub(base: DatosDemo, club: DatosDelClub, ids: IdsDelCaso) {
   const sponsor: Sponsor = {
-    id: ID_CLUB,
+    id: ids.sponsor,
     name: club.nombre,
-    slug: 'club',
+    slug: ids.slug,
     category: 'club',
     brandColor: COLOR_CLUB,
     tagline: 'Reciclá con tu club',
@@ -88,9 +107,9 @@ export function datosDelClub(base: DatosDemo, club: DatosDelClub): DatosDemo {
 
   const puntos: RecyclePoint[] = [
     {
-      id: 'p_club_estadio',
+      id: `p_${ids.prefijo}_estadio`,
       name: `Punto R · ${club.estadio}`,
-      sponsorId: ID_CLUB,
+      sponsorId: ids.sponsor,
       type: 'deposito',
       address: 'Ingreso principal, en días de partido',
       city: 'Córdoba',
@@ -100,9 +119,9 @@ export function datosDelClub(base: DatosDemo, club: DatosDelClub): DatosDemo {
       openNow: true,
     },
     {
-      id: 'p_club_sede',
+      id: `p_${ids.prefijo}_sede`,
       name: `Punto R · ${club.sede}`,
-      sponsorId: ID_CLUB,
+      sponsorId: ids.sponsor,
       type: 'deposito',
       address: 'Hall de entrada',
       city: 'Córdoba',
@@ -114,9 +133,9 @@ export function datosDelClub(base: DatosDemo, club: DatosDelClub): DatosDemo {
   ]
 
   const producto: ImpactProject = {
-    id: ID_PRODUCTO,
+    id: ids.producto,
     title: 'Banco de suplentes con el plástico de la hinchada',
-    sponsorId: ID_CLUB,
+    sponsorId: ids.sponsor,
     sponsorName: club.nombre,
     description: `Cada tapita que la hinchada deja en los Punto R de ${club.nombre} se vuelve plástico para un banco de suplentes nuevo. Cuando lleguemos a la meta, se fabrica y se instala.`,
     material: 'tapitas',
@@ -197,9 +216,9 @@ export function datosDelClub(base: DatosDemo, club: DatosDelClub): DatosDemo {
 
   const recompensas: Benefit[] = [
     {
-      id: 'b_club_entrada',
+      id: `b_${ids.prefijo}_entrada`,
       title: 'Entrada para un partido de local',
-      sponsorId: ID_CLUB,
+      sponsorId: ids.sponsor,
       sponsorName: club.nombre,
       category: 'entrada',
       costXp: 8000,
@@ -210,9 +229,9 @@ export function datosDelClub(base: DatosDemo, club: DatosDelClub): DatosDemo {
       emoji: '🎟️',
     },
     {
-      id: 'b_club_camiseta',
+      id: `b_${ids.prefijo}_camiseta`,
       title: 'Camiseta oficial',
-      sponsorId: ID_CLUB,
+      sponsorId: ids.sponsor,
       sponsorName: club.nombre,
       category: 'merch',
       costXp: 9000,
@@ -223,9 +242,9 @@ export function datosDelClub(base: DatosDemo, club: DatosDelClub): DatosDemo {
       emoji: '👕',
     },
     {
-      id: 'b_club_entrenamiento',
+      id: `b_${ids.prefijo}_entrenamiento`,
       title: 'Ver un entrenamiento del plantel',
-      sponsorId: ID_CLUB,
+      sponsorId: ids.sponsor,
       sponsorName: club.nombre,
       category: 'experiencia',
       costXp: 6000,
@@ -235,9 +254,9 @@ export function datosDelClub(base: DatosDemo, club: DatosDelClub): DatosDemo {
       emoji: '⚽',
     },
     {
-      id: 'b_club_visita',
+      id: `b_${ids.prefijo}_visita`,
       title: 'Visita guiada al estadio',
-      sponsorId: ID_CLUB,
+      sponsorId: ids.sponsor,
       sponsorName: club.nombre,
       category: 'experiencia',
       costXp: 1500,
@@ -249,16 +268,16 @@ export function datosDelClub(base: DatosDemo, club: DatosDelClub): DatosDemo {
   ]
 
   const aporte: Contribution = {
-    id: 'c_club_1',
+    id: `c_${ids.prefijo}_1`,
     userId: base.currentUser.id,
-    pointId: 'p_club_estadio',
+    pointId: `p_${ids.prefijo}_estadio`,
     pointName: `Punto R · ${club.estadio}`,
-    sponsorId: ID_CLUB,
+    sponsorId: ids.sponsor,
     sponsorName: club.nombre,
     material: 'tapitas',
     units: 640,
     xpEarned: 1280,
-    projectId: ID_PRODUCTO,
+    projectId: ids.producto,
     status: 'pendiente',
     createdAt: '2026-10-04T19:30:00-03:00',
   }
@@ -279,12 +298,28 @@ export function datosDelClub(base: DatosDemo, club: DatosDelClub): DatosDemo {
   ]
 
   const premioDelClub: MonthlyPrize = {
-    sponsorId: ID_CLUB,
+    sponsorId: ids.sponsor,
     sponsorName: club.nombre,
     title: 'Experiencia banco de suplentes',
     description: 'Quien más aporte al banco de suplentes este mes vive un partido de local desde el banco.',
     emoji: '🏟️',
   }
+
+  return { sponsor, puntos, producto, traza, recompensas, aporte, hinchada, premio: premioDelClub }
+}
+
+/**
+ * Escenario del caso club para la reunión del piloto: «el club» reemplaza al club de ejemplo,
+ * con dos Punto R, un producto con meta (el banco de suplentes), la trazabilidad tal como
+ * funcionaría en el piloto (el club pesa el lote de cada partido), sus recompensas y el ranking
+ * de la hinchada. Todos los números son de ejemplo y la app lo rotula en cada pantalla.
+ */
+export function datosDelClub(base: DatosDemo, club: DatosDelClub): DatosDemo {
+  const { sponsor, puntos, producto, traza, recompensas, aporte, hinchada, premio: premioDelClub } = casoDelClub(
+    base,
+    club,
+    IDS_DEMO_DEL_CLUB,
+  )
 
   const sinLosQueNoVan = <T extends { sponsorId: string }>(lista: T[]) =>
     lista.filter((x) => !NO_VAN.has(x.sponsorId))
@@ -330,4 +365,31 @@ export function datosDelClub(base: DatosDemo, club: DatosDelClub): DatosDemo {
     sponsorMetrics: metricas,
     causes: base.causes,
   })
+}
+
+/**
+ * Una demo con el caso del club en lugar de lo que tenía ese sponsor: sus puntos, su proyecto y su
+ * traza, sus beneficios, el aporte de la persona, la pestaña del ranking y el premio. Las métricas
+ * cargadas a mano se van, así el panel calcula igual que en la demo del club.
+ */
+export function conElCasoDelClub(base: DatosDemo, club: DatosDelClub, ids: IdsDelCaso, pestana: string): DatosDemo {
+  const caso = casoDelClub(base, club, ids)
+  const sinLoDeAntes = <T extends { sponsorId: string }>(lista: T[]) => lista.filter((x) => x.sponsorId !== ids.sponsor)
+  const traceByProject = { ...base.traceByProject }
+  for (const p of base.projects) if (p.sponsorId === ids.sponsor) delete traceByProject[p.id]
+  const sponsorMetrics = { ...base.sponsorMetrics }
+  delete sponsorMetrics[ids.sponsor]
+  const yaEstaba = base.sponsors.some((s) => s.id === ids.sponsor)
+  return {
+    ...base,
+    sponsors: yaEstaba ? base.sponsors.map((s) => (s.id === ids.sponsor ? caso.sponsor : s)) : [...base.sponsors, caso.sponsor],
+    points: [...caso.puntos, ...sinLoDeAntes(base.points)],
+    projects: [caso.producto, ...sinLoDeAntes(base.projects)],
+    traceByProject: { ...traceByProject, [ids.producto]: caso.traza },
+    benefits: [...caso.recompensas, ...sinLoDeAntes(base.benefits)],
+    contributions: [caso.aporte, ...sinLoDeAntes(base.contributions)],
+    rankings: { ...base.rankings, [pestana]: caso.hinchada },
+    prizes: { ...base.prizes, [pestana]: caso.premio },
+    sponsorMetrics,
+  }
 }

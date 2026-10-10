@@ -155,6 +155,9 @@ WhatsApp del proyecto y de la reunión del 03/08 (acta en `docs/producto/reunion
   - los ids no cambian;
   - la demo general sigue igual;
   - el inicio ya no nombra marcas.
+- Rama `fix/talleres-igual-en-las-dos-demos`: la demo general, la de la dirección corta, tenía otro Talleres, con «Máquinas del estadio», «Validación automática · Sensor IoT» y el banco al 62 % (312.400 de 500.000).
+  - Ahora las dos demos usan el mismo caso: `casoDelClub` y `conElCasoDelClub` en `src/services/mocks/escenarioClub.ts`.
+  - Se sacaron de `data.ts` los bloques del Talleres viejo.
 
 ---
 
