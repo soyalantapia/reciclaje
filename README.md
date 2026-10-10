@@ -76,20 +76,44 @@ y las recompensas del club. El club de ejemplo de la demo general no aparece.
 
 ## Deploy en Railway (reciclaxp.xnod.tech)
 
-El proyecto **reciclaXP** de Railway tiene un servicio (`web`) conectado a este repo: cada push a
-`main` se publica solo.
+El proyecto **reciclaXP** de Railway (workspace «Ticketera») tiene un solo servicio, `web`.
 
 - **Build:** `npm run build:railway` compila dos veces el mismo código: la app general en `dist/` (base `/`) y el caso club en `dist/club/` (base `/club/`).
 - **Arranque:** `node server.mjs`, un servidor estático sin dependencias (`server/estatico.mjs`):
   - cada app cae en su `index.html`;
   - los archivos con hash van con caché larga y el HTML y los service workers, sin caché;
   - un archivo que no existe da 404;
-  - el chequeo de salud está en `/healthz`.
+  - el chequeo de salud está en `/healthz`;
+  - **si falta el `index.html` de alguna de las dos apps, no arranca**: el chequeo de salud falla y Railway deja el deploy anterior en pie.
 - **Direcciones:**
-  - app general: https://reciclaxp.xnod.tech
-  - caso club: https://reciclaxp.xnod.tech/club
+  - app general: https://reciclaxp.xnod.tech (y https://web-production-781cc.up.railway.app mientras tanto);
+  - caso club: https://reciclaxp.xnod.tech/club.
 
-La configuración está en `railway.json`. GitHub Pages (abajo) sigue funcionando igual.
+**La configuración vive en el servicio, no sólo en `railway.json`.** El 10/10/2026 `railway up` no aplicó
+el `railway.json` (el deploy registró `fileServiceManifest: {}`), corrió `npm run build` a secas y `/club/`
+quedó en 502 con el chequeo de salud en verde. Desde entonces el comando de build, el de arranque y el
+chequeo de salud están cargados en el servicio (Settings). `railway.json` repite los mismos valores: si
+cambiás uno, cambiá los dos.
+
+**Cómo se publica hoy:** desde un checkout limpio de `origin/main`, con el CLI vinculado al servicio:
+
+```bash
+railway link --project d5c0ac8a-d08d-4f71-9c5a-cdb94ab0b2c8 --environment production --service web
+railway up --ci --service web
+```
+
+Todavía **no** se publica solo con cada push: la app de GitHub de Railway no tiene acceso a
+`soyalantapia/reciclaje`. Para tenerlo, hay que darle acceso al repo desde GitHub y después conectar el
+servicio a `main` en Railway (Settings → Source).
+
+**DNS de `reciclaxp.xnod.tech`** (Cloudflare, zona `xnod.tech`, igual que `crm.xnod.tech`):
+
+| Tipo | Nombre | Valor | Proxy |
+|---|---|---|---|
+| CNAME | `reciclaxp` | `dls0s0z4.up.railway.app` | apagado (sólo DNS) |
+| TXT | `_railway-verify.reciclaxp` | el token que muestra Railway en el dominio | — |
+
+GitHub Pages (abajo) sigue funcionando igual.
 
 ## Deploy (GitHub Pages)
 

@@ -18,8 +18,10 @@
   en https://soyalantapia.github.io/reciclaje-club/ con el nombre genérico «Tu club». El nombre
   real del club va en `.env.local` y no se publica sin su permiso escrito.
 - **Regla de honestidad aplicada**: todas las pantallas dicen que los números son de ejemplo.
-- **Railway**: proyecto «reciclaXP», servicio `web` conectado a `main`, en https://reciclaxp.xnod.tech
-  (app general) y https://reciclaxp.xnod.tech/club (caso club). Ver README, «Deploy en Railway».
+- **Railway**: proyecto «reciclaXP», servicio `web`, publicado a mano con `railway up` desde `origin/main`
+  (no se publica solo: Railway no tiene acceso al repo). Funciona en
+  https://web-production-781cc.up.railway.app y en `/club/`; https://reciclaxp.xnod.tech queda andando
+  cuando estén los dos registros en Cloudflare (CNAME y TXT). Ver README, «Deploy en Railway».
 
 ### Pendientes nuevos (orden del plan)
 1. Página de posición y tabla única de precios (socios, antes de la reunión).
@@ -27,6 +29,8 @@
 3. Si el club firma: backend del piloto (E1.1) como primer entregable, después pesaje y producto
    del club. **No construir el backend antes de firmar.**
 4. La landing de comercios todavía afirma «RSE verificable» y «en vivo»: rotular o cambiar.
+5. DNS de `reciclaxp.xnod.tech` en Cloudflare (CNAME y TXT, valores en el README) y acceso de la app de
+   GitHub de Railway al repo, para que cada push a `main` se publique solo.
 
 ---
 
