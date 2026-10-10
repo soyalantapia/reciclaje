@@ -18,6 +18,8 @@
   en https://soyalantapia.github.io/reciclaje-club/ con el nombre genérico «Tu club». El nombre
   real del club va en `.env.local` y no se publica sin su permiso escrito.
 - **Regla de honestidad aplicada**: todas las pantallas dicen que los números son de ejemplo.
+- **Railway**: proyecto «reciclaXP», servicio `web` conectado a `main`, en https://reciclaxp.xnod.tech
+  (app general) y https://reciclaxp.xnod.tech/club (caso club). Ver README, «Deploy en Railway».
 
 ### Pendientes nuevos (orden del plan)
 1. Página de posición y tabla única de precios (socios, antes de la reunión).

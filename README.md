@@ -74,6 +74,23 @@ y las recompensas del club. El club de ejemplo de la demo general no aparece.
 - **Perfil + Premium** (mejores canjes, transferencia de XP).
 - **Panel B2B** (`/empresas`): KPIs, aportes por mes y por punto.
 
+## Deploy en Railway (reciclaxp.xnod.tech)
+
+El proyecto **reciclaXP** de Railway tiene un servicio (`web`) conectado a este repo: cada push a
+`main` se publica solo.
+
+- **Build:** `npm run build:railway` compila dos veces el mismo código: la app general en `dist/` (base `/`) y el caso club en `dist/club/` (base `/club/`).
+- **Arranque:** `node server.mjs`, un servidor estático sin dependencias (`server/estatico.mjs`):
+  - cada app cae en su `index.html`;
+  - los archivos con hash van con caché larga y el HTML y los service workers, sin caché;
+  - un archivo que no existe da 404;
+  - el chequeo de salud está en `/healthz`.
+- **Direcciones:**
+  - app general: https://reciclaxp.xnod.tech
+  - caso club: https://reciclaxp.xnod.tech/club
+
+La configuración está en `railway.json`. GitHub Pages (abajo) sigue funcionando igual.
+
 ## Deploy (GitHub Pages)
 
 El `base` de Vite es `/reciclaje/`. Para publicar:

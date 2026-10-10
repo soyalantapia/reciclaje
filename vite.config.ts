@@ -7,7 +7,8 @@ import path from 'path'
 // En GitHub Pages el sitio vive bajo /reciclaje/. En dev, bajo /.
 // RECICLAXP_BASE la cambia para publicar en otra dirección (el escenario club va en
 // /reciclaje-club/, otro repo): así no pisa la demo vigente ni comparte su service worker.
-// Tiene que ser un solo segmento, porque public/404.html conserva uno (pathSegmentsToKeep = 1).
+// En GitHub Pages tiene que ser un solo segmento: public/404.html conserva uno (pathSegmentsToKeep = 1).
+// En Railway se usa «/» (app general) y «/club/» (caso club), servidos por server.mjs.
 const BASE = process.env.RECICLAXP_BASE || '/reciclaje/'
 
 export default defineConfig(({ command }) => ({
