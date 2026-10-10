@@ -115,6 +115,9 @@ WhatsApp del proyecto y de la reunión del 03/08 (acta en `docs/producto/reunion
   «en vivo», «tiempo real», «auditoría» y el multiplicador; un candado de render lo vigila.
 - Rama `ci/railway-publica-desde-main`: cada push a `main` corre tipos, pruebas y build en GitHub Actions
   y, si pasa, publica en Railway con un token del proyecto (secreto `RAILWAY_TOKEN`).
+- Rama `fix/aporte-suma-al-proyecto`: un aporte registrado en la demo ahora mueve el proyecto (total, «tu
+  aporte» y la fila de la persona entre los que más aportan). Antes la pantalla de éxito decía que sumaba y
+  el proyecto seguía igual; se notó recorriendo en celular el link que se le mandó al socio de ventas.
 
 ---
 
