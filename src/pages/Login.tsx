@@ -12,6 +12,7 @@ import { Logo } from '@/components/features/Logo'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { vocabularioDelEscenario } from '@/lib/vocabulario'
 
 const schema = z.object({
   email: z.string().email('Ingresá un email válido'),
@@ -121,7 +122,7 @@ export default function Login() {
 
         <div className="mt-5 border-t border-border pt-4 text-center">
           <Link to="/comercio/login" className="text-sm font-semibold text-eco-700 dark:text-eco-300">
-            🏪 ¿Sos comercio? Ingresá a tu panel →
+            {vocabularioDelEscenario().accesoAlPanel}
           </Link>
         </div>
       </div>

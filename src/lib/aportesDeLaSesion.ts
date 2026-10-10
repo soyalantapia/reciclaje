@@ -1,4 +1,4 @@
-import type { ActivityItem, Contribution, ImpactProject, RankingEntry, TraceEvent } from '@/types'
+import type { ActivityItem, Contribution, Coupon, ImpactProject, RankingEntry, SponsorMetrics, TraceEvent } from '@/types'
 
 /** «Camila Ríos» → «Camila R.», como figura la persona en los rankings y entre los que más aportan. */
 export function nombreCorto(nombre: string): string {
@@ -93,4 +93,44 @@ export function conAporteDeLaSesionEnLaTraza(
       ? { ...e, detail: `${ultimo.units ?? 0} ${project.unitLabel} en ${ultimo.pointName}.`, date: fechaLocal(ultimo.createdAt), done: true }
       : e,
   )
+}
+
+/** Tapitas por kilo: la misma cuenta que usa `metricsFor` (`capsRecovered = kg × 238`). */
+const TAPITAS_POR_KILO = 238
+
+/**
+ * Las métricas del panel con lo que la hinchada hizo en esta sesión: la cuarta gemela. El hincha
+ * aportaba, veía el banco en 42.890 y, en el mismo navegador, el panel del club seguía en 42.840
+ * con los mismos aportes; un canje de un beneficio del club tampoco movía «Beneficios canjeados».
+ * Suma los aportes de ese sponsor (con su punto y su mes), el XP de aportes y compras, y los
+ * canjes de sus beneficios. Los usuarios activos no cambian: la persona ya estaba contada.
+ */
+export function metricasConLaSesion(
+  m: SponsorMetrics,
+  actividad: ActivityItem[],
+  cupones: Coupon[],
+  hoy: Date = new Date(),
+): SponsorMetrics {
+  const delSponsor = actividad.filter((i) => i.sponsorId === m.sponsorId)
+  const aportes = delSponsor.filter(esAporte)
+  const canjes = cupones.filter((c) => c.sponsorName === m.sponsorName).length
+  if (delSponsor.length === 0 && canjes === 0) return m
+
+  const tapitas = aportes.filter((c) => c.material === 'tapitas').reduce((t, c) => t + (c.units ?? 0), 0)
+  const kilos = aportes.reduce((t, c) => t + (c.weightKg ?? 0), 0) + tapitas / TAPITAS_POR_KILO
+  const delMes = aportes.filter((c) => mismoMes(c.createdAt, hoy)).length
+  const porPunto = (punto: string) => aportes.filter((c) => c.pointName === punto).length
+
+  return {
+    ...m,
+    contributions: m.contributions + aportes.length,
+    xpEmitted: m.xpEmitted + delSponsor.reduce((t, i) => t + i.xpEarned, 0),
+    benefitsRedeemed: m.benefitsRedeemed + canjes,
+    kgRecovered: Math.round(m.kgRecovered + kilos),
+    capsRecovered: m.capsRecovered + tapitas,
+    monthlySeries: m.monthlySeries.map((s, i, serie) =>
+      i === serie.length - 1 ? { ...s, value: s.value + delMes } : s,
+    ),
+    byPoint: m.byPoint.map((p) => ({ ...p, contributions: p.contributions + porPunto(p.point) })),
+  }
 }

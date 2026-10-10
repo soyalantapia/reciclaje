@@ -22,6 +22,7 @@ import { Button } from '@/components/ui/button'
 import { Tabs, type TabItem } from '@/components/ui/tabs'
 import { Skeleton } from '@/components/ui/skeleton'
 import { claveDeAlmacenamiento } from '@/lib/escenario'
+import { vocabularioDelEscenario } from '@/lib/vocabulario'
 
 const PENDING_POINT_KEY = claveDeAlmacenamiento('scan-point')
 
@@ -275,7 +276,7 @@ export default function Scan() {
             to="/qr-comercios"
             className="block rounded-xl border border-dashed border-border p-3 text-center text-sm font-semibold text-eco-700 dark:text-eco-300"
           >
-            <QrCode size={15} className="mr-1 inline" /> ¿Sos comercio? Generá tu QR para probar
+            <QrCode size={15} className="mr-1 inline" /> {vocabularioDelEscenario().qrParaProbar}
           </Link>
         </>
       )}

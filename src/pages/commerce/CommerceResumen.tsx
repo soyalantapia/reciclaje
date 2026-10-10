@@ -7,6 +7,9 @@ import { useApi } from '@/hooks/useApi'
 import { useSessionStore } from '@/store/session'
 import { useCreatedCommerceStore } from '@/store/createdCommerce'
 import { metricsFor } from '@/lib/metrics'
+import { metricasConLaSesion } from '@/lib/aportesDeLaSesion'
+import { useActivityStore } from '@/store/activity'
+import { useCouponsStore } from '@/store/coupons'
 import { posicionEnLaRed, textoDePosicion } from '@/lib/posicionEnLaRed'
 import { vocabularioDelPanel } from '@/lib/vocabulario'
 import { downloadBlob, formatNumber } from '@/lib/utils'
@@ -26,14 +29,17 @@ export default function CommerceResumen() {
   const createdCommerce = useCreatedCommerceStore((s) => s.commerce)
   const createdPoint = useCreatedCommerceStore((s) => s.point)
   const { data: points, loading, error, reload } = useApi(() => api.getPoints(), [])
+  // Lo que la comunidad hizo en esta sesión (mismo navegador): aportes, XP y canjes.
+  const actividad = useActivityStore((s) => s.sessionContributions)
+  const cupones = useCouponsStore((s) => s.coupons)
   const { data: red } = useApi(() => api.getSponsors(), [])
   const v = vocabularioDelPanel(commerce?.category)
 
   const m = useMemo(() => {
     if (!commerce || !points) return null
     const extra = createdCommerce?.id === commerce.id && createdPoint ? [createdPoint] : []
-    return metricsFor(commerce, [...points, ...extra])
-  }, [commerce, points, createdCommerce, createdPoint])
+    return metricasConLaSesion(metricsFor(commerce, [...points, ...extra]), actividad, cupones)
+  }, [commerce, points, createdCommerce, createdPoint, actividad, cupones])
 
   if (!commerce) return null
 
