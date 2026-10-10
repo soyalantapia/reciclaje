@@ -14,9 +14,11 @@ import { Label } from '@/components/ui/label'
 import { OtpInput } from '@/components/ui/otp-input'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ESCENARIO, SLUG_COMERCIO_DEMO } from '@/lib/escenario'
+import { vocabularioDelEscenario } from '@/lib/vocabulario'
 
 const DEMO_CODE = '123456'
 const DEMO_EMAIL = 'demo@reciclaxp.app'
+const VOCABULARIO = vocabularioDelEscenario()
 
 export default function CommerceLogin() {
   const navigate = useNavigate()
@@ -81,7 +83,7 @@ export default function CommerceLogin() {
             <Logo />
           </div>
           <div className="mx-auto mb-3 inline-flex items-center gap-1.5 rounded-full bg-eco-100 px-3 py-1 text-xs font-bold text-eco-800 dark:bg-eco-900/40 dark:text-eco-200">
-            <Store size={14} /> Panel del comercio
+            <Store size={14} /> {VOCABULARIO.panel}
           </div>
           <h1 className="text-2xl font-extrabold leading-tight">Ingresá a tu panel</h1>
           <p className="mx-auto mt-2 max-w-xs text-sm text-muted-foreground">
@@ -102,7 +104,7 @@ export default function CommerceLogin() {
           <>
             <div className="space-y-3">
               <div>
-                <Label htmlFor="cemail">Email del comercio</Label>
+                <Label htmlFor="cemail">Email {VOCABULARIO.delQuien}</Label>
                 <Input
                   id="cemail"
                   type="email"
@@ -143,7 +145,7 @@ export default function CommerceLogin() {
 
             {/* Otros comercios de prueba */}
             <div className="mt-4">
-              <p className="mb-2 text-xs font-semibold text-muted-foreground">Otros comercios demo</p>
+              <p className="mb-2 text-xs font-semibold text-muted-foreground">{VOCABULARIO.otrosDemo}</p>
               <div className="flex flex-wrap gap-2">
                 {accounts
                   .filter((a) => a.email !== DEMO_EMAIL)
@@ -169,7 +171,7 @@ export default function CommerceLogin() {
               to="/comercio/sumate"
               className="mt-6 block rounded-xl border border-dashed border-border p-3 text-center text-sm font-semibold text-eco-700 dark:text-eco-300"
             >
-              🏪 ¿Tu comercio no está? Conocé la red y registrate →
+              {VOCABULARIO.noEsta}
             </Link>
           </>
         ) : (

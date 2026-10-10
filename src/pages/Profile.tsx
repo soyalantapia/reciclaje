@@ -21,6 +21,7 @@ import { useUiStore } from '@/store/ui'
 import { useCouponsStore } from '@/store/coupons'
 import type { Coupon } from '@/types'
 import { cn, formatDate, formatNumber } from '@/lib/utils'
+import { vocabularioDelEscenario } from '@/lib/vocabulario'
 import { Avatar } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -211,8 +212,8 @@ export default function Profile() {
           <BarChart3 size={18} />
         </span>
         <div className="flex-1">
-          <p className="font-bold">Panel del comercio</p>
-          <p className="text-xs text-muted-foreground">Gestioná tu comercio adherido (demo)</p>
+          <p className="font-bold">{vocabularioDelEscenario().panel}</p>
+          <p className="text-xs text-muted-foreground">{vocabularioDelEscenario().gestiona}</p>
         </div>
         <ChevronRight size={20} className="text-muted-foreground" />
       </Link>

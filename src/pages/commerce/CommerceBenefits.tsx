@@ -59,7 +59,7 @@ export default function CommerceBenefits() {
       category,
       costXp: cost,
       city: 'Red',
-      description: description.trim() || 'Beneficio del comercio',
+      description: description.trim() || `Beneficio de ${commerce!.name}`,
       stock: 100,
       emoji,
     })
@@ -86,7 +86,7 @@ export default function CommerceBenefits() {
 
       {loading && [0, 1].map((i) => <Skeleton key={i} className="h-24 w-full" />)}
 
-      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
       {all.map((b) => {
         const isCreated = createdMine.some((c) => c.id === b.id)
         const paused = pausedIds.includes(b.id)
