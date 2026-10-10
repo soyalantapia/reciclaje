@@ -41,7 +41,6 @@ export function claveDeAlmacenamiento(nombre: string, escenario: Escenario = ESC
   return escenario === 'club' ? `reciclaxp-club-${nombre}` : `reciclaxp-${nombre}`
 }
 
-/** Pestañas del ranking: en el club, la de la hinchada reemplaza a la del club de ejemplo. */
 /**
  * Las pestañas del ranking de cada escenario. `sponsorId` es la sede de la pestaña, para sumarle
  * sólo el XP ganado ahí (el global no tiene).

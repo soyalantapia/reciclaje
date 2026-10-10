@@ -40,7 +40,7 @@ export default function Home() {
         </h1>
       </div>
 
-      <div className="grid gap-5 lg:grid-cols-3 lg:items-start">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-3 lg:items-start">
         {/* Columna principal */}
         <div className="space-y-5 lg:col-span-2">
           <XpWallet />
@@ -134,7 +134,7 @@ export default function Home() {
       {/* Actividad reciente */}
       <div>
         <h2 className="mb-2 font-bold">Actividad reciente</h2>
-        <div className="grid gap-2 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-2 lg:grid-cols-2">
           {recent.length === 0 && (
             <p className="rounded-xl bg-muted p-4 text-center text-sm text-muted-foreground lg:col-span-2">
               Todavía no registraste aportes. ¡Escaneá tu primer QR!
