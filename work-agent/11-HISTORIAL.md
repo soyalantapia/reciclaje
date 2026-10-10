@@ -150,6 +150,11 @@ WhatsApp del proyecto y de la reunión del 03/08 (acta en `docs/producto/reunion
   - el XP de aportes y compras;
   - los canjes de sus beneficios.
 - En la demo del club, el login y la pantalla de escanear del hincha ya no dicen «¿Sos comercio?».
+- Rama `fix/demo-club-sin-marcas-reales`:
+  - en la demo del club, las marcas reales de la demo general (YPF, Coca-Cola, McDonald's, Starbucks, Adidas, Grido) pasan a nombres de ejemplo: Norte Energía, Bebidas Serranas, Burger Plaza, Café Andino, Deportiva Centro y Helados del Parque. Antes aparecían en «Marcas de la red» como si fueran aliadas;
+  - los ids no cambian;
+  - la demo general sigue igual;
+  - el inicio ya no nombra marcas.
 
 ---
 

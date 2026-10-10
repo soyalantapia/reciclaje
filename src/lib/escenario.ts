@@ -45,12 +45,18 @@ export function claveDeAlmacenamiento(nombre: string, escenario: Escenario = ESC
  * Las pestañas del ranking de cada escenario. `sponsorId` es la sede de la pestaña, para sumarle
  * sólo el XP ganado ahí (el global no tiene).
  */
+/**
+ * El nombre de ejemplo de la estación de servicio en la demo del club: ahí las marcas reales de la
+ * demo general (YPF, Coca-Cola…) van con nombres de ejemplo (ver `src/services/mocks/escenarioClub.ts`).
+ */
+export const ESTACION_DE_EJEMPLO = 'Norte Energía'
+
 export function pestanasDelRanking(escenario: Escenario = ESCENARIO): { value: string; label: string; sponsorId?: string }[] {
   return escenario === 'club'
     ? [
         { value: 'global', label: 'Global' },
         { value: 'club', label: 'Hinchada', sponsorId: 's_club' },
-        { value: 'ypf', label: 'YPF', sponsorId: 's_ypf' },
+        { value: 'ypf', label: ESTACION_DE_EJEMPLO, sponsorId: 's_ypf' },
       ]
     : [
         { value: 'global', label: 'Global' },

@@ -26,6 +26,22 @@ describe('el club de las demos es Talleres', () => {
   })
 })
 
+describe('la demo del club no muestra marcas reales como aliadas', () => {
+  it('ninguna marca real de la demo general aparece en la del club, tampoco en la pestaña del ranking', () => {
+    expect(JSON.stringify(club)).not.toMatch(/YPF|Coca-Cola|McDonald|Starbucks|Adidas|Grido/)
+    expect(pestanasDelRanking('club').map((t) => t.label).join(' ')).not.toMatch(/YPF/)
+  })
+
+  it('los ids no cambian: los QR impresos y los enlaces siguen andando', () => {
+    expect(club.points.some((p) => p.id === 'p_ypf_libertador')).toBe(true)
+    expect(club.sponsors.find((s) => s.id === 's_ypf')?.name).toBe('Norte Energía')
+  })
+
+  it('la demo general no cambia', () => {
+    expect(datosGenerales.sponsors.find((s) => s.id === 's_ypf')?.name).toBe('YPF')
+  })
+})
+
 describe('la demo del club pasa en Córdoba', () => {
   const FUERA_DE_CORDOBA = /Vicente López|Palermo|Recoleta|Lanús|Pilar|CABA|Libertador|Cabildo|Panamericana/
 

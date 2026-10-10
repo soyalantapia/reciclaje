@@ -8,7 +8,7 @@ import type {
   Sponsor,
   TraceEvent,
 } from '@/types'
-import type { DatosDelClub } from '@/lib/escenario'
+import { ESTACION_DE_EJEMPLO, type DatosDelClub } from '@/lib/escenario'
 import type { DatosDemo } from './datos'
 
 /** El club de ejemplo de la demo general: en este escenario no aparece. */
@@ -22,13 +22,35 @@ const NO_VAN = new Set([CLUB_DE_EJEMPLO, 's_muni'])
  * reciclando en Av. del Libertador. Las direcciones son de ejemplo.
  */
 const PUNTOS_EN_CORDOBA: Record<string, { name: string; address: string }> = {
-  p_ypf_libertador: { name: 'YPF Av. Colón 1500', address: 'Av. Colón 1500' },
-  p_ypf_cabildo: { name: 'YPF Av. Vélez Sarsfield 2100', address: 'Av. Vélez Sarsfield 2100' },
-  p_ypf_pana: { name: 'YPF Circunvalación', address: 'Av. Circunvalación y Av. Rafael Núñez' },
+  p_ypf_libertador: { name: `${ESTACION_DE_EJEMPLO} Av. Colón 1500`, address: 'Av. Colón 1500' },
+  p_ypf_cabildo: { name: `${ESTACION_DE_EJEMPLO} Av. Vélez Sarsfield 2100`, address: 'Av. Vélez Sarsfield 2100' },
+  p_ypf_pana: { name: `${ESTACION_DE_EJEMPLO} Circunvalación`, address: 'Av. Circunvalación y Av. Rafael Núñez' },
   p_lumen_palermo: { name: 'Café Lúmen Nueva Córdoba', address: 'Obispo Trejo 800' },
-  p_mcdonalds_palermo: { name: "McDonald's Nueva Córdoba", address: 'Av. Hipólito Yrigoyen 300' },
-  p_starbucks_recoleta: { name: 'Starbucks Cerro de las Rosas', address: 'Av. Rafael Núñez 4600' },
-  p_grido_lanus: { name: 'Grido Centro', address: 'Bv. San Juan 400' },
+  p_mcdonalds_palermo: { name: 'Burger Plaza Nueva Córdoba', address: 'Av. Hipólito Yrigoyen 300' },
+  p_starbucks_recoleta: { name: 'Café Andino Cerro de las Rosas', address: 'Av. Rafael Núñez 4600' },
+  p_grido_lanus: { name: 'Helados del Parque Centro', address: 'Bv. San Juan 400' },
+}
+
+/**
+ * Las marcas de la demo general son reales (YPF, Coca-Cola, McDonald's…). En la del club
+ * aparecían como «Marcas de la red», como si fueran aliadas de ReciclaXP frente al club. Acá van
+ * con nombres de ejemplo. Se reemplaza en los textos; los ids (`s_ypf`, `p_ypf_…`) van en
+ * minúscula y no se tocan, así los QR impresos y los enlaces siguen andando.
+ */
+const MARCAS_DE_EJEMPLO: [RegExp, string][] = [
+  [/YPF Full/g, ESTACION_DE_EJEMPLO],
+  [/YPF/g, ESTACION_DE_EJEMPLO],
+  [/Coca-Cola/g, 'Bebidas Serranas'],
+  [/McDonald's/g, 'Burger Plaza'],
+  [/Starbucks/g, 'Café Andino'],
+  [/Adidas/g, 'Deportiva Centro'],
+  [/Grido/g, 'Helados del Parque'],
+]
+
+function conMarcasDeEjemplo<T>(datos: T): T {
+  let json = JSON.stringify(datos)
+  for (const [real, ejemplo] of MARCAS_DE_EJEMPLO) json = json.replace(real, ejemplo)
+  return JSON.parse(json) as T
 }
 /** Los mismos puntos, con el nombre corto que usan las métricas del panel. */
 const METRICAS_EN_CORDOBA: Record<string, string> = {
@@ -290,7 +312,7 @@ export function datosDelClub(base: DatosDemo, club: DatosDelClub): DatosDemo {
     }
   }
 
-  return {
+  return conMarcasDeEjemplo({
     currentUser: { ...base.currentUser, city: 'Córdoba' },
     sponsors: [sponsor, ...base.sponsors.filter((s) => !NO_VAN.has(s.id))],
     points: [...puntos, ...puntosDeLaRed],
@@ -307,5 +329,5 @@ export function datosDelClub(base: DatosDemo, club: DatosDelClub): DatosDemo {
     },
     sponsorMetrics: metricas,
     causes: base.causes,
-  }
+  })
 }

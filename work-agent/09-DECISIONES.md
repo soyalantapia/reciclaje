@@ -68,6 +68,7 @@ Convención global del usuario (vos/tenés/podés), también en el copy del prod
 | **Las demos nombran a Talleres, sin escudo ni colores** | Lo pidió Alan el 10/10/2026: la reunión es con Talleres, y tener a River como club de ejemplo jugaba en contra. El escudo y los colores esperan el permiso escrito del club. Si vuelve River, falla un candado en `src/services/mocks/escenarioClub.test.ts` |
 | **Lo guardado en el navegador lleva versión (`src/store/versionDeDatos.ts`)** | Cada aporte guarda el nombre de su punto, así que al cambiar los datos de ejemplo lo viejo seguía apareciendo. Se sube la versión y lo guardado con otra se descarta |
 | **Lo que el panel publica o pausa lo ve el hincha, en el mismo navegador** | Antes el panel decía «Beneficio publicado» y la app no lo mostraba. Para que pase entre aparatos distintos hace falta el servidor del piloto (E1.1) |
+| **La demo del club no muestra marcas reales** | En «Marcas de la red» aparecían YPF, Coca-Cola, McDonald's, Starbucks, Adidas y Grido, como si fueran aliadas, frente a un club que negocia con nosotros. Ahora van con nombres de ejemplo (`MARCAS_DE_EJEMPLO` en `src/services/mocks/escenarioClub.ts`). La demo general no cambia, y volver atrás es sacar esa lista |
 
 ## Convenciones de trabajo
 

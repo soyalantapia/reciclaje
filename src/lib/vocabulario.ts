@@ -52,7 +52,8 @@ const INSTITUCION: Vocabulario = {
   dondeVaElQr: 'cada punto',
   dondeVaLaPlaca: 'tus redes y tus espacios',
   otrosDemo: 'Otros paneles de la demo',
-  noEsta: '🏟️ ¿Tu institución no está? Conocé la red y sumate →',
+  // La landing es para comercios: desde el panel de un club, lo que tiene sentido es sumar a los del barrio.
+  noEsta: '🏪 ¿Un negocio del barrio quiere sumarse? Conocé la propuesta →',
   gestiona: 'Gestioná tu institución en la red (demo)',
   accesoAlPanel: '🏟️ ¿Sos de una institución? Ingresá a tu panel →',
   qrParaProbar: '¿Sos de una institución? Generá tu QR para probar',
