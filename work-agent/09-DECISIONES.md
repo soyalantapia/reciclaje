@@ -65,6 +65,9 @@ Convención global del usuario (vos/tenés/podés), también en el copy del prod
 | **Landing: una promesa, un público** | Regla de conversión. El header tiene pestañas de **navegación**, no un switcher de audiencias |
 | **Animaciones one-way (`whileInView` + `once`)** | Nada de loops ni bounce: se lee como poco profesional. Se respeta `useReducedMotion()` |
 | **Repo público** | GitHub Pages gratis requiere repo público |
+| **Las demos nombran a Talleres, sin escudo ni colores** | Lo pidió Alan el 10/10/2026: la reunión es con Talleres, y tener a River como club de ejemplo jugaba en contra. El escudo y los colores esperan el permiso escrito del club. Si vuelve River, falla un candado en `src/services/mocks/escenarioClub.test.ts` |
+| **Lo guardado en el navegador lleva versión (`src/store/versionDeDatos.ts`)** | Cada aporte guarda el nombre de su punto, así que al cambiar los datos de ejemplo lo viejo seguía apareciendo. Se sube la versión y lo guardado con otra se descarta |
+| **Lo que el panel publica o pausa lo ve el hincha, en el mismo navegador** | Antes el panel decía «Beneficio publicado» y la app no lo mostraba. Para que pase entre aparatos distintos hace falta el servidor del piloto (E1.1) |
 
 ## Convenciones de trabajo
 
