@@ -35,12 +35,30 @@ Login: cualquier email/contraseña, o el botón **“Entrar a la demo sin regist
 | Script | Qué hace |
 | --- | --- |
 | `npm run dev` | Servidor de desarrollo (:5183) |
+| `npm run dev:club` | Servidor de desarrollo con el escenario club (:5183) |
 | `npm run build` | Type-check + build de producción |
 | `npm run build:no-msw` | Build sin MSW (para backend real) |
 | `npm run preview` | Sirve el build localmente |
 | `npm run lint` | ESLint |
 | `npm run test` | Unit tests (vitest) |
 | `npm run deploy` | Publica `dist/` en GitHub Pages |
+
+### Escenario club (caso para el piloto)
+
+`npm run dev:club` levanta la demo con el caso de un club: dos **Punto R** (estadio y sede), el
+banco de suplentes como producto destacado, el ranking de la hinchada con su premio-experiencia
+y las recompensas del club. El club de ejemplo de la demo general no aparece.
+
+- El nombre del club, el estadio y la sede van en `.env.local` (`VITE_CLUB_NOMBRE`,
+  `VITE_CLUB_ESTADIO`, `VITE_CLUB_SEDE`; ver `.env.example`). Sin permiso escrito del club, su
+  nombre, escudo y colores **no** van al repo ni a nada publicado.
+- Guarda su estado con claves propias (`reciclaxp-club-*`): abrirlo en el mismo navegador no
+  toca la demo general.
+- Todas las pantallas llevan el aviso «Demo · los números son de ejemplo».
+- Se publica aparte con `npm run deploy:club` en https://soyalantapia.github.io/reciclaje-club/
+  (repo `soyalantapia/reciclaje-club`), con el nombre genérico «Tu club». `npm run deploy` sigue
+  publicando la demo general en su dirección de siempre.
+- Qué existe y qué falta respecto de lo prometido: `docs/producto/prometido-vs-demo.md`.
 
 ## Funcionalidades (MVP)
 

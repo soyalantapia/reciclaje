@@ -63,7 +63,7 @@ export default function Profile() {
 
   function goPremium() {
     setPremium(true)
-    toast.success('¡Bienvenida a Premium! ⭐ Tus canjes ahora rinden más.')
+    toast.success('Premium de prueba activado ⭐ En la demo no se cobra nada.')
   }
 
   function doTransfer() {
@@ -152,8 +152,9 @@ export default function Profile() {
             ))}
           </ul>
           <Button variant="xp" block size="lg" className="mt-4" onClick={goPremium}>
-            Hacerme Premium
+            Probar Premium
           </Button>
+          <p className="mt-2 text-center text-xs text-white/60">Demo: no se cobra.</p>
         </div>
       )}
 

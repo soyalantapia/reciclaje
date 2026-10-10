@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { User } from '@/types'
 import { levelFor } from '@/lib/copy'
+import { claveDeAlmacenamiento } from '@/lib/escenario'
 
 interface WalletState {
   userId: string | null
@@ -67,6 +68,6 @@ export const useWalletStore = create<WalletState>()(
           levelName: 'Semilla',
         }),
     }),
-    { name: 'reciclaxp-wallet', version: 1 },
+    { name: claveDeAlmacenamiento('wallet'), version: 1 },
   ),
 )

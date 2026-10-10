@@ -21,8 +21,9 @@ import { QrScanner } from '@/components/features/QrScanner'
 import { Button } from '@/components/ui/button'
 import { Tabs, type TabItem } from '@/components/ui/tabs'
 import { Skeleton } from '@/components/ui/skeleton'
+import { claveDeAlmacenamiento } from '@/lib/escenario'
 
-const PENDING_POINT_KEY = 'reciclaxp-scan-point'
+const PENDING_POINT_KEY = claveDeAlmacenamiento('scan-point')
 
 type Step = 'scan' | 'form' | 'done'
 type Mode = 'reciclar' | 'comprar'

@@ -17,6 +17,7 @@ import type {
   User,
 } from '@/types'
 import { ERRORS } from '@/lib/copy'
+import { claveDeAlmacenamiento } from '@/lib/escenario'
 
 // Mismo prefijo que el scope del SW de MSW. En GH Pages → /reciclaje/api,
 // en dev → /api. Si las requests salieran fuera de este scope, caerían al
@@ -55,7 +56,7 @@ function isHtmlResponse(res: Response): boolean {
   return ct.toLowerCase().includes('text/html')
 }
 
-const MSW_RECOVER_KEY = 'reciclaxp-msw-recover'
+const MSW_RECOVER_KEY = claveDeAlmacenamiento('msw-recover')
 
 /**
  * Recibir HTML donde esperábamos JSON = el SW de MSW dejó de controlar la
@@ -149,7 +150,7 @@ export const api = {
       body: JSON.stringify(payload),
     }),
 
-  getRanking: (scope: 'global' | 'river' | 'ypf' = 'global') =>
+  getRanking: (scope: string = 'global') =>
     request<RankingResult>(`/ranking?scope=${scope}`),
 
   getCauses: () => request<Cause[]>('/causes'),

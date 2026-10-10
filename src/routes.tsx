@@ -5,6 +5,7 @@ import { RequireAuth } from '@/components/features/RequireAuth'
 import { RequireCommerce } from '@/components/features/RequireCommerce'
 import { CommerceLayout } from '@/components/features/CommerceLayout'
 import { Skeleton } from '@/components/ui/skeleton'
+import { claveDeAlmacenamiento } from '@/lib/escenario'
 
 /**
  * lazy() con retry: tras un deploy, el index cacheado puede apuntar a chunks
@@ -16,7 +17,7 @@ function lazyWithRetry<T extends ComponentType<unknown>>(
   factory: () => Promise<{ default: T }>,
 ) {
   return lazy(async () => {
-    const KEY = 'reciclaxp-chunk-reload'
+    const KEY = claveDeAlmacenamiento('chunk-reload')
     try {
       return await factory()
     } catch (err) {
@@ -33,7 +34,7 @@ function lazyWithRetry<T extends ComponentType<unknown>>(
 }
 
 if (typeof window !== 'undefined') {
-  window.sessionStorage.removeItem('reciclaxp-chunk-reload')
+  window.sessionStorage.removeItem(claveDeAlmacenamiento('chunk-reload'))
 }
 
 const Login = lazyWithRetry(() => import('@/pages/Login'))

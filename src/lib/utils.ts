@@ -20,8 +20,17 @@ export function formatXp(n: number): string {
   return `${formatNumber(n)} XP`
 }
 
+/**
+ * Una fecha sola («2026-10-04») se arma como fecha local. `new Date('2026-10-04')` la lee como
+ * medianoche UTC, que en Argentina es el día anterior: el aporte del 4 se mostraba el 3.
+ */
+function parseFecha(valor: string): Date {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(valor)
+  return m ? new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3])) : new Date(valor)
+}
+
 export function formatDate(date: string | Date, locale = 'es-AR'): string {
-  const d = typeof date === 'string' ? new Date(date) : date
+  const d = typeof date === 'string' ? parseFecha(date) : date
   return d.toLocaleDateString(locale, {
     day: '2-digit',
     month: 'short',

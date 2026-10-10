@@ -3,6 +3,7 @@ import { LogOut } from 'lucide-react'
 import { useSessionStore } from '@/store/session'
 import { cn } from '@/lib/utils'
 import { CommerceSideNav, COMMERCE_NAV } from './CommerceSideNav'
+import { AvisoDemo } from './AvisoDemo'
 
 export function CommerceLayout() {
   const navigate = useNavigate()
@@ -10,6 +11,7 @@ export function CommerceLayout() {
   const logoutCommerce = useSessionStore((s) => s.logoutCommerce)
 
   if (!commerce) return null
+  const esInstitucion = commerce.category === 'club' || commerce.category === 'estadio'
 
   function salir() {
     logoutCommerce()
@@ -35,7 +37,9 @@ export function CommerceLayout() {
               </span>
               <div className="min-w-0">
                 <p className="truncate font-extrabold leading-tight">{commerce.name}</p>
-                <p className="text-[11px] text-muted-foreground">Panel del comercio · ReciclaXP</p>
+                <p className="text-[11px] text-muted-foreground">
+                  {esInstitucion ? 'Panel de la institución' : 'Panel del comercio'} · ReciclaXP
+                </p>
               </div>
             </div>
             <button
@@ -66,6 +70,7 @@ export function CommerceLayout() {
         </header>
 
         <main className="mx-auto w-full max-w-6xl flex-1 px-4 pb-12 pt-4 lg:px-8 lg:pt-8">
+          <AvisoDemo />
           <Outlet />
         </main>
       </div>

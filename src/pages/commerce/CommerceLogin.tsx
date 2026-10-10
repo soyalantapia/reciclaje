@@ -13,6 +13,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { OtpInput } from '@/components/ui/otp-input'
 import { Skeleton } from '@/components/ui/skeleton'
+import { ESCENARIO, SLUG_COMERCIO_DEMO } from '@/lib/escenario'
 
 const DEMO_CODE = '123456'
 const DEMO_EMAIL = 'demo@reciclaxp.app'
@@ -32,18 +33,18 @@ export default function CommerceLogin() {
   const accounts = useMemo(() => {
     if (!sponsors) return []
     const bySlug = (slug: string) => sponsors.find((s) => s.slug === slug)
+    // En el escenario club, la cuenta principal entra al panel del club.
+    const otras = ESCENARIO === 'club' ? ['ypf', 'starbucks'] : ['ypf', 'river', 'starbucks']
     return [
-      { email: DEMO_EMAIL, sponsor: bySlug('mcdonalds') },
-      { email: 'ypf@reciclaxp.app', sponsor: bySlug('ypf') },
-      { email: 'river@reciclaxp.app', sponsor: bySlug('river') },
-      { email: 'starbucks@reciclaxp.app', sponsor: bySlug('starbucks') },
+      { email: DEMO_EMAIL, sponsor: bySlug(SLUG_COMERCIO_DEMO) },
+      ...otras.map((slug) => ({ email: `${slug}@reciclaxp.app`, sponsor: bySlug(slug) })),
     ].filter((a): a is { email: string; sponsor: Sponsor } => Boolean(a.sponsor))
   }, [sponsors])
 
   function resolveSponsor(value: string): Sponsor | null {
     const e = value.trim().toLowerCase()
     if (!sponsors) return null
-    if (e === DEMO_EMAIL) return sponsors.find((s) => s.slug === 'mcdonalds') ?? null
+    if (e === DEMO_EMAIL) return sponsors.find((s) => s.slug === SLUG_COMERCIO_DEMO) ?? null
     const m = e.match(/^([\w-]+)@reciclaxp\.app$/)
     if (m) return sponsors.find((s) => s.slug === m[1]) ?? null
     return null
@@ -127,7 +128,9 @@ export default function CommerceLogin() {
                 <span className="font-mono font-semibold">{DEMO_EMAIL}</span> · código{' '}
                 <span className="font-mono font-bold">{DEMO_CODE}</span>
               </p>
-              <p className="text-xs text-muted-foreground">Entrás como McDonald's.</p>
+              {accounts[0] && (
+                <p className="text-xs text-muted-foreground">Entrás como {accounts[0].sponsor.name}.</p>
+              )}
               <Button
                 variant="secondary"
                 size="sm"

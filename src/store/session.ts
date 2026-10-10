@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { Sponsor, User } from '@/types'
+import { claveDeAlmacenamiento } from '@/lib/escenario'
 
 interface SessionState {
   user: User | null
@@ -27,6 +28,6 @@ export const useSessionStore = create<SessionState>()(
       logoutCommerce: () => set({ commerce: null }),
       logout: () => set({ user: null, isAuthenticated: false }),
     }),
-    { name: 'reciclaxp-session', version: 1 },
+    { name: claveDeAlmacenamiento('session'), version: 1 },
   ),
 )

@@ -57,7 +57,7 @@ export default function Home() {
               <div className="flex items-center justify-between p-5 pb-3">
                 <div className="flex items-center gap-2">
                   <Sparkles size={18} className="text-eco-600" />
-                  <h2 className="font-bold">Tu impacto en vivo</h2>
+                  <h2 className="font-bold">Tu impacto</h2>
                 </div>
                 <Link
                   to={`/proyecto/${featured.id}`}

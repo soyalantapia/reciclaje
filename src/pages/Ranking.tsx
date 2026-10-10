@@ -5,13 +5,10 @@ import { RankingRow } from '@/components/features/RankingRow'
 import { ErrorState } from '@/components/features/ErrorState'
 import { Tabs, type TabItem } from '@/components/ui/tabs'
 import { Skeleton } from '@/components/ui/skeleton'
+import { RANKING_TABS } from '@/lib/escenario'
 
-type Scope = 'global' | 'river' | 'ypf'
-const TABS: TabItem<Scope>[] = [
-  { value: 'global', label: 'Global' },
-  { value: 'river', label: 'River' },
-  { value: 'ypf', label: 'YPF' },
-]
+type Scope = string
+const TABS: TabItem<Scope>[] = RANKING_TABS
 
 export default function Ranking() {
   const [scope, setScope] = useState<Scope>('global')

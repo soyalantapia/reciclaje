@@ -42,9 +42,9 @@ function printReport(m: SponsorMetrics, name: string) {
       `<div style="display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #059669;padding-bottom:12px">` +
       `<h1 style="margin:0;font-size:22px">Reporte de impacto · ${name}</h1>` +
       `<span style="color:#059669;font-weight:800">ReciclaXP</span></div>` +
-      `<p style="color:#555">Resumen de impacto ambiental y comunidad — uso RSE / auditoría.</p>` +
+      `<p style="color:#555">Resumen de impacto ambiental y comunidad. Datos de ejemplo de la demo: no sirve como respaldo de RSE ni para auditoría.</p>` +
       `<table style="width:100%;border-collapse:collapse;margin-top:8px">${rows}</table>` +
-      `<p style="margin-top:24px;color:#888;font-size:12px">Generado con ReciclaXP · datos del período actual.</p>` +
+      `<p style="margin-top:24px;color:#888;font-size:12px">Generado con ReciclaXP · demo con datos de ejemplo.</p>` +
       `</body></html>`,
   )
   w.document.close()
@@ -78,7 +78,7 @@ export default function CommerceReports() {
       <div>
         <h1 className="text-2xl font-extrabold leading-tight">Reportes</h1>
         <p className="text-sm text-muted-foreground">
-          Llevate tu impacto para presentar RSE o auditoría.
+          Así se va a ver tu reporte de impacto. En la demo, los datos son de ejemplo.
         </p>
       </div>
 
@@ -99,7 +99,7 @@ export default function CommerceReports() {
             ))}
         </div>
         <p className="mt-3 text-xs text-muted-foreground">
-          + detalle por mes y por punto. Datos del período actual.
+          + detalle por mes y por punto. En la demo, datos de ejemplo.
         </p>
       </div>
 

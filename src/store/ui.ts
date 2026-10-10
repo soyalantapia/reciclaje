@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import { claveDeAlmacenamiento } from '@/lib/escenario'
 
 type Theme = 'light' | 'dark'
 
@@ -17,6 +18,6 @@ export const useUiStore = create<UiState>()(
         set((s) => ({ theme: s.theme === 'light' ? 'dark' : 'light' })),
       setTheme: (theme) => set({ theme }),
     }),
-    { name: 'reciclaxp-ui', version: 1 },
+    { name: claveDeAlmacenamiento('ui'), version: 1 },
   ),
 )

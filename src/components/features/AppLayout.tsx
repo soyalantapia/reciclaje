@@ -6,6 +6,8 @@ import { formatNumber } from '@/lib/utils'
 import { Logo } from './Logo'
 import { BottomNav } from './BottomNav'
 import { SideNav } from './SideNav'
+import { AvisoDemo } from './AvisoDemo'
+import { claveDeAlmacenamiento } from '@/lib/escenario'
 
 export function AppLayout() {
   const navigate = useNavigate()
@@ -14,7 +16,7 @@ export function AppLayout() {
 
   // Si llegamos por un QR (deep-link ?p=), el punto quedó pendiente: vamos al escáner.
   useEffect(() => {
-    if (sessionStorage.getItem('reciclaxp-scan-point')) navigate('/escanear')
+    if (sessionStorage.getItem(claveDeAlmacenamiento('scan-point'))) navigate('/escanear')
   }, [navigate])
 
   return (
@@ -53,6 +55,7 @@ export function AppLayout() {
         </header>
 
         <main className="mx-auto w-full max-w-5xl flex-1 px-4 pb-28 pt-3 md:px-8 md:pb-12 md:pt-8">
+          <AvisoDemo />
           <Outlet />
         </main>
       </div>

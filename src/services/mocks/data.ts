@@ -249,7 +249,7 @@ export const projects: ImpactProject[] = [
     goalUnits: 500000,
     collectedUnits: 312400,
     myContributionUnits: 7480,
-    estimatedDate: '2026-09-30',
+    estimatedDate: '2027-02-28',
     illustration: 'bench',
     milestones: [
       { label: 'Recolección', done: true },
@@ -277,7 +277,7 @@ export const projects: ImpactProject[] = [
     goalUnits: 300000,
     collectedUnits: 134900,
     myContributionUnits: 3120,
-    estimatedDate: '2026-08-15',
+    estimatedDate: '2026-12-15',
     illustration: 'totem',
     milestones: [
       { label: 'Recolección', done: true },
@@ -308,7 +308,7 @@ export const traceByProject: Record<string, TraceEvent[]> = {
     {
       stage: 'validacion',
       title: 'Validación automática',
-      detail: 'La máquina pesó y contó el material. Evento verificado.',
+      detail: 'Ejemplo: así se vería si el punto tuviera una máquina que pesa y cuenta.',
       date: '2026-05-20',
       done: true,
       operator: 'Sensor IoT',
@@ -619,6 +619,13 @@ export const rankingYpf: RankingEntry[] = [
   { position: 3, userId: 'u_reni', name: 'Renata B.', avatarColor: '#059669', xpThisMonth: 1760 },
   { position: 4, userId: 'u_me', name: 'Camila R. (vos)', avatarColor: '#059669', xpThisMonth: 1120, isCurrentUser: true },
 ]
+
+/** Rankings por pestaña (scope). Las pestañas que se muestran salen de RANKING_TABS. */
+export const rankings: Record<string, RankingEntry[]> = {
+  global: rankingGlobal,
+  river: rankingRiver,
+  ypf: rankingYpf,
+}
 
 export const prizes: Record<string, MonthlyPrize> = {
   global: {

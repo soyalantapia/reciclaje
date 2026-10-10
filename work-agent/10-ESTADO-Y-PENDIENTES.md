@@ -1,7 +1,30 @@
 # 10 · Estado actual y pendientes
 
-**Fecha de corte:** 2026-07-18 · **Commit:** `40dbc00` · **Estado:** MVP completo,
-desplegado y funcional end-to-end. Producto **pre-lanzamiento** (sin clientes reales).
+**Fecha de corte:** 2026-10-10 · **Estado:** MVP de demostración, sin backend, pre-lanzamiento
+(sin clientes reales). Lo de abajo de «Octubre 2026» es el corte anterior (2026-07-18, `40dbc00`).
+
+---
+
+## 🆕 Octubre 2026: plan de producto y caso club
+
+- **Qué se busca**: que un club firme un piloto de 90 días y financie el resto del desarrollo.
+  Plan, decisiones y tareas en `docs/producto/reuniones/2026-10-10-plan-de-producto/`.
+- **Lo prometido contra lo que existe**: `docs/producto/prometido-vs-demo.md`. Lo que falta para
+  un piloto real es servidor y login, pesaje, producto creado por la institución, constancia
+  con datos registrados, datos de los hinchas e informe del piloto.
+- **Desglose técnico del piloto** por entregable (23,5 a 31,5 días de desarrollo):
+  `docs/producto/desglose-piloto.md`.
+- **Escenario club**: `npm run dev:club` en local; publicado aparte con `npm run deploy:club`
+  en https://soyalantapia.github.io/reciclaje-club/ con el nombre genérico «Tu club». El nombre
+  real del club va en `.env.local` y no se publica sin su permiso escrito.
+- **Regla de honestidad aplicada**: todas las pantallas dicen que los números son de ejemplo.
+
+### Pendientes nuevos (orden del plan)
+1. Página de posición y tabla única de precios (socios, antes de la reunión).
+2. Plan piloto, acuerdo preliminar y presupuesto con montos (socio de ventas, después de la reunión).
+3. Si el club firma: backend del piloto (E1.1) como primer entregable, después pesaje y producto
+   del club. **No construir el backend antes de firmar.**
+4. La landing de comercios todavía afirma «RSE verificable» y «en vivo»: rotular o cambiar.
 
 ---
 

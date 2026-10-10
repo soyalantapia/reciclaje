@@ -11,9 +11,10 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Modal } from '@/components/ui/modal'
 
-const KINDS: { value: CampaignKind; label: string; icon: LucideIcon }[] = [
+// El multiplicador todavía no cambia los XP de nadie: se muestra, pero no se puede lanzar.
+const KINDS: { value: CampaignKind; label: string; icon: LucideIcon; proximamente?: boolean }[] = [
   { value: 'premio', label: 'Premio del mes', icon: Trophy },
-  { value: 'multiplicador', label: 'Multiplicador XP', icon: Zap },
+  { value: 'multiplicador', label: 'Multiplicador XP', icon: Zap, proximamente: true },
   { value: 'desafio', label: 'Desafío', icon: Target },
 ]
 const KIND_MAP = Object.fromEntries(KINDS.map((k) => [k.value, k])) as Record<
@@ -63,7 +64,7 @@ export default function CommerceCampaigns() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-extrabold leading-tight">Campañas</h1>
-          <p className="text-sm text-muted-foreground">Premios, multiplicadores y desafíos.</p>
+          <p className="text-sm text-muted-foreground">Premios del mes y desafíos.</p>
         </div>
         <Button size="sm" onClick={() => setOpen(true)}>
           <Plus size={16} /> Crear
@@ -128,7 +129,7 @@ export default function CommerceCampaigns() {
           <p className="text-3xl">📣</p>
           <p className="mt-2 font-bold">Todavía no lanzaste campañas</p>
           <p className="mt-1 text-sm text-muted-foreground">
-            Creá un premio del mes o un multiplicador para activar a tu comunidad.
+            Creá un premio del mes o un desafío para activar a tu comunidad.
           </p>
           <Button className="mt-4" onClick={() => setOpen(true)}>
             <Plus size={16} /> Crear campaña
@@ -142,16 +143,19 @@ export default function CommerceCampaigns() {
           <div>
             <Label>Tipo</Label>
             <div className="flex flex-wrap gap-2">
-              {KINDS.map(({ value, label, icon: Icon }) => (
+              {KINDS.map(({ value, label, icon: Icon, proximamente }) => (
                 <button
                   key={value}
                   onClick={() => setKind(value)}
+                  disabled={proximamente}
                   className={cn(
                     'inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-semibold',
                     value === kind ? 'bg-eco-600 text-white' : 'bg-muted text-muted-foreground',
+                    proximamente && 'cursor-not-allowed opacity-60',
                   )}
                 >
                   <Icon size={15} /> {label}
+                  {proximamente && <span className="text-xs font-normal">· próximamente</span>}
                 </button>
               ))}
             </div>

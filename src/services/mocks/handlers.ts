@@ -11,7 +11,10 @@ import {
 } from '@/types'
 import { shortCode } from '@/lib/utils'
 import { metricsFor } from '@/lib/metrics'
-import {
+import { datos } from './datos'
+
+// Los datos dependen del escenario elegido al compilar (ver src/lib/escenario.ts).
+const {
   benefits,
   causes,
   contributions,
@@ -19,13 +22,11 @@ import {
   points,
   projects,
   prizes,
-  rankingGlobal,
-  rankingRiver,
-  rankingYpf,
+  rankings,
   sponsorMetrics,
   sponsors,
   traceByProject,
-} from './data'
+} = datos
 
 // El SW de MSW vive en el scope del BASE_URL del bundle. Los handlers usan
 // el mismo prefijo para que matcheen tanto en dev (/) como en prod
@@ -34,7 +35,7 @@ const BASE = (import.meta.env.BASE_URL || '/').replace(/\/$/, '')
 const api = (path: string) => `${BASE}/api${path}`
 
 /**
- * Métricas del comercio: usa las seedeadas (YPF/River) o las genera de forma
+ * Métricas del comercio: usa las seedeadas o las genera de forma
  * determinista con `metricsFor`, para que TODO comercio tenga panel (C06).
  */
 function buildMetrics(sponsorId: string): SponsorMetrics | null {
@@ -162,8 +163,7 @@ export const handlers = [
   http.get(api('/ranking'), async ({ request }) => {
     await delay(200)
     const scope = new URL(request.url).searchParams.get('scope') ?? 'global'
-    const entries =
-      scope === 'river' ? rankingRiver : scope === 'ypf' ? rankingYpf : rankingGlobal
+    const entries = rankings[scope] ?? rankings.global
     const prize = prizes[scope] ?? prizes.global
     return HttpResponse.json({ scope, entries, prize })
   }),
