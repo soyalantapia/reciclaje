@@ -10,29 +10,16 @@ import { metricsFor } from '@/lib/metrics'
 import { metricasConLaSesion } from '@/lib/aportesDeLaSesion'
 import { useActivityStore } from '@/store/activity'
 import { useCouponsStore } from '@/store/coupons'
-import { downloadBlob, formatNumber, objectsToCsv } from '@/lib/utils'
+import { downloadBlob, formatNumber } from '@/lib/utils'
+import { AVISO_DE_EJEMPLO, csvDelReporte, filasDelReporte } from '@/lib/reporte'
 import { ErrorState } from '@/components/features/ErrorState'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 
-function metricRows(m: SponsorMetrics): { metrica: string; valor: number }[] {
-  return [
-    { metrica: 'Usuarios activos', valor: m.activeUsers },
-    { metrica: 'Aportes', valor: m.contributions },
-    { metrica: 'XP emitidos', valor: m.xpEmitted },
-    { metrica: 'Beneficios canjeados', valor: m.benefitsRedeemed },
-    { metrica: 'Kg recuperados', valor: m.kgRecovered },
-    { metrica: 'Tapitas recuperadas', valor: m.capsRecovered },
-    { metrica: 'Huella Verde (0-100)', valor: m.greenScore },
-    ...m.monthlySeries.map((s) => ({ metrica: `Aportes ${s.label}`, valor: s.value })),
-    ...m.byPoint.map((p) => ({ metrica: `Punto: ${p.point}`, valor: p.contributions })),
-  ]
-}
-
 function printReport(m: SponsorMetrics, name: string) {
   const w = window.open('', '_blank', 'width=760,height=900')
   if (!w) return
-  const rows = metricRows(m)
+  const rows = filasDelReporte(m)
     .map(
       (r) =>
         `<tr><td style="padding:9px 14px;border-bottom:1px solid #eee">${r.metrica}</td>` +
@@ -45,7 +32,7 @@ function printReport(m: SponsorMetrics, name: string) {
       `<div style="display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #059669;padding-bottom:12px">` +
       `<h1 style="margin:0;font-size:22px">Reporte de impacto · ${name}</h1>` +
       `<span style="color:#059669;font-weight:800">ReciclaXP</span></div>` +
-      `<p style="color:#555">Resumen de impacto ambiental y comunidad. Datos de ejemplo de la demo: no sirve como respaldo de RSE ni para auditoría.</p>` +
+      `<p style="color:#555">Resumen de impacto ambiental y comunidad. ${AVISO_DE_EJEMPLO}</p>` +
       `<table style="width:100%;border-collapse:collapse;margin-top:8px">${rows}</table>` +
       `<p style="margin-top:24px;color:#888;font-size:12px">Generado con ReciclaXP · demo con datos de ejemplo.</p>` +
       `</body></html>`,
@@ -75,7 +62,7 @@ export default function CommerceReports() {
   if (loading || !m) return <Skeleton className="h-64 w-full" />
 
   function downloadCsv() {
-    downloadBlob(`reporte-${commerce!.slug}.csv`, objectsToCsv(metricRows(m!)), 'text/csv;charset=utf-8')
+    downloadBlob(`reporte-${commerce!.slug}.csv`, csvDelReporte(m!), 'text/csv;charset=utf-8')
     toast.success('Reporte CSV descargado 📄')
   }
 
@@ -95,7 +82,7 @@ export default function CommerceReports() {
           <p className="font-bold">Reporte de impacto · {commerce.name}</p>
         </div>
         <div className="mt-3 grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
-          {metricRows(m)
+          {filasDelReporte(m)
             .slice(0, 7)
             .map((r) => (
               <div key={r.metrica} className="flex justify-between border-b border-border py-1">

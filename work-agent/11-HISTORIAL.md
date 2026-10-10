@@ -158,6 +158,7 @@ WhatsApp del proyecto y de la reunión del 03/08 (acta en `docs/producto/reunion
 - Rama `fix/talleres-igual-en-las-dos-demos`: la demo general, la de la dirección corta, tenía otro Talleres, con «Máquinas del estadio», «Validación automática · Sensor IoT» y el banco al 62 % (312.400 de 500.000).
   - Ahora las dos demos usan el mismo caso: `casoDelClub` y `conElCasoDelClub` en `src/services/mocks/escenarioClub.ts`.
   - Se sacaron de `data.ts` los bloques del Talleres viejo.
+- Rama `fix/csv-del-reporte-con-aviso`: el CSV del reporte arranca diciendo que son datos de ejemplo, como el PDF, y lleva la marca BOM para que Excel lea bien los acentos (`src/lib/reporte.ts`).
 
 ---
 
