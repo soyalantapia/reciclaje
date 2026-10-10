@@ -62,23 +62,23 @@ const PROBLEMS = [
 
 const FEATURES = [
   { icon: TrendingUp, title: 'Tráfico que vuelve', desc: 'Beneficios y premios que traen gente nueva y la hacen volver por más.' },
-  { icon: ShieldCheck, title: 'RSE verificable', desc: 'Reportes de impacto descargables (CSV/PDF) para auditoría y comunicación.' },
+  { icon: ShieldCheck, title: 'Reportes de impacto', desc: 'Reportes descargables (CSV/PDF) con los aportes de tu punto, para comunicar tu impacto.' },
   { icon: Leaf, title: 'Huella Verde + placa', desc: 'Reputación ambiental pública que sube con cada aporte, lista para tu vidriera.' },
-  { icon: BarChart3, title: 'Datos en vivo', desc: 'Panel con usuarios, aportes, kg recuperados y campañas, en tiempo real.' },
-  { icon: Megaphone, title: 'Beneficios y campañas', desc: 'Publicás premios, multiplicadores y desafíos cuando querés, desde tu panel.' },
+  { icon: BarChart3, title: 'Tu panel', desc: 'Usuarios, aportes, kg recuperados y campañas de tu comercio, en un solo lugar.' },
+  { icon: Megaphone, title: 'Beneficios y campañas', desc: 'Publicás premios y desafíos cuando querés, desde tu panel.' },
   { icon: QrCode, title: 'QR por punto', desc: 'Cada punto tiene su QR para descargar e imprimir. Tu cliente escanea y aporta.' },
 ]
 
 const STEPS = [
   { icon: QrCode, title: 'Poné tu punto y tu QR', desc: 'Coordinamos la instalación del depósito o máquina y te generamos el QR de tu comercio.' },
   { icon: Recycle, title: 'Tus clientes reciclan', desc: 'Escanean, aportan y suman XP. Vuelven a tu local a canjear sus beneficios.' },
-  { icon: BarChart3, title: 'Publicás y medís', desc: 'Lanzás beneficios y campañas, y ves tu impacto y tus reportes en vivo.' },
+  { icon: BarChart3, title: 'Publicás y medís', desc: 'Lanzás beneficios y campañas, y ves tu impacto y tus reportes en tu panel.' },
 ]
 
 const VERTICALS = [
   { icon: Store, title: 'Comercios', desc: 'Cafés, restós, kioscos y locales que quieren tráfico y fidelizar.' },
   { icon: Fuel, title: 'Estaciones de servicio', desc: 'Puntos de alto flujo que suman un servicio verde con datos.' },
-  { icon: ShieldCheck, title: 'Marcas', desc: 'RSE verificable y Huella Verde para comunicar con respaldo.' },
+  { icon: ShieldCheck, title: 'Marcas', desc: 'Reportes de impacto y Huella Verde para comunicar con datos.' },
   { icon: Trophy, title: 'Clubes y estadios', desc: 'Activá a la hinchada con campañas e impacto compartido.' },
   { icon: Landmark, title: 'Municipios', desc: 'Puntos verdes con trazabilidad y reportes para la gestión.' },
   { icon: Building2, title: 'Cadenas y multi-sede', desc: 'Datos agregados, API y account manager para escalar.' },
@@ -102,7 +102,7 @@ const FAQS = [
   },
   {
     q: '¿De quién son los datos?',
-    a: 'Tuyos. Ves usuarios, aportes y kg en tu panel en vivo, y te llevás reportes en CSV/PDF para RSE o auditoría.',
+    a: 'Tuyos. Ves usuarios, aportes y kg en tu panel, y te llevás reportes en CSV/PDF para comunicar tu impacto.',
   },
   {
     q: '¿Qué pasa con lo que reciclan mis clientes?',
@@ -174,8 +174,8 @@ export default function CommerceLanding() {
               </h1>
               <p className="mt-4 max-w-xl text-eco-50/90 [font-size:clamp(1rem,1.4vw,1.2rem)]">
                 ReciclaXP es el programa de reciclaje con recompensas para tu comercio: ponés tu
-                punto con QR, tus clientes suman XP y los canjean con vos. Ganás tráfico, datos en
-                vivo y una Huella Verde verificable. La instalación la coordinamos nosotros.
+                punto con QR, tus clientes suman XP y los canjean con vos. Ganás tráfico, los datos de
+                tu punto y una Huella Verde para comunicar. La instalación la coordinamos nosotros.
               </p>
 
               <div className="mt-7 flex flex-col gap-2 sm:flex-row sm:max-w-xl">
@@ -209,7 +209,7 @@ export default function CommerceLanding() {
             {/* Mockup del panel (vista de producto, sin datos inventados) */}
             <div className="hidden lg:block">
               <div className="rounded-3xl border border-white/20 bg-white/10 p-5 backdrop-blur">
-                <p className="px-1 text-sm font-bold text-eco-50/90">Tu panel, en vivo</p>
+                <p className="px-1 text-sm font-bold text-eco-50/90">Tu panel</p>
                 <div className="mt-3 rounded-2xl bg-white/10 p-4">
                   <div className="flex items-center justify-between">
                     <span className="inline-flex items-center gap-1.5 text-sm font-bold">
@@ -297,7 +297,7 @@ export default function CommerceLanding() {
               La solución
             </p>
             <h2 className="mt-2 font-extrabold [font-size:clamp(1.6rem,3vw,2.5rem)] lg:max-w-3xl">
-              Un solo flujo que junta tráfico y RSE verificable.
+              Un solo flujo que junta tráfico e impacto ambiental.
             </h2>
             <p className="mt-3 max-w-2xl text-muted-foreground">
               Cada persona que recicla en tu punto es un cliente que vuelve por su beneficio. Y cada
