@@ -13,6 +13,34 @@ import type { DatosDemo } from './datos'
 
 /** El club de ejemplo de la demo general: en este escenario no aparece. */
 const CLUB_DE_EJEMPLO = 's_talleres'
+/** Sponsors de la demo general que no van en la del club: el club de ejemplo y un municipio de Buenos Aires. */
+const NO_VAN = new Set([CLUB_DE_EJEMPLO, 's_muni'])
+
+/**
+ * La red de ejemplo, en Córdoba. El hincha y el club están ahí, y la demo general tiene sus
+ * puntos en Buenos Aires: el club veía «Puntos adheridos» en Palermo y Pilar, y al hincha
+ * reciclando en Av. del Libertador. Las direcciones son de ejemplo.
+ */
+const PUNTOS_EN_CORDOBA: Record<string, { name: string; address: string }> = {
+  p_ypf_libertador: { name: 'YPF Av. Colón 1500', address: 'Av. Colón 1500' },
+  p_ypf_cabildo: { name: 'YPF Av. Vélez Sarsfield 2100', address: 'Av. Vélez Sarsfield 2100' },
+  p_ypf_pana: { name: 'YPF Circunvalación', address: 'Av. Circunvalación y Av. Rafael Núñez' },
+  p_lumen_palermo: { name: 'Café Lúmen Nueva Córdoba', address: 'Obispo Trejo 800' },
+  p_mcdonalds_palermo: { name: "McDonald's Nueva Córdoba", address: 'Av. Hipólito Yrigoyen 300' },
+  p_starbucks_recoleta: { name: 'Starbucks Cerro de las Rosas', address: 'Av. Rafael Núñez 4600' },
+  p_grido_lanus: { name: 'Grido Centro', address: 'Bv. San Juan 400' },
+}
+/** Los mismos puntos, con el nombre corto que usan las métricas del panel. */
+const METRICAS_EN_CORDOBA: Record<string, string> = {
+  'Libertador 5800': 'Av. Colón 1500',
+  'Cabildo 2200': 'Av. Vélez Sarsfield 2100',
+  'Panamericana KM 30': 'Circunvalación',
+}
+/**
+ * El historial de la demo general es de mayo. El aporte del club es del 4/10: los demás se corren
+ * a septiembre, para que el hincha no aparezca sin reciclar desde hace cinco meses.
+ */
+const DIAS_HASTA_SEPTIEMBRE = 133
 const ID_CLUB = 's_club'
 const ID_PRODUCTO = 'pr_banco_club'
 /** Verde de ReciclaXP: los colores y el escudo del club no se usan sin su permiso escrito. */
@@ -236,20 +264,40 @@ export function datosDelClub(base: DatosDemo, club: DatosDelClub): DatosDemo {
     emoji: '🏟️',
   }
 
-  const sinElClubDeEjemplo = <T extends { sponsorId: string }>(lista: T[]) =>
-    lista.filter((x) => x.sponsorId !== CLUB_DE_EJEMPLO)
+  const sinLosQueNoVan = <T extends { sponsorId: string }>(lista: T[]) =>
+    lista.filter((x) => !NO_VAN.has(x.sponsorId))
 
-  const metricas = { ...base.sponsorMetrics }
-  delete metricas[CLUB_DE_EJEMPLO]
+  const puntosDeLaRed: RecyclePoint[] = sinLosQueNoVan(base.points).map((p) => ({
+    ...p,
+    ...PUNTOS_EN_CORDOBA[p.id],
+    city: 'Córdoba',
+  }))
+  const historial: Contribution[] = sinLosQueNoVan(base.contributions).map((c) => ({
+    ...c,
+    pointName: PUNTOS_EN_CORDOBA[c.pointId]?.name ?? c.pointName,
+    createdAt: new Date(Date.parse(c.createdAt) + DIAS_HASTA_SEPTIEMBRE * 86_400_000).toISOString(),
+  }))
+  const beneficiosDeLaRed: Benefit[] = sinLosQueNoVan(base.benefits).map((b) =>
+    b.city === 'Red' ? b : { ...b, city: 'Córdoba' },
+  )
+
+  const metricas: DatosDemo['sponsorMetrics'] = {}
+  for (const [id, m] of Object.entries(base.sponsorMetrics)) {
+    if (NO_VAN.has(id)) continue
+    metricas[id] = {
+      ...m,
+      byPoint: m.byPoint.map((p) => ({ ...p, point: METRICAS_EN_CORDOBA[p.point] ?? p.point })),
+    }
+  }
 
   return {
     currentUser: { ...base.currentUser, city: 'Córdoba' },
-    sponsors: [sponsor, ...base.sponsors.filter((s) => s.id !== CLUB_DE_EJEMPLO)],
-    points: [...puntos, ...sinElClubDeEjemplo(base.points)],
-    projects: [producto, ...sinElClubDeEjemplo(base.projects)],
+    sponsors: [sponsor, ...base.sponsors.filter((s) => !NO_VAN.has(s.id))],
+    points: [...puntos, ...puntosDeLaRed],
+    projects: [producto, ...sinLosQueNoVan(base.projects)],
     traceByProject: { [ID_PRODUCTO]: traza },
-    benefits: [...recompensas, ...sinElClubDeEjemplo(base.benefits)],
-    contributions: [aporte, ...sinElClubDeEjemplo(base.contributions)],
+    benefits: [...recompensas, ...beneficiosDeLaRed],
+    contributions: [aporte, ...historial],
     rankings: { global: base.rankings.global, club: hinchada, ypf: base.rankings.ypf },
     prizes: {
       // El premio global es de ReciclaXP: no se ata a ningún sponsor.

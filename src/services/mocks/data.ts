@@ -710,7 +710,7 @@ export const causes: Cause[] = [
     city: 'CABA',
     summary: 'Las tapitas que reciclás se venden y lo recaudado se convierte en insumos para el hospital.',
     story:
-      'Cada tapita depositada en los puntos de la red suma a esta causa. El material se vende a recicladores certificados, y con lo recaudado el hospital acumula puntos que canjea por los insumos que más necesita. Vos ves exactamente en qué se transforma tu aporte.',
+      'Cada tapita depositada en los puntos de la red suma a esta causa. El material se vende a recicladores, y con lo recaudado el hospital acumula puntos que canjea por los insumos que más necesita. Vos ves exactamente en qué se transforma tu aporte.',
     material: 'tapitas',
     unitLabel: 'tapitas',
     kgGoal: 5000,

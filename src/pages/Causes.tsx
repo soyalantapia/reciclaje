@@ -22,7 +22,7 @@ export default function Causes() {
 
       <div className="flex items-start gap-2 rounded-xl border border-eco-200 bg-eco-50 p-3 text-sm text-eco-800 dark:border-eco-700/40 dark:bg-eco-900/20 dark:text-eco-200">
         <HeartHandshake size={18} className="mt-0.5 shrink-0" />
-        El material que reciclás se vende a recicladores certificados y lo recaudado se vuelve
+        El material que reciclás se vende a recicladores y lo recaudado se vuelve
         insumos para hospitales, comedores y escuelas. Vos ves en qué se transforma.
       </div>
 
