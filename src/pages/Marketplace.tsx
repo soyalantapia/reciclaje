@@ -5,6 +5,8 @@ import { useApi } from '@/hooks/useApi'
 import { useSessionStore } from '@/store/session'
 import { useWalletStore } from '@/store/wallet'
 import { useCouponsStore } from '@/store/coupons'
+import { useCommerceBenefitsStore } from '@/store/commerceBenefits'
+import { beneficiosDeLaRed } from '@/lib/beneficiosDeLaRed'
 import type { Benefit, BenefitCategory, Coupon } from '@/types'
 import { formatNumber } from '@/lib/utils'
 import { BenefitCard } from '@/components/features/BenefitCard'
@@ -31,7 +33,11 @@ export default function Marketplace() {
   const spendableXp = useWalletStore((s) => s.spendableXp)
   const spend = useWalletStore((s) => s.spend)
   const addCoupon = useCouponsStore((s) => s.add)
-  const { data: benefits, error, reload } = useApi(() => api.getBenefits(), [])
+  const { data: delSimulador, error, reload } = useApi(() => api.getBenefits(), [])
+  const creados = useCommerceBenefitsStore((s) => s.created)
+  const pausados = useCommerceBenefitsStore((s) => s.pausedIds)
+  // Lo que el comercio o el club publicó o pausó en su panel también se ve acá.
+  const benefits = delSimulador && beneficiosDeLaRed(delSimulador, creados, pausados)
 
   const [filter, setFilter] = useState<Filter>('todos')
   const [pending, setPending] = useState<Benefit | null>(null)
