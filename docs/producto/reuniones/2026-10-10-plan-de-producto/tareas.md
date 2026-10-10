@@ -18,3 +18,9 @@ Salen de las decisiones del panel. Las bloqueadas esperan la firma con el club o
 | T12 | Que el socio de ventas vuelva a ver el proyecto (plazo 12/10) | el socio de producto | hecha | — | • El socio de ventas abre la demo publicada y el repositorio, o el entorno de trabajo que se vuelva a montar, sin pedir ayuda<br>• Queda escrito qué era el servidor que se cayó y si tenía datos |
 
 **No se toca:** la demo publicada en su dirección actual y la rama main sin OK del dev; ningún secreto en el repo, que es público.
+
+## Cambios después del plan
+
+- **10/10/2026 · T3: las demos nombran a Talleres.** Lo pidió Alan (PR #14).
+  - Ni la demo general ni la del club dicen River o «Tu club».
+  - El criterio de T3 sobre el escudo y los colores sigue igual: no se usan sin el permiso escrito del club, que es la pregunta 4 de la página de posición.
