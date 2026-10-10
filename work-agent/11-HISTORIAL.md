@@ -118,6 +118,10 @@ WhatsApp del proyecto y de la reunión del 03/08 (acta en `docs/producto/reunion
 - Rama `fix/aporte-suma-al-proyecto`: un aporte registrado en la demo ahora mueve el proyecto (total, «tu
   aporte» y la fila de la persona entre los que más aportan). Antes la pantalla de éxito decía que sumaba y
   el proyecto seguía igual; se notó recorriendo en celular el link que se le mandó al socio de ventas.
+- Rama `fix/ranking-suma-xp-de-la-sesion`: la gemela del anterior. El XP ganado ahora sube la fila «vos»
+  del ranking del mes (el global cuenta todo; cada sede, sólo lo ganado ahí) y reordena las posiciones.
+  Las pestañas declaran su sede (`pestanasDelRanking`) y una prueba verifica, en los dos escenarios,
+  que cada una tenga su ranking y que su sede exista.
 
 ---
 

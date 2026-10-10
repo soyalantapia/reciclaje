@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import type { ActivityItem, Contribution, ImpactProject } from '@/types'
-import { conAportesDeLaSesion, nombreCorto } from './aportesDeLaSesion'
+import type { ActivityItem, Contribution, ImpactProject, RankingEntry } from '@/types'
+import { conAportesDeLaSesion, nombreCorto, rankingConXpDeLaSesion } from './aportesDeLaSesion'
 
 const proyecto: ImpactProject = {
   id: 'pr_banco_club',
@@ -79,5 +79,49 @@ describe('conAportesDeLaSesion', () => {
 
   it('sin aportes en la sesión devuelve el proyecto tal cual', () => {
     expect(conAportesDeLaSesion(proyecto, [], 'Camila Ríos')).toBe(proyecto)
+  })
+})
+
+describe('rankingConXpDeLaSesion', () => {
+  const hoy = new Date('2026-10-10T20:30:00.000Z')
+  const ranking: RankingEntry[] = [
+    { position: 1, userId: 'u1', name: 'Facu R.', avatarColor: '#000', xpThisMonth: 4820 },
+    { position: 2, userId: 'u2', name: 'Lu M.', avatarColor: '#000', xpThisMonth: 1500 },
+    { position: 3, userId: 'u_me', name: 'Camila R. (vos)', avatarColor: '#000', xpThisMonth: 1280, isCurrentUser: true },
+    { position: 4, userId: 'u4', name: 'Nico P.', avatarColor: '#000', xpThisMonth: 900 },
+  ]
+  const compraEnYpf: ActivityItem = { id: 'k1', kind: 'compra', sponsorId: 's_ypf', sponsorName: 'YPF', amountArs: 5000, xpEarned: 150, createdAt: '2026-10-10T20:00:00.000Z' }
+
+  it('en el global suma todo el XP de la sesión a la persona y reordena las posiciones', () => {
+    const r = rankingConXpDeLaSesion(ranking, [aporte({ xpEarned: 100 }), compraEnYpf], undefined, hoy)
+    // 1.280 + 100 del aporte + 150 de la compra = 1.530: pasa a Lu (1.500) y queda 2ª.
+    expect(r.map((e) => `${e.position} ${e.userId} ${e.xpThisMonth}`)).toEqual([
+      '1 u1 4820',
+      '2 u_me 1530',
+      '3 u2 1500',
+      '4 u4 900',
+    ])
+    // 1.280 + 100 = 1.380: suma, pero no alcanza para pasar a nadie.
+    const r2 = rankingConXpDeLaSesion(ranking, [aporte({ xpEarned: 100 })], undefined, hoy)
+    expect(r2.map((e) => `${e.position} ${e.userId} ${e.xpThisMonth}`)).toEqual([
+      '1 u1 4820',
+      '2 u2 1500',
+      '3 u_me 1380',
+      '4 u4 900',
+    ])
+  })
+
+  it('en el ranking de una sede cuenta sólo el XP ganado en esa sede', () => {
+    const r = rankingConXpDeLaSesion(ranking, [aporte({ xpEarned: 100 }), compraEnYpf], 's_club', hoy)
+    expect(r.find((e) => e.isCurrentUser)?.xpThisMonth).toBe(1380)
+  })
+
+  it('no cuenta lo de otro mes: es el ranking del mes', () => {
+    const r = rankingConXpDeLaSesion(ranking, [aporte({ xpEarned: 100, createdAt: '2026-09-20T12:00:00.000Z' })], undefined, hoy)
+    expect(r).toBe(ranking)
+  })
+
+  it('sin XP en la sesión devuelve el ranking tal cual', () => {
+    expect(rankingConXpDeLaSesion(ranking, [], undefined, hoy)).toBe(ranking)
   })
 })

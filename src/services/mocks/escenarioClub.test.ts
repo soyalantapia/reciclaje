@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { datosGenerales } from './datos'
 import { datosDelClub } from './escenarioClub'
 import { metricsFor } from '@/lib/metrics'
+import { pestanasDelRanking } from '@/lib/escenario'
 
 const CLUB = { nombre: 'Club de Prueba', estadio: 'Estadio Prueba', sede: 'Sede Prueba' }
 const club = datosDelClub(datosGenerales, CLUB)
@@ -11,6 +12,16 @@ const ID_CLUB = club.sponsors[0].id
 const DIA_DE_LA_REUNION = '2026-10-13'
 
 describe('escenario club', () => {
+  it('cada pestaña del ranking tiene su ranking y su sede es un sponsor que existe, en los dos escenarios', () => {
+    const escenarios = [['club', club], ['general', datosGenerales]] as const
+    for (const [escenario, datos] of escenarios) {
+      for (const pestana of pestanasDelRanking(escenario)) {
+        expect(datos.rankings[pestana.value], `${escenario}/${pestana.value}`).toBeDefined()
+        if (pestana.sponsorId) expect(datos.sponsors.map((s) => s.id), `${escenario}/${pestana.value}`).toContain(pestana.sponsorId)
+      }
+    }
+  })
+
   it('no muestra a otro club real', () => {
     expect(JSON.stringify(club)).not.toMatch(/river|monumental|millonario/i)
   })
