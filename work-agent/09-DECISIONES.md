@@ -69,6 +69,7 @@ Convención global del usuario (vos/tenés/podés), también en el copy del prod
 | **Lo guardado en el navegador lleva versión (`src/store/versionDeDatos.ts`)** | Cada aporte guarda el nombre de su punto, así que al cambiar los datos de ejemplo lo viejo seguía apareciendo. Se sube la versión y lo guardado con otra se descarta |
 | **Lo que el panel publica o pausa lo ve el hincha, en el mismo navegador** | Antes el panel decía «Beneficio publicado» y la app no lo mostraba. Para que pase entre aparatos distintos hace falta el servidor del piloto (E1.1) |
 | **La demo del club no muestra marcas reales** | En «Marcas de la red» aparecían YPF, Coca-Cola, McDonald's, Starbucks, Adidas y Grido, como si fueran aliadas, frente a un club que negocia con nosotros. Ahora van con nombres de ejemplo (`MARCAS_DE_EJEMPLO` en `src/services/mocks/escenarioClub.ts`). La demo general no cambia, y volver atrás es sacar esa lista |
+| **Un solo Talleres para las dos demos** | La demo general está en la dirección corta, la que la gente escribe de memoria, y mostraba otro Talleres: con máquinas, sensores y el banco al 62 %. Ahora las dos salen de `casoDelClub` (`src/services/mocks/escenarioClub.ts`), y una prueba falla si se separan |
 
 ## Convenciones de trabajo
 

@@ -41,6 +41,8 @@ export const sponsors: Sponsor[] = [
     greenScore: 88,
     kgRecovered: 4120,
   },
+  // Talleres: lo reemplaza el caso del club (src/services/mocks/escenarioClub.ts, conElCasoDelClub).
+  // Acá sólo fija su lugar en la lista; sus puntos, su banco y su traza salen de ahí.
   {
     id: 's_talleres',
     name: 'Talleres',
@@ -48,8 +50,8 @@ export const sponsors: Sponsor[] = [
     category: 'estadio',
     brandColor: '#059669',
     tagline: 'Reciclá con la hinchada',
-    greenScore: 82,
-    kgRecovered: 2380,
+    greenScore: 64,
+    kgRecovered: 180,
   },
   {
     id: 's_muni',
@@ -150,18 +152,6 @@ export const points: RecyclePoint[] = [
     openNow: true,
   },
   {
-    id: 'p_talleres_estadio',
-    name: 'Máquinas del estadio',
-    sponsorId: 's_talleres',
-    type: 'maquina',
-    address: 'Ingreso principal, en días de partido',
-    city: 'Córdoba',
-    x: 52,
-    y: 22,
-    acceptedMaterials: ['tapitas', 'plastico'],
-    openNow: true,
-  },
-  {
     id: 'p_muni_plaza',
     name: 'Punto Verde Plaza Mitre',
     sponsorId: 's_muni',
@@ -238,34 +228,6 @@ export const points: RecyclePoint[] = [
 // ─── Proyectos de impacto (feature estrella) ──────────────────────────
 export const projects: ImpactProject[] = [
   {
-    id: 'pr_banco_talleres',
-    title: 'Banco de suplentes 100% reciclado',
-    sponsorId: 's_talleres',
-    sponsorName: 'Talleres',
-    description:
-      'Cada tapita que depositás en las máquinas del estadio se transforma en el plástico del nuevo banco de suplentes. Cuando lleguemos a la meta, se fabrica e instala.',
-    material: 'tapitas',
-    unitLabel: 'tapitas',
-    goalUnits: 500000,
-    collectedUnits: 312400,
-    myContributionUnits: 7480,
-    estimatedDate: '2027-02-28',
-    illustration: 'bench',
-    milestones: [
-      { label: 'Recolección', done: true },
-      { label: 'Procesamiento', done: true },
-      { label: 'Fabricación', done: false },
-      { label: 'Instalación', done: false },
-    ],
-    topContributors: [
-      { name: 'Mateo F.', units: 14200, avatarColor: '#E1122B' },
-      { name: 'Lucía P.', units: 11890, avatarColor: '#0033A0' },
-      { name: 'Camila R.', units: 7480, avatarColor: '#059669' },
-      { name: 'Diego A.', units: 6310, avatarColor: '#7c3aed' },
-      { name: 'Sol M.', units: 5020, avatarColor: '#b45309' },
-    ],
-  },
-  {
     id: 'pr_mobiliario_ypf',
     title: 'Mobiliario y cartelería circular YPF',
     sponsorId: 's_ypf',
@@ -295,64 +257,8 @@ export const projects: ImpactProject[] = [
 ]
 
 // ─── Cadena de trazabilidad (para el proyecto del banco) ──────────────
-export const traceByProject: Record<string, TraceEvent[]> = {
-  pr_banco_talleres: [
-    {
-      stage: 'aporte',
-      title: 'Tu aporte',
-      detail: '7.480 tapitas depositadas en las máquinas del estadio.',
-      date: '2026-05-20',
-      done: true,
-      operator: 'Máquina #EST-03',
-    },
-    {
-      stage: 'validacion',
-      title: 'Validación automática',
-      detail: 'Ejemplo: así se vería si el punto tuviera una máquina que pesa y cuenta.',
-      date: '2026-05-20',
-      done: true,
-      operator: 'Sensor IoT',
-    },
-    {
-      stage: 'lote',
-      title: 'Lote LT-2026-118',
-      detail: 'Agrupado con aportes de la semana en el punto del estadio.',
-      date: '2026-05-22',
-      done: true,
-    },
-    {
-      stage: 'retiro',
-      title: 'Retiro del operador',
-      detail: '1.2 toneladas retiradas para procesamiento.',
-      date: '2026-05-24',
-      done: true,
-      operator: 'EcoLogística SRL',
-    },
-    {
-      stage: 'clasificacion',
-      title: 'Clasificación y limpieza',
-      detail: 'Separación por color y tipo de polímero (PEAD).',
-      date: '2026-05-26',
-      done: true,
-      operator: 'Planta CircularAR',
-    },
-    {
-      stage: 'transformacion',
-      title: 'Fabricación del banco',
-      detail: 'Extrusión y moldeado de las piezas del banco de suplentes.',
-      date: null,
-      done: false,
-      operator: 'Planta CircularAR',
-    },
-    {
-      stage: 'producto',
-      title: 'Instalación en el estadio',
-      detail: 'Colocación e inauguración del banco 100% reciclado.',
-      date: null,
-      done: false,
-    },
-  ],
-}
+// La traza del banco de Talleres sale del caso del club (escenarioClub.ts).
+export const traceByProject: Record<string, TraceEvent[]> = {}
 
 // ─── Beneficios (marketplace) ─────────────────────────────────────────
 export const benefits: Benefit[] = [
@@ -393,44 +299,6 @@ export const benefits: Benefit[] = [
     description: 'Un café mediano en cualquier YPF Full.',
     stock: 200,
     emoji: '☕',
-  },
-  {
-    id: 'b_talleres_canillera',
-    title: 'Canillera de plástico reciclado',
-    sponsorId: 's_talleres',
-    sponsorName: 'Talleres',
-    category: 'producto',
-    costXp: 2500,
-    premiumCostXp: 2100,
-    city: 'Córdoba',
-    description: 'Canilleras oficiales fabricadas con tapitas recicladas.',
-    stock: 40,
-    emoji: '🦵',
-  },
-  {
-    id: 'b_talleres_entrada',
-    title: 'Entrada partido de local',
-    sponsorId: 's_talleres',
-    sponsorName: 'Talleres',
-    category: 'entrada',
-    costXp: 8000,
-    premiumCostXp: 6800,
-    city: 'Córdoba',
-    description: 'Una entrada para el próximo partido de local.',
-    stock: 10,
-    emoji: '🎟️',
-  },
-  {
-    id: 'b_talleres_visita',
-    title: 'Visita guiada al estadio',
-    sponsorId: 's_talleres',
-    sponsorName: 'Talleres',
-    category: 'experiencia',
-    costXp: 1500,
-    city: 'Córdoba',
-    description: 'Recorrido guiado por el estadio para dos personas.',
-    stock: 60,
-    emoji: '🏟️',
   },
   {
     id: 'b_lumen_cafe',
@@ -535,21 +403,6 @@ export const benefits: Benefit[] = [
 // ─── Historial de aportes del usuario ─────────────────────────────────
 export const contributions: Contribution[] = [
   {
-    id: 'c_1',
-    userId: 'u_me',
-    pointId: 'p_talleres_estadio',
-    pointName: 'Máquinas del estadio',
-    sponsorId: 's_talleres',
-    sponsorName: 'Talleres',
-    material: 'tapitas',
-    units: 320,
-    xpEarned: 640,
-    projectId: 'pr_banco_talleres',
-    status: 'validado',
-    createdAt: '2026-05-20T18:30:00-03:00',
-    lotId: 'LT-2026-118',
-  },
-  {
     id: 'c_2',
     userId: 'u_me',
     pointId: 'p_ypf_libertador',
@@ -606,13 +459,6 @@ export const rankingGlobal: RankingEntry[] = [
   { position: 10, userId: 'u_nico', name: 'Nicolás V.', avatarColor: '#65a30d', xpThisMonth: 1410 },
 ]
 
-export const rankingTalleres: RankingEntry[] = [
-  { position: 1, userId: 'u_mateo', name: 'Mateo F.', avatarColor: '#E1122B', xpThisMonth: 3200 },
-  { position: 2, userId: 'u_me', name: 'Camila R. (vos)', avatarColor: '#059669', xpThisMonth: 1820, isCurrentUser: true },
-  { position: 3, userId: 'u_diego', name: 'Diego A.', avatarColor: '#7c3aed', xpThisMonth: 1540 },
-  { position: 4, userId: 'u_sol', name: 'Sol M.', avatarColor: '#b45309', xpThisMonth: 980 },
-]
-
 export const rankingYpf: RankingEntry[] = [
   { position: 1, userId: 'u_joaco', name: 'Joaquín T.', avatarColor: '#1d4ed8', xpThisMonth: 2540 },
   { position: 2, userId: 'u_lucia', name: 'Lucía P.', avatarColor: '#0033A0', xpThisMonth: 2210 },
@@ -623,7 +469,6 @@ export const rankingYpf: RankingEntry[] = [
 /** Rankings por pestaña (scope). Las pestañas que se muestran salen de RANKING_TABS. */
 export const rankings: Record<string, RankingEntry[]> = {
   global: rankingGlobal,
-  talleres: rankingTalleres,
   ypf: rankingYpf,
 }
 
@@ -634,14 +479,6 @@ export const prizes: Record<string, MonthlyPrize> = {
     title: 'Kit circular del mes',
     description: 'El #1 del ranking global se lleva un kit de productos reciclados + 5.000 XP.',
     emoji: '🏆',
-  },
-  talleres: {
-    sponsorId: 's_talleres',
-    sponsorName: 'Talleres',
-    title: 'Experiencia banco de suplentes',
-    description:
-      'Quien más XP sume en Talleres este mes ve un partido sentado en el banco de suplentes.',
-    emoji: '🏟️',
   },
   ypf: {
     sponsorId: 's_ypf',
@@ -677,25 +514,6 @@ export const sponsorMetrics: Record<string, SponsorMetrics> = {
       { point: 'Cabildo 2200', contributions: 5610 },
       { point: 'Panamericana KM 30', contributions: 6070 },
     ],
-  },
-  s_talleres: {
-    sponsorId: 's_talleres',
-    sponsorName: 'Talleres',
-    greenScore: 82,
-    activeUsers: 2110,
-    contributions: 11240,
-    xpEmitted: 742000,
-    benefitsRedeemed: 318,
-    kgRecovered: 2380,
-    capsRecovered: 612300,
-    monthlySeries: [
-      { label: 'Ene', value: 980 },
-      { label: 'Feb', value: 1240 },
-      { label: 'Mar', value: 1610 },
-      { label: 'Abr', value: 2180 },
-      { label: 'May', value: 2540 },
-    ],
-    byPoint: [{ point: 'Máquinas del estadio', contributions: 11240 }],
   },
 }
 
