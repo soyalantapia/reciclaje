@@ -64,7 +64,7 @@ export default function CommerceResumen() {
     <div className="space-y-5">
       <div>
         <h1 className="text-2xl font-extrabold leading-tight">Resumen</h1>
-        <p className="text-sm text-muted-foreground">Tu impacto y comunidad este mes.</p>
+        <p className="text-sm text-muted-foreground">Tu impacto y tu comunidad, desde que te sumaste.</p>
       </div>
 
       {/* Huella Verde accionable */}
@@ -80,7 +80,7 @@ export default function CommerceResumen() {
           Top 12% de la red 🌎
         </p>
         <p className="mt-2 text-xs text-muted-foreground">
-          Cómo subirla: sumá puntos de reciclaje, publicá beneficios y mantené tus máquinas activas.
+          Cómo subirla: sumá puntos de reciclaje, publicá beneficios y mantené tus puntos activos.
           Descargá la placa para tu vidriera y redes.
         </p>
       </div>
@@ -106,7 +106,7 @@ export default function CommerceResumen() {
           label="XP emitidos"
           value={formatNumber(m.xpEmitted)}
           hint="XP por canjear de tus clientes"
-          tooltip="XP que entregaste; representan beneficios que tus clientes pueden canjear."
+          tooltip="XP que entregaste; representan beneficios que tu comunidad puede canjear."
         />
         <StatCard
           icon={Gift}
@@ -172,7 +172,7 @@ export default function CommerceResumen() {
 
       <Link to="/comercio/reportes">
         <Button block variant="secondary" size="lg">
-          <FileText size={18} /> Exportar reporte para RSE
+          <FileText size={18} /> Exportar reporte de impacto
         </Button>
       </Link>
     </div>

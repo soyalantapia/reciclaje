@@ -19,7 +19,7 @@ const TIERS = [
     includes: [
       'Hasta 5 puntos / máquinas',
       'Beneficios y campañas ilimitadas',
-      'Reportes RSE exportables',
+      'Reportes de impacto exportables',
       'Huella Verde + placa',
       'Soporte prioritario',
     ],

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import type { ActivityItem, Contribution, ImpactProject, RankingEntry } from '@/types'
-import { conAportesDeLaSesion, nombreCorto, rankingConXpDeLaSesion } from './aportesDeLaSesion'
+import type { ActivityItem, Contribution, ImpactProject, RankingEntry, TraceEvent } from '@/types'
+import { conAporteDeLaSesionEnLaTraza, conAportesDeLaSesion, nombreCorto, rankingConXpDeLaSesion } from './aportesDeLaSesion'
 
 const proyecto: ImpactProject = {
   id: 'pr_banco_club',
@@ -123,5 +123,26 @@ describe('rankingConXpDeLaSesion', () => {
 
   it('sin XP en la sesión devuelve el ranking tal cual', () => {
     expect(rankingConXpDeLaSesion(ranking, [], undefined, hoy)).toBe(ranking)
+  })
+})
+
+describe('trazaConAporteDeLaSesion', () => {
+  const traza: TraceEvent[] = [
+    { stage: 'aporte', title: 'Tu aporte', detail: '640 tapitas dejadas en el Punto R · Estadio.', date: '2026-10-04', done: true },
+    { stage: 'validacion', title: 'Pesaje del lote', detail: 'Al cierre de cada partido…', date: null, done: false },
+  ]
+
+  it('el hito «Tu aporte» muestra el último aporte de la sesión a ese proyecto', () => {
+    const r = conAporteDeLaSesionEnLaTraza(traza, proyecto, [
+      aporte({ id: 'c_viejo', units: 25, createdAt: '2026-10-10T13:00:00.000Z' }),
+      aporte({ id: 'c_nuevo', units: 50, createdAt: '2026-10-10T15:00:00.000Z' }),
+    ])
+    expect(r[0]).toMatchObject({ stage: 'aporte', detail: '50 tapitas en Punto R · Estadio.', date: '2026-10-10', done: true })
+    expect(r[1]).toBe(traza[1])
+  })
+
+  it('sin aportes de la sesión a ese proyecto y material, la traza queda igual', () => {
+    expect(conAporteDeLaSesionEnLaTraza(traza, proyecto, [])).toBe(traza)
+    expect(conAporteDeLaSesionEnLaTraza(traza, proyecto, [aporte({ projectId: 'otro' }), aporte({ material: 'plastico' })])).toBe(traza)
   })
 })

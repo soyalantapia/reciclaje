@@ -90,7 +90,7 @@ const TIERS = [
     name: 'Pro',
     fee: '$90.000/mes',
     featured: true,
-    includes: ['Hasta 5 puntos', 'Campañas ilimitadas', 'Reportes RSE', 'Huella Verde + placa'],
+    includes: ['Hasta 5 puntos', 'Campañas ilimitadas', 'Reportes de impacto', 'Huella Verde + placa'],
   },
   { name: 'Enterprise', fee: 'A medida', includes: ['Multi-sede', 'API', 'Datos agregados', 'Account manager'] },
 ]
