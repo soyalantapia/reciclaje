@@ -29,7 +29,7 @@ Fuentes de lo prometido: la presentación general, el resumen ejecutivo para el 
 | Ranking general del mes | A medias | `src/pages/Ranking.tsx:9-14`, `src/services/mocks/data.ts:596-621` | Datos fijos; las pestañas por sede están escritas en el código | S | demo |
 | Ranking por producto o por hinchada | Falta | — | Pestaña del club en la demo; cálculo real en el servidor | S en demo · M real | demo y piloto |
 | Multiplicadores x2, x1,5 y x1,25 a los tres primeros del mes | Falta | — | Cierre mensual en el servidor | M | fase 2 |
-| Premio-experiencia para quien más aporta | A medias | Premio del mes por sponsor: `src/services/mocks/data.ts:631-638` | Que la institución lo defina desde su panel | S | demo y piloto |
+| Premio-experiencia para quien más aporta | A medias | Premio del mes por sponsor: `src/services/mocks/data.ts:631-638` | Desde el 10/10/2026 la institución lo cambia o lo pausa desde Campañas y la hinchada lo ve, en el mismo navegador. Falta el servidor para que pase entre aparatos | S | demo y piloto |
 | Recompensas del club: entradas, camisetas, entrenamientos | A medias | Beneficios de tipo entrada, merch y experiencia: `src/services/mocks/data.ts:410-421` | Cargar los del club | S | demo |
 | La app es gratis | Existe | — | — | — | — |
 | Premium: mejores canjes | A medias | Precio preferencial en los beneficios (`premiumCostXp`) | Se activa con un botón, sin cobro (`src/pages/Profile.tsx:64-66`) | M | fase 2; en la demo, rotulado |
@@ -43,9 +43,9 @@ Fuentes de lo prometido: la presentación general, el resumen ejecutivo para el 
 | Alta en tres pasos | Existe | `src/pages/commerce/CommerceOnboarding.tsx`; el rubro club o estadio está en la línea 19 | — | — | — |
 | Panel de institución (club) | A medias | El club usa el mismo panel del comercio | Vistas propias: producto con meta, hinchada, pesajes y constancia | M | piloto |
 | La institución crea su producto con meta de kilos | Falta | Los proyectos son fijos: `src/services/mocks/data.ts:239` | Alta de producto desde el panel | M | piloto |
-| Resumen con Huella Verde, seis indicadores y aportes por mes y por punto | A medias | `src/pages/commerce/CommerceResumen.tsx`; números de una fórmula en `src/lib/metrics.ts:9-34` | Datos reales | M | piloto |
+| Resumen con Huella Verde, seis indicadores y aportes por mes y por punto | A medias | `src/pages/commerce/CommerceResumen.tsx`; números de una fórmula en `src/lib/metrics.ts:9-34` | Datos reales. La posición en la red ya no es un «Top 12%» fijo: se calcula con la Huella Verde (`src/lib/posicionEnLaRed.ts`) | M | piloto |
 | Publicar beneficios | Existe | `src/pages/commerce/CommerceBenefits.tsx` | Se guardan en el navegador. Desde el 10/10/2026 la app del hincha los muestra y los deja canjear, y lo pausado no se ve, en el mismo navegador; entre aparatos distintos hace falta el servidor (E1.1) | S | piloto |
-| Campañas: premio del mes y desafíos | A medias | `src/pages/commerce/CommerceCampaigns.tsx` | No impactan en nada fuera del panel | M | fase 2 |
+| Campañas: premio del mes y desafíos | A medias | `src/pages/commerce/CommerceCampaigns.tsx` | Desde el 10/10/2026, el premio del mes y los desafíos que el panel lanza o pausa se ven en la pestaña del ranking de ese sponsor, en el mismo navegador (`src/lib/campanasDeLaRed.ts`). Falta que pase entre aparatos (servidor, E1.1) y en los comercios sin pestaña propia, que el panel avisa | M | fase 2 |
 | Campaña «Multiplicador XP» | Dejar de prometer por ahora | `src/pages/commerce/CommerceCampaigns.tsx:16` | Resuelto el 10/10/2026: se muestra «próximamente», no se puede lanzar y la landing ya no la ofrece | S | demo |
 | QR de cada punto para descargar e imprimir | Existe | `src/pages/commerce/CommercePoints.tsx:36-38` | — | — | — |
 | Exportar en planilla o PDF | A medias | `src/pages/commerce/CommerceReports.tsx:29`, `:71` | Sale de la fórmula y no trae la trazabilidad | S | piloto |
