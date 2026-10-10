@@ -42,12 +42,12 @@ export const sponsors: Sponsor[] = [
     kgRecovered: 4120,
   },
   {
-    id: 's_river',
-    name: 'River Plate',
-    slug: 'river',
+    id: 's_talleres',
+    name: 'Talleres',
+    slug: 'talleres',
     category: 'estadio',
-    brandColor: '#E1122B',
-    tagline: 'Reciclá con el Millonario',
+    brandColor: '#059669',
+    tagline: 'Reciclá con la hinchada',
     greenScore: 82,
     kgRecovered: 2380,
   },
@@ -150,12 +150,12 @@ export const points: RecyclePoint[] = [
     openNow: true,
   },
   {
-    id: 'p_river_monumental',
-    name: 'Máquinas Estadio Monumental',
-    sponsorId: 's_river',
+    id: 'p_talleres_estadio',
+    name: 'Máquinas del estadio',
+    sponsorId: 's_talleres',
     type: 'maquina',
-    address: 'Av. Pres. Figueroa Alcorta 7597',
-    city: 'CABA',
+    address: 'Ingreso principal, en días de partido',
+    city: 'Córdoba',
     x: 52,
     y: 22,
     acceptedMaterials: ['tapitas', 'plastico'],
@@ -238,12 +238,12 @@ export const points: RecyclePoint[] = [
 // ─── Proyectos de impacto (feature estrella) ──────────────────────────
 export const projects: ImpactProject[] = [
   {
-    id: 'pr_banco_river',
+    id: 'pr_banco_talleres',
     title: 'Banco de suplentes 100% reciclado',
-    sponsorId: 's_river',
-    sponsorName: 'River Plate',
+    sponsorId: 's_talleres',
+    sponsorName: 'Talleres',
     description:
-      'Cada tapita que depositás en las máquinas del Monumental se transforma en el plástico del nuevo banco de suplentes del estadio. Cuando lleguemos a la meta, se fabrica e instala.',
+      'Cada tapita que depositás en las máquinas del estadio se transforma en el plástico del nuevo banco de suplentes. Cuando lleguemos a la meta, se fabrica e instala.',
     material: 'tapitas',
     unitLabel: 'tapitas',
     goalUnits: 500000,
@@ -296,14 +296,14 @@ export const projects: ImpactProject[] = [
 
 // ─── Cadena de trazabilidad (para el proyecto del banco) ──────────────
 export const traceByProject: Record<string, TraceEvent[]> = {
-  pr_banco_river: [
+  pr_banco_talleres: [
     {
       stage: 'aporte',
       title: 'Tu aporte',
-      detail: '7.480 tapitas depositadas en Máquinas Estadio Monumental.',
+      detail: '7.480 tapitas depositadas en las máquinas del estadio.',
       date: '2026-05-20',
       done: true,
-      operator: 'Máquina #MON-03',
+      operator: 'Máquina #EST-03',
     },
     {
       stage: 'validacion',
@@ -316,7 +316,7 @@ export const traceByProject: Record<string, TraceEvent[]> = {
     {
       stage: 'lote',
       title: 'Lote LT-2026-118',
-      detail: 'Agrupado con aportes de la semana en el punto Monumental.',
+      detail: 'Agrupado con aportes de la semana en el punto del estadio.',
       date: '2026-05-22',
       done: true,
     },
@@ -346,7 +346,7 @@ export const traceByProject: Record<string, TraceEvent[]> = {
     },
     {
       stage: 'producto',
-      title: 'Instalación en el Monumental',
+      title: 'Instalación en el estadio',
       detail: 'Colocación e inauguración del banco 100% reciclado.',
       date: null,
       done: false,
@@ -395,40 +395,40 @@ export const benefits: Benefit[] = [
     emoji: '☕',
   },
   {
-    id: 'b_river_canillera',
+    id: 'b_talleres_canillera',
     title: 'Canillera de plástico reciclado',
-    sponsorId: 's_river',
-    sponsorName: 'River Plate',
+    sponsorId: 's_talleres',
+    sponsorName: 'Talleres',
     category: 'producto',
     costXp: 2500,
     premiumCostXp: 2100,
-    city: 'CABA',
+    city: 'Córdoba',
     description: 'Canilleras oficiales fabricadas con tapitas recicladas.',
     stock: 40,
     emoji: '🦵',
   },
   {
-    id: 'b_river_entrada',
+    id: 'b_talleres_entrada',
     title: 'Entrada partido de local',
-    sponsorId: 's_river',
-    sponsorName: 'River Plate',
+    sponsorId: 's_talleres',
+    sponsorName: 'Talleres',
     category: 'entrada',
     costXp: 8000,
     premiumCostXp: 6800,
-    city: 'CABA',
-    description: 'Una entrada para el próximo partido en el Monumental.',
+    city: 'Córdoba',
+    description: 'Una entrada para el próximo partido de local.',
     stock: 10,
     emoji: '🎟️',
   },
   {
-    id: 'b_river_museo',
-    title: 'Visita al Museo River',
-    sponsorId: 's_river',
-    sponsorName: 'River Plate',
+    id: 'b_talleres_visita',
+    title: 'Visita guiada al estadio',
+    sponsorId: 's_talleres',
+    sponsorName: 'Talleres',
     category: 'experiencia',
     costXp: 1500,
-    city: 'CABA',
-    description: 'Entrada doble al museo del club.',
+    city: 'Córdoba',
+    description: 'Recorrido guiado por el estadio para dos personas.',
     stock: 60,
     emoji: '🏟️',
   },
@@ -537,14 +537,14 @@ export const contributions: Contribution[] = [
   {
     id: 'c_1',
     userId: 'u_me',
-    pointId: 'p_river_monumental',
-    pointName: 'Máquinas Estadio Monumental',
-    sponsorId: 's_river',
-    sponsorName: 'River Plate',
+    pointId: 'p_talleres_estadio',
+    pointName: 'Máquinas del estadio',
+    sponsorId: 's_talleres',
+    sponsorName: 'Talleres',
     material: 'tapitas',
     units: 320,
     xpEarned: 640,
-    projectId: 'pr_banco_river',
+    projectId: 'pr_banco_talleres',
     status: 'validado',
     createdAt: '2026-05-20T18:30:00-03:00',
     lotId: 'LT-2026-118',
@@ -606,7 +606,7 @@ export const rankingGlobal: RankingEntry[] = [
   { position: 10, userId: 'u_nico', name: 'Nicolás V.', avatarColor: '#65a30d', xpThisMonth: 1410 },
 ]
 
-export const rankingRiver: RankingEntry[] = [
+export const rankingTalleres: RankingEntry[] = [
   { position: 1, userId: 'u_mateo', name: 'Mateo F.', avatarColor: '#E1122B', xpThisMonth: 3200 },
   { position: 2, userId: 'u_me', name: 'Camila R. (vos)', avatarColor: '#059669', xpThisMonth: 1820, isCurrentUser: true },
   { position: 3, userId: 'u_diego', name: 'Diego A.', avatarColor: '#7c3aed', xpThisMonth: 1540 },
@@ -623,24 +623,24 @@ export const rankingYpf: RankingEntry[] = [
 /** Rankings por pestaña (scope). Las pestañas que se muestran salen de RANKING_TABS. */
 export const rankings: Record<string, RankingEntry[]> = {
   global: rankingGlobal,
-  river: rankingRiver,
+  talleres: rankingTalleres,
   ypf: rankingYpf,
 }
 
 export const prizes: Record<string, MonthlyPrize> = {
   global: {
-    sponsorId: 's_river',
+    sponsorId: 'reciclaxp',
     sponsorName: 'ReciclaXP',
     title: 'Kit circular del mes',
     description: 'El #1 del ranking global se lleva un kit de productos reciclados + 5.000 XP.',
     emoji: '🏆',
   },
-  river: {
-    sponsorId: 's_river',
-    sponsorName: 'River Plate',
+  talleres: {
+    sponsorId: 's_talleres',
+    sponsorName: 'Talleres',
     title: 'Experiencia banco de suplentes',
     description:
-      'Quien más XP sume en River este mes ve un partido sentado en el banco de suplentes.',
+      'Quien más XP sume en Talleres este mes ve un partido sentado en el banco de suplentes.',
     emoji: '🏟️',
   },
   ypf: {
@@ -678,9 +678,9 @@ export const sponsorMetrics: Record<string, SponsorMetrics> = {
       { point: 'Panamericana KM 30', contributions: 6070 },
     ],
   },
-  s_river: {
-    sponsorId: 's_river',
-    sponsorName: 'River Plate',
+  s_talleres: {
+    sponsorId: 's_talleres',
+    sponsorName: 'Talleres',
     greenScore: 82,
     activeUsers: 2110,
     contributions: 11240,
@@ -695,7 +695,7 @@ export const sponsorMetrics: Record<string, SponsorMetrics> = {
       { label: 'Abr', value: 2180 },
       { label: 'May', value: 2540 },
     ],
-    byPoint: [{ point: 'Estadio Monumental', contributions: 11240 }],
+    byPoint: [{ point: 'Máquinas del estadio', contributions: 11240 }],
   },
 }
 

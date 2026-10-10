@@ -3,6 +3,7 @@ import { persist } from 'zustand/middleware'
 import type { User } from '@/types'
 import { levelFor } from '@/lib/copy'
 import { claveDeAlmacenamiento } from '@/lib/escenario'
+import { conVersionDeLosDatos } from './versionDeDatos'
 
 interface WalletState {
   userId: string | null
@@ -68,6 +69,6 @@ export const useWalletStore = create<WalletState>()(
           levelName: 'Semilla',
         }),
     }),
-    { name: claveDeAlmacenamiento('wallet'), version: 1 },
+    { name: claveDeAlmacenamiento('wallet'), ...conVersionDeLosDatos<WalletState>() },
   ),
 )

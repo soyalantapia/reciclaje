@@ -12,7 +12,7 @@ import type { DatosDelClub } from '@/lib/escenario'
 import type { DatosDemo } from './datos'
 
 /** El club de ejemplo de la demo general: en este escenario no aparece. */
-const CLUB_DE_EJEMPLO = 's_river'
+const CLUB_DE_EJEMPLO = 's_talleres'
 const ID_CLUB = 's_club'
 const ID_PRODUCTO = 'pr_banco_club'
 /** Verde de ReciclaXP: los colores y el escudo del club no se usan sin su permiso escrito. */

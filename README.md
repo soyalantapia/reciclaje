@@ -49,14 +49,15 @@ Login: cualquier email/contraseña, o el botón **“Entrar a la demo sin regist
 banco de suplentes como producto destacado, el ranking de la hinchada con su premio-experiencia
 y las recompensas del club. El club de ejemplo de la demo general no aparece.
 
-- El nombre del club, el estadio y la sede van en `.env.local` (`VITE_CLUB_NOMBRE`,
-  `VITE_CLUB_ESTADIO`, `VITE_CLUB_SEDE`; ver `.env.example`). Sin permiso escrito del club, su
-  nombre, escudo y colores **no** van al repo ni a nada publicado.
+- **El club es Talleres** (decidido el 10/10/2026): las dos demos lo nombran y ninguna nombra a River
+  (lo vigila `src/services/mocks/escenarioClub.test.ts`). Para mostrarle la demo a otro club, `.env.local`
+  pisa el nombre, el estadio y la sede (`VITE_CLUB_NOMBRE`, `VITE_CLUB_ESTADIO`, `VITE_CLUB_SEDE`; ver
+  `.env.example`). El escudo y los colores del club **no** se publican sin su permiso escrito.
 - Guarda su estado con claves propias (`reciclaxp-club-*`): abrirlo en el mismo navegador no
   toca la demo general.
 - Todas las pantallas llevan el aviso «Demo · los números son de ejemplo».
 - Se publica aparte con `npm run deploy:club` en https://soyalantapia.github.io/reciclaje-club/
-  (repo `soyalantapia/reciclaje-club`), con el nombre genérico «Tu club». `npm run deploy` sigue
+  (repo `soyalantapia/reciclaje-club`), y en Railway en https://reciclaxp.xnod.tech/club. `npm run deploy` sigue
   publicando la demo general en su dirección de siempre.
 - Qué existe y qué falta respecto de lo prometido: `docs/producto/prometido-vs-demo.md`.
 

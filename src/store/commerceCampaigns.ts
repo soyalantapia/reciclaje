@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { Campaign } from '@/types'
 import { claveDeAlmacenamiento } from '@/lib/escenario'
+import { conVersionDeLosDatos } from './versionDeDatos'
 
 interface CommerceCampaignsState {
   campaigns: Campaign[]
@@ -23,6 +24,6 @@ export const useCommerceCampaignsStore = create<CommerceCampaignsState>()(
           ),
         })),
     }),
-    { name: claveDeAlmacenamiento('commerce-campaigns'), version: 1 },
+    { name: claveDeAlmacenamiento('commerce-campaigns'), ...conVersionDeLosDatos<CommerceCampaignsState>() },
   ),
 )

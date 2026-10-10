@@ -11,6 +11,21 @@ const ID_CLUB = club.sponsors[0].id
 // La demo se muestra el 13/10/2026: ninguna fecha estimada puede estar vencida.
 const DIA_DE_LA_REUNION = '2026-10-13'
 
+describe('el club de las demos es Talleres', () => {
+  it('ninguna de las dos demos nombra a River, ni en los textos ni en los ids', () => {
+    expect(JSON.stringify(datosGenerales)).not.toMatch(/river|monumental|millonario/i)
+    expect(JSON.stringify(club)).not.toMatch(/river|monumental|millonario/i)
+  })
+
+  it('la demo general tiene a Talleres en la red, con su proyecto, su ranking y su premio', () => {
+    const talleres = datosGenerales.sponsors.find((s) => s.name === 'Talleres')
+    expect(talleres).toBeDefined()
+    expect(datosGenerales.projects.some((p) => p.sponsorId === talleres!.id)).toBe(true)
+    expect(datosGenerales.rankings.talleres).toBeDefined()
+    expect(datosGenerales.prizes.talleres?.sponsorName).toBe('Talleres')
+  })
+})
+
 describe('escenario club', () => {
   it('cada pestaña del ranking tiene su ranking y su sede es un sponsor que existe, en los dos escenarios', () => {
     const escenarios = [['club', club], ['general', datosGenerales]] as const
@@ -43,7 +58,7 @@ describe('escenario club', () => {
     expect(club.rankings.club.length).toBeGreaterThan(0)
     expect(club.rankings.club.filter((e) => e.isCurrentUser)).toHaveLength(1)
     expect(club.prizes.club.sponsorId).toBe(ID_CLUB)
-    expect(club.rankings.river).toBeUndefined()
+    expect(club.rankings.talleres).toBeUndefined()
   })
 
   it('carga recompensas del club: entrada, camiseta y experiencia', () => {
@@ -87,7 +102,7 @@ describe('fechas estimadas', () => {
 
 describe('demo general', () => {
   it('queda igual: sigue teniendo su club de ejemplo y sus pestañas de ranking', () => {
-    expect(datosGenerales.sponsors.some((s) => s.slug === 'river')).toBe(true)
-    expect(Object.keys(datosGenerales.rankings)).toEqual(['global', 'river', 'ypf'])
+    expect(datosGenerales.sponsors.some((s) => s.slug === 'talleres')).toBe(true)
+    expect(Object.keys(datosGenerales.rankings)).toEqual(['global', 'talleres', 'ypf'])
   })
 })
