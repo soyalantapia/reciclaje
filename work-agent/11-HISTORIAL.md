@@ -134,6 +134,10 @@ WhatsApp del proyecto y de la reunión del 03/08 (acta en `docs/producto/reunion
 - Rama `fix/beneficios-del-panel-llegan-al-hincha`, en el mismo navegador:
   - un beneficio publicado en el panel aparece en la app del hincha y se puede canjear (antes el simulador respondía «Beneficio no encontrado»);
   - uno pausado deja de verse.
+- Rama `fix/talleres-en-vez-de-river` (pedido de Alan, 10/10):
+  - las dos demos dicen Talleres;
+  - la demo general ya no tiene a River: el sponsor, el punto, el proyecto, los beneficios, el ranking, el premio y las métricas, también en los ids;
+  - lo guardado en el navegador con los nombres viejos se descarta al cargar (`src/store/versionDeDatos.ts`).
 
 ---
 

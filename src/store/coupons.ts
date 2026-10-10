@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { Coupon } from '@/types'
 import { claveDeAlmacenamiento } from '@/lib/escenario'
+import { conVersionDeLosDatos } from './versionDeDatos'
 
 interface CouponsState {
   coupons: Coupon[]
@@ -16,6 +17,6 @@ export const useCouponsStore = create<CouponsState>()(
       add: (coupon) => set((s) => ({ coupons: [coupon, ...s.coupons] })),
       clear: () => set({ coupons: [] }),
     }),
-    { name: claveDeAlmacenamiento('coupons'), version: 1 },
+    { name: claveDeAlmacenamiento('coupons'), ...conVersionDeLosDatos<CouponsState>() },
   ),
 )

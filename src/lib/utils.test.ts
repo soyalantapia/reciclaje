@@ -40,7 +40,7 @@ describe('parsePointFromQr', () => {
     expect(parsePointFromQr('reciclaxp:point:p_ypf_libertador')).toBe('p_ypf_libertador')
   })
   it('acepta el id crudo', () => {
-    expect(parsePointFromQr('p_river_monumental')).toBe('p_river_monumental')
+    expect(parsePointFromQr('p_talleres_estadio')).toBe('p_talleres_estadio')
   })
   it('devuelve null si no reconoce', () => {
     expect(parsePointFromQr('hola mundo')).toBeNull()

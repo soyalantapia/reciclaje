@@ -5,8 +5,9 @@
  * - `club`: el caso de un club para el piloto. Cambia el club de ejemplo por "el club",
  *   con sus Punto R, su producto con meta, el ranking de la hinchada y sus recompensas.
  *
- * El nombre real del club va en `VITE_CLUB_NOMBRE` dentro de `.env.local` (fuera del repo,
- * que es público): sin permiso escrito del club, su nombre, escudo y colores no se publican.
+ * El club es Talleres: Alan decidió el 10/10/2026 que las demos lo nombren. `VITE_CLUB_NOMBRE` lo
+ * pisa para mostrarle la demo a otro club. El escudo y los colores del club NO se publican sin su
+ * permiso escrito (es una de las preguntas de la reunión).
  */
 export type Escenario = 'general' | 'club'
 
@@ -27,7 +28,7 @@ export interface DatosDelClub {
 }
 
 export const CLUB: DatosDelClub = {
-  nombre: texto(import.meta.env.VITE_CLUB_NOMBRE, 'Tu club'),
+  nombre: texto(import.meta.env.VITE_CLUB_NOMBRE, 'Talleres'),
   estadio: texto(import.meta.env.VITE_CLUB_ESTADIO, 'Estadio'),
   sede: texto(import.meta.env.VITE_CLUB_SEDE, 'Sede social'),
 }
@@ -54,7 +55,7 @@ export function pestanasDelRanking(escenario: Escenario = ESCENARIO): { value: s
       ]
     : [
         { value: 'global', label: 'Global' },
-        { value: 'river', label: 'River', sponsorId: 's_river' },
+        { value: 'talleres', label: 'Talleres', sponsorId: 's_talleres' },
         { value: 'ypf', label: 'YPF', sponsorId: 's_ypf' },
       ]
 }

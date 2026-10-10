@@ -34,7 +34,7 @@ export default function CommerceLogin() {
     if (!sponsors) return []
     const bySlug = (slug: string) => sponsors.find((s) => s.slug === slug)
     // En el escenario club, la cuenta principal entra al panel del club.
-    const otras = ESCENARIO === 'club' ? ['ypf', 'starbucks'] : ['ypf', 'river', 'starbucks']
+    const otras = ESCENARIO === 'club' ? ['ypf', 'starbucks'] : ['ypf', 'talleres', 'starbucks']
     return [
       { email: DEMO_EMAIL, sponsor: bySlug(SLUG_COMERCIO_DEMO) },
       ...otras.map((slug) => ({ email: `${slug}@reciclaxp.app`, sponsor: bySlug(slug) })),

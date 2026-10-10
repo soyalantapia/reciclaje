@@ -15,8 +15,10 @@
 - **Desglose técnico del piloto** por entregable (23,5 a 31,5 días de desarrollo):
   `docs/producto/desglose-piloto.md`.
 - **Escenario club**: `npm run dev:club` en local; publicado aparte con `npm run deploy:club`
-  en https://soyalantapia.github.io/reciclaje-club/ con el nombre genérico «Tu club». El nombre
-  real del club va en `.env.local` y no se publica sin su permiso escrito.
+  en https://soyalantapia.github.io/reciclaje-club/ y en https://reciclaxp.xnod.tech/club.
+- **El club de las demos es Talleres** (decidido el 10/10/2026): las dos lo nombran y ninguna nombra a
+  River, ni en los textos ni en los ids. El escudo y los colores del club esperan su permiso escrito, que
+  se pide en la reunión del martes.
 - **Regla de honestidad aplicada**: todas las pantallas dicen que los números son de ejemplo.
 - **La demo del club no muestra precios de lista** (decidido el 10/10/2026): el panel no tiene «Plan», y la
   landing y el alta dicen «A convenir». El plan del club sale de la propuesta. Se revisa al cerrar la tabla de
