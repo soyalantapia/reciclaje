@@ -1,13 +1,17 @@
+import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { ChevronRight, Leaf, QrCode, Sparkles, Trophy } from 'lucide-react'
 import { api } from '@/services/api'
 import { useApi } from '@/hooks/useApi'
 import { useSessionStore } from '@/store/session'
 import { useActivityStore } from '@/store/activity'
-import { MATERIAL_EMOJI, MATERIAL_UNIT, formatNumber, formatXp, timeAgo } from '@/lib/utils'
+import { useCommerceProductsStore } from '@/store/commerceProducts'
+import { MATERIAL_EMOJI, MATERIAL_UNIT, cn, formatNumber, formatXp, timeAgo } from '@/lib/utils'
+import { claveDeAlmacenamiento } from '@/lib/escenario'
 import { XpWallet } from '@/components/features/XpWallet'
 import { ImpactProgress } from '@/components/features/ImpactProgress'
 import { conAportesDeLaSesion } from '@/lib/aportesDeLaSesion'
+import { esDelPanel, nombreDelProducto } from '@/lib/productosDelClub'
 import { ultimosAportesDeLaHinchada } from '@/lib/ultimosAportes'
 import { BancoDeLaHinchada } from '@/components/features/BancoDeLaHinchada'
 import { CauseCard } from '@/components/features/CauseCard'
@@ -21,15 +25,25 @@ export default function Home() {
   const navigate = useNavigate()
   const user = useSessionStore((s) => s.user)
   const sessionContributions = useActivityStore((s) => s.sessionContributions)
+  // Lo que el club publica desde el panel, aunque sea en otra pestaña, vuelve a pedir los proyectos.
+  const creados = useCommerceProductsStore((s) => s.creados)
   const { data: projects, error: projectsError, reload: reloadProjects } = useApi(
     () => api.getProjects(),
-    [],
+    [creados],
   )
   const { data: history } = useApi(() => api.getContributions(), [])
   const { data: causes } = useApi(() => api.getCauses(), [])
+  const [elegidoId, setElegidoId] = useState<string>()
 
+  const principal = projects?.[0]
+  // Los productos de la hinchada del club destacado: su banco y los que el club publicó desde el panel.
+  const productos =
+    principal?.illustration === 'bench'
+      ? (projects ?? []).filter((p) => p.sponsorId === principal.sponsorId && p.illustration === 'bench')
+      : []
+  const elegido = productos.find((p) => p.id === elegidoId) ?? principal
   // El proyecto destacado suma los aportes de esta sesión (ver src/lib/aportesDeLaSesion.ts).
-  const featured = projects?.[0] && conAportesDeLaSesion(projects[0], sessionContributions, user?.name)
+  const featured = elegido && conAportesDeLaSesion(elegido, sessionContributions, user?.name)
   // El banco de la hinchada: sólo para un proyecto que se dibuja como banco.
   const esBanco = featured?.illustration === 'bench'
   const aportesDelBanco = featured && esBanco ? ultimosAportesDeLaHinchada(featured, sessionContributions, user?.name) : []
@@ -53,19 +67,67 @@ export default function Home() {
           {projectsError && !featured ? (
             <ErrorState message={projectsError} onRetry={reloadProjects} />
           ) : featured && esBanco ? (
-            <BancoDeLaHinchada
-              proyecto={featured}
-              items={aportesDelBanco}
-              propias={propias}
-              enlace={`/proyecto/${featured.id}`}
-              accion={
-                <Link to="/escanear" className="block">
-                  <Button block size="lg" variant="xp">
-                    <QrCode size={20} /> Sumá tus tapitas
-                  </Button>
-                </Link>
-              }
-            />
+            <div className="space-y-3">
+              {/* Un producto por pestaña, si el club publicó alguno además del banco */}
+              {productos.length > 1 && (
+                <div
+                  role="group"
+                  aria-label="Productos de la hinchada"
+                  className="no-scrollbar flex gap-2 overflow-x-auto"
+                >
+                  {productos.map((p) => {
+                    const activo = p.id === featured.id
+                    return (
+                      <button
+                        key={p.id}
+                        type="button"
+                        aria-pressed={activo}
+                        onClick={() => setElegidoId(p.id)}
+                        className={cn(
+                          'inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-semibold transition-colors',
+                          activo
+                            ? 'bg-eco-600 text-white'
+                            : 'bg-card text-muted-foreground ring-1 ring-border hover:bg-muted',
+                        )}
+                      >
+                        {nombreDelProducto(p)}
+                        {esDelPanel(p) && (
+                          <span
+                            className={cn(
+                              'rounded-full px-1.5 py-px text-[10px] font-bold uppercase tracking-wide',
+                              activo ? 'bg-white/20 text-white' : 'bg-xp-100 text-xp-700',
+                            )}
+                          >
+                            nuevo
+                          </span>
+                        )}
+                      </button>
+                    )
+                  })}
+                </div>
+              )}
+              <BancoDeLaHinchada
+                key={featured.id}
+                proyecto={featured}
+                items={aportesDelBanco}
+                propias={propias}
+                enlace={`/proyecto/${featured.id}`}
+                accion={
+                  <Link
+                    to="/escanear"
+                    className="block"
+                    onClick={() => {
+                      // Un producto del panel junta en su Punto R: el escáner arranca con ese punto elegido.
+                      if (featured.puntoId) sessionStorage.setItem(claveDeAlmacenamiento('scan-point'), featured.puntoId)
+                    }}
+                  >
+                    <Button block size="lg" variant="xp">
+                      <QrCode size={20} /> Sumá tus tapitas
+                    </Button>
+                  </Link>
+                }
+              />
+            </div>
           ) : featured ? (
             <>
               <Link to="/escanear" className="block">
