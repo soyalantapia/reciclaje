@@ -24,7 +24,7 @@ export function StatCard({ icon: Icon, label, value, hint, tooltip, delta, class
         {label}
       </div>
       <div className="mt-1.5 flex items-baseline gap-2">
-        <p className="text-2xl font-extrabold leading-none">{value}</p>
+        <p className="font-marcador text-3xl font-bold leading-none tabular-nums">{value}</p>
         {delta != null && (
           <span
             className={cn(

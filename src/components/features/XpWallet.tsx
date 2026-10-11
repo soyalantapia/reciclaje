@@ -32,7 +32,7 @@ export function XpWallet() {
           <div className="flex items-center gap-1.5 text-xs font-semibold text-eco-100">
             <Trophy size={14} /> Reputación
           </div>
-          <p className="mt-1 text-2xl font-extrabold leading-none">
+          <p className="mt-1 font-marcador text-3xl font-bold leading-none tabular-nums">
             {formatNumber(reputationXp)}
           </p>
           <p className="text-[11px] text-eco-100/80">mérito · ranking</p>
@@ -41,7 +41,7 @@ export function XpWallet() {
           <div className="flex items-center gap-1.5 text-xs font-bold">
             <Coins size={14} /> Canjeable
           </div>
-          <p className="mt-1 text-2xl font-extrabold leading-none">
+          <p className="mt-1 font-marcador text-3xl font-bold leading-none tabular-nums">
             {formatNumber(spendableXp)}
           </p>
           <p className="text-[11px] font-medium text-ink-800/80">para beneficios</p>
