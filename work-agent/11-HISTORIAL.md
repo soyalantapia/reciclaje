@@ -204,6 +204,10 @@ WhatsApp del proyecto y de la reunión del 03/08 (acta en `docs/producto/reunion
     - El panel entero y el informe, también el PDF, usan el escudo y la paleta. También los modales: la paleta va en `<html>` mientras el panel está abierto y se saca al salir.
   - **No se publica.** La marca se guarda sólo en el navegador (`src/store/marcaDelClub.ts`). El escudo y los colores del club no van al repo ni a la dirección publicada, que son públicos.
   - **Cómo funciona:** la paleta `eco-*` pasa por variables (`--eco-*` en `src/index.css`). `src/lib/marca.ts` arma la de la marca con `color-mix` y oscurece un color claro hasta que el texto blanco se lea (4,5:1).
+  - **Lo que sumó la revisión final:**
+    - «Descargar PDF» trae una línea de ayuda, «elegí Guardar como PDF», que no se imprime.
+    - Un escudo del que no sale ningún color deja la paleta de siempre: el verde de ReciclaXP no cuenta como color propio.
+    - Lo guardado roto en el navegador ya no tumba el panel.
   - Se hizo en cuatro tareas con subagentes, cada una con su revisión.
 
 ---

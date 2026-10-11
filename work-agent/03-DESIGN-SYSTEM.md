@@ -22,6 +22,7 @@ premios o el CTA principal sobre fondo verde. `danger` = errores y "eliminar".
 - **El mecanismo:** `--color-eco-*` vale `var(--eco-*)`, y `:root` define `--eco-*` con los valores de arriba (`src/index.css`). Con `@theme inline`, cada clase `eco-*` compila a `var(--eco-N)`, así que pisar esas variables en un ancestro recolorea todo lo de adentro.
 - **Con marca:** el panel de un club o un estadio que cargó su marca en «Marca» las pisa con `estiloDeMarca(color)` (`src/lib/marca.ts`), en su contenedor y en `<html>` mientras está abierto.
 - **El 600 tiene que leerse con texto blanco:** si el color de la marca no llega a 4,5:1, se oscurece hasta que llegue.
+- **El verde de ReciclaXP no es un color propio** (`esColorPropio`): es el que queda si la institución no eligió ninguno, o si del escudo no salió ningún color. No pisa la paleta: se ve el escudo con los colores de siempre.
 - **Las reglas:** no escribas hex sueltos donde va la paleta; usá las clases `eco-*`. Si no, ese elemento no toma la marca del club.
 
 ## Tokens semánticos (light/dark)
