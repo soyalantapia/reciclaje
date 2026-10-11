@@ -15,7 +15,12 @@ import { esDelPanel, kilosDeLaMeta, puntosDelProducto } from '@/lib/productosDel
 import { ETAPAS_DEL_PILOTO, SIN_PESAJES, topDeLaHinchada } from '@/lib/informe'
 import { posicionEnLaRed, textoDePosicion } from '@/lib/posicionEnLaRed'
 import { AVISO_DE_EJEMPLO, csvDelReporte } from '@/lib/reporte'
-import { NOTA_DEL_REPORTE, csvDeIndicadores, indicadoresParaElReporte } from '@/lib/reporteSustentabilidad'
+import {
+  NOTA_DEL_REPORTE,
+  SIN_REFERENCIA,
+  csvDeIndicadores,
+  indicadoresParaElReporte,
+} from '@/lib/reporteSustentabilidad'
 import { esInstitucion } from '@/lib/vocabulario'
 import { downloadBlob, formatNumber, pct } from '@/lib/utils'
 import { BancoDeTapitas } from '@/components/features/BancoDeTapitas'
@@ -312,7 +317,7 @@ export default function CommerceInforme() {
                   <th scope="col" className="py-2 pr-2 text-right font-bold sm:pr-4">
                     Valor
                   </th>
-                  <th scope="col" className="hidden py-2 font-bold sm:table-cell">
+                  <th scope="col" className="hidden py-2 font-bold sm:table-cell print:table-cell">
                     Referencia
                   </th>
                 </tr>
@@ -332,16 +337,21 @@ export default function CommerceInforme() {
                   {indicadores
                     .filter((f) => f.dimension === dimension)
                     .map((f) => (
-                      <tr key={f.indicador} className="border-b border-border">
-                        <td className="py-2 pr-2">
+                      <tr key={f.id} className="border-b border-border">
+                        <th scope="row" className="py-2 pr-2 font-normal">
                           {f.indicador}
-                          {/* En el celular no entran tres columnas: la referencia va debajo del indicador */}
-                          {f.referencia !== '—' && (
-                            <span className="mt-0.5 block text-xs text-muted-foreground sm:hidden">{f.referencia}</span>
+                          {/* En el celular no entran tres columnas: la referencia va debajo del indicador.
+                              En el papel van siempre las tres, aunque se imprima con la escala agrandada. */}
+                          {f.referencia !== SIN_REFERENCIA && (
+                            <span className="mt-0.5 block text-xs text-muted-foreground sm:hidden print:hidden">
+                              {f.referencia}
+                            </span>
                           )}
-                        </td>
+                        </th>
                         <td className="py-2 pr-2 text-right font-bold tabular-nums sm:pr-4">{f.valor}</td>
-                        <td className="hidden py-2 text-xs text-muted-foreground sm:table-cell">{f.referencia}</td>
+                        <td className="hidden py-2 text-xs text-muted-foreground sm:table-cell print:table-cell">
+                          {f.referencia}
+                        </td>
                       </tr>
                     ))}
                 </tbody>

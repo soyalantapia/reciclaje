@@ -13,6 +13,8 @@ import { formatNumber, objectsToCsv, pct } from './utils'
 
 /** Una fila de los indicadores para el reporte. */
 export interface IndicadorDelReporte {
+  /** Único en la tabla aunque dos productos se llamen igual: el de un producto lleva su id. */
+  id: string
   /** La dimensión del reporte del club donde va, con el nombre que usa el club. */
   dimension: 'Ambiental' | 'Comunitaria' | 'Infraestructura'
   indicador: string
@@ -21,9 +23,12 @@ export interface IndicadorDelReporte {
   /** El número de la planilla, con su unidad. */
   numero: number
   unidad: string
-  /** El estándar GRI o el ODS con que se alinea; «—» donde ninguno encaja. */
+  /** El estándar GRI o el ODS con que se alinea; `SIN_REFERENCIA` donde ninguno encaja. */
   referencia: string
 }
+
+/** Lo que dice la columna Referencia donde ningún estándar encaja sin forzar. */
+export const SIN_REFERENCIA = '—'
 
 /** Lo que dice la sección al pie: alinear no es verificar, y en la demo los datos son de ejemplo. */
 export const NOTA_DEL_REPORTE =
@@ -40,6 +45,7 @@ export function indicadoresParaElReporte({
 }): IndicadorDelReporte[] {
   return [
     {
+      id: 'plastico',
       dimension: 'Ambiental',
       indicador: 'Plástico recuperado para reciclar',
       // GRI pide los residuos en toneladas; el club piensa en kilos: van los dos.
@@ -49,6 +55,7 @@ export function indicadoresParaElReporte({
       referencia: 'GRI 306-4 · ODS 12.5',
     },
     {
+      id: 'tapitas',
       dimension: 'Ambiental',
       indicador: 'Tapitas recuperadas',
       valor: formatNumber(m.capsRecovered),
@@ -57,6 +64,7 @@ export function indicadoresParaElReporte({
       referencia: 'GRI 306-4 (plástico)',
     },
     {
+      id: 'puntos-r',
       dimension: 'Ambiental',
       indicador: 'Puntos de recolección (Punto R)',
       valor: formatNumber(puntosR),
@@ -65,6 +73,7 @@ export function indicadoresParaElReporte({
       referencia: 'GRI 306-2',
     },
     {
+      id: 'hinchas',
       dimension: 'Comunitaria',
       indicador: 'Hinchas que participaron este mes',
       valor: formatNumber(m.activeUsers),
@@ -73,23 +82,26 @@ export function indicadoresParaElReporte({
       referencia: 'GRI 413-1',
     },
     {
+      id: 'aportes',
       dimension: 'Comunitaria',
       indicador: 'Aportes registrados',
       valor: formatNumber(m.contributions),
       numero: m.contributions,
       unidad: 'aportes',
-      referencia: '—',
+      referencia: SIN_REFERENCIA,
     },
     {
+      id: 'canjes',
       dimension: 'Comunitaria',
       indicador: 'Beneficios canjeados por la hinchada',
       valor: formatNumber(m.benefitsRedeemed),
       numero: m.benefitsRedeemed,
       unidad: 'canjes',
-      referencia: '—',
+      referencia: SIN_REFERENCIA,
     },
     ...productos.map(
       (p): IndicadorDelReporte => ({
+        id: `producto-${p.id}`,
         dimension: 'Infraestructura',
         indicador: `${nombreDelProducto(p)} (meta ${formatNumber(kilosDeLaMeta(p))} kg)`,
         valor: `${formatNumber(p.collectedUnits)} de ${formatNumber(p.goalUnits)} ${p.unitLabel} · ${pct(p.collectedUnits, p.goalUnits)}%`,

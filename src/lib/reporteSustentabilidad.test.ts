@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { ImpactProject, SponsorMetrics } from '@/types'
 import { AVISO_DE_EJEMPLO } from './reporte'
-import { NOTA_DEL_REPORTE, csvDeIndicadores, indicadoresParaElReporte } from './reporteSustentabilidad'
+import { NOTA_DEL_REPORTE, SIN_REFERENCIA, csvDeIndicadores, indicadoresParaElReporte } from './reporteSustentabilidad'
 
 const m = {
   sponsorId: 's_club', sponsorName: 'Talleres', greenScore: 64, activeUsers: 162, contributions: 828,
@@ -38,8 +38,9 @@ describe('indicadoresParaElReporte', () => {
 
   it('la comunidad usa las mismas métricas del informe, y sin referencia forzada donde no encaja', () => {
     expect(fila('Hinchas que participaron este mes')).toMatchObject({ dimension: 'Comunitaria', valor: '162', referencia: 'GRI 413-1' })
-    expect(fila('Aportes registrados')).toMatchObject({ valor: '828', referencia: '—' })
-    expect(fila('Beneficios canjeados por la hinchada')).toMatchObject({ valor: '28', referencia: '—' })
+    expect(fila('Aportes registrados')).toMatchObject({ valor: '828', referencia: SIN_REFERENCIA })
+    expect(fila('Beneficios canjeados por la hinchada')).toMatchObject({ valor: '28', referencia: SIN_REFERENCIA })
+    expect(SIN_REFERENCIA).toBe('—')
   })
 
   it('cada producto es una fila de infraestructura, con su meta en kilos y su avance', () => {
@@ -50,9 +51,26 @@ describe('indicadoresParaElReporte', () => {
     ])
   })
 
-  it('no dice «certificado» ni «verificado» en ninguna parte, y la nota aclara que no es una verificación', () => {
+  it('sin productos no hay filas de infraestructura, y sin Punto R la fila dice 0', () => {
+    const sinNada = indicadoresParaElReporte({ m, productos: [], puntosR: 0 })
+    expect(sinNada.some((f) => f.dimension === 'Infraestructura')).toBe(false)
+    expect(sinNada.find((f) => f.indicador === 'Puntos de recolección (Punto R)')).toMatchObject({ valor: '0', numero: 0 })
+  })
+
+  it('cada fila tiene su id, distinto aunque dos productos se llamen igual', () => {
+    const repetidos = indicadoresParaElReporte({ m, productos: [butacas, { ...butacas, id: 'pr_nuevo_2' }], puntosR: 2 })
+    const ids = repetidos.map((f) => f.id)
+    expect(new Set(ids).size).toBe(ids.length)
+    expect(repetidos.filter((f) => f.dimension === 'Infraestructura').map((f) => f.id)).toEqual([
+      'producto-pr_nuevo_1',
+      'producto-pr_nuevo_2',
+    ])
+  })
+
+  it('no dice «certificado», «verificable» ni «auditado» en ninguna parte, y la nota aclara que no es una verificación', () => {
     const textos = [...filas.flatMap((f) => [f.indicador, f.valor, f.referencia]), NOTA_DEL_REPORTE].join(' ')
-    expect(textos).not.toMatch(/certificad|verificad/i)
+    // «verificación» sí puede aparecer: es la palabra con que la nota dice que esto no lo es.
+    expect(textos).not.toMatch(/certific|verificab|verificad|auditad/i)
     expect(NOTA_DEL_REPORTE).toContain('No es una verificación')
   })
 })
@@ -66,5 +84,11 @@ describe('csvDeIndicadores', () => {
     expect(cabecera).toBe('dimensión,indicador,valor,unidad,referencia')
     expect(primera).toBe('Ambiental,Plástico recuperado para reciclar,180,kg,GRI 306-4 · ODS 12.5')
     expect(csv.split('\n')).toHaveLength(2 + filas.length)
+  })
+
+  it('un nombre con coma o comillas viaja entre comillas, sin correr las columnas', () => {
+    const raro = { ...butacas, id: 'pr_raro', title: 'Banco "La 12", platea norte' } as ImpactProject
+    const csv = csvDeIndicadores(indicadoresParaElReporte({ m, productos: [raro], puntosR: 2 }))
+    expect(csv.split('\n').at(-1)).toBe('Infraestructura,"Banco ""La 12"", platea norte (meta 500 kg)",50,tapitas,ODS 12.5')
   })
 })

@@ -19,7 +19,12 @@ const punto = (id: string, name: string): RecyclePoint => ({
   id, name, sponsorId: 's_club', type: 'deposito', address: '', city: 'Córdoba', x: 0, y: 0,
   acceptedMaterials: ['tapitas', 'plastico'], openNow: true,
 })
-const puntos = [punto('p_club_estadio', 'Punto R · Estadio'), punto('p_club_sede', 'Punto R · Sede social')]
+// Un Punto R de otra marca de la red: el informe del club no lo cuenta como suyo.
+const puntos = [
+  punto('p_club_estadio', 'Punto R · Estadio'),
+  punto('p_club_sede', 'Punto R · Sede social'),
+  { ...punto('p_cafe', 'Café Lúmen · Mostrador'), sponsorId: 's_cafe' },
+]
 const banco = {
   id: 'pr_banco_club', title: 'Banco de suplentes con el plástico de la hinchada', sponsorId: 's_club',
   sponsorName: 'Talleres', description: '', material: 'tapitas', unitLabel: 'tapitas', goalUnits: 300000,
@@ -197,16 +202,39 @@ describe('informe para la Comisión Directiva', () => {
     for (const dimension of ['Ambiental', 'Comunitaria', 'Infraestructura']) {
       expect(within(reporte).getByText(dimension)).toBeInTheDocument()
     }
-    const plastico = within(reporte).getByText('Plástico recuperado para reciclar').closest('tr')!
+    // Cada dimensión encabeza su grupo de filas, y cada indicador encabeza su fila.
+    expect(within(reporte).getByRole('rowheader', { name: 'Ambiental' })).toHaveAttribute('scope', 'rowgroup')
+    const plastico = within(reporte).getByRole('rowheader', { name: /^Plástico recuperado para reciclar/ }).closest('tr')!
     expect(plastico.textContent).toContain('180 kg (0,18 t)')
     expect(plastico.textContent).toContain('GRI 306-4 · ODS 12.5')
+    // Los Punto R son los de la institución, no los de toda la red.
+    const puntosR = within(reporte).getByRole('rowheader', { name: /^Puntos de recolección/ }).closest('tr')!
+    expect(within(puntosR).getAllByRole('cell')[0]).toHaveTextContent(/^2$/)
     const hinchas = within(reporte).getByText('Hinchas que participaron este mes').closest('tr')!
     expect(hinchas.textContent).toContain('162')
     expect(hinchas.textContent).toContain('GRI 413-1')
     expect(reporte.textContent).toContain('(meta 1.261 kg)')
     expect(reporte.textContent).toContain('42.840 de 300.000 tapitas · 14%')
     expect(reporte.textContent).toContain(NOTA_DEL_REPORTE)
-    expect(reporte.textContent).not.toMatch(/certificad/i)
+    expect(reporte.textContent).not.toMatch(/certific|verificab|verificad|auditad/i)
+  })
+
+  it('dos productos con el mismo nombre son dos filas, sin que React repita una clave', async () => {
+    const errores = vi.spyOn(console, 'error').mockImplementation(() => {})
+    try {
+      const butacas = (id: string, puntoId: string) =>
+        ({
+          ...banco, id, title: 'Butacas para la platea', goalUnits: 119000, collectedUnits: 0, myContributionUnits: 0,
+          estimatedDate: '', topContributors: [], forma: 'butacas', puntoId,
+        }) as ImpactProject
+      useCommerceProductsStore.setState({ creados: [butacas('pr_nuevo_1', 'p_club_sede'), butacas('pr_nuevo_2', 'p_club_estadio')] })
+      verElInforme()
+      const reporte = await seccion('Para el Reporte de Sustentabilidad de Talleres')
+      expect(await within(reporte).findAllByRole('rowheader', { name: /^Butacas para la platea/ })).toHaveLength(2)
+      expect(errores.mock.calls.flat().join(' ')).not.toMatch(/same key/)
+    } finally {
+      errores.mockRestore()
+    }
   })
 
   it('«Descargar indicadores (CSV)» baja la planilla con el aviso de datos de ejemplo, y no sale al imprimir', async () => {
