@@ -1,8 +1,9 @@
-import { fireEvent, render, screen, within } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { ImpactProject } from '@/types'
 import { claveDeAlmacenamiento } from '@/lib/escenario'
+import { useCommerceProductsStore } from '@/store/commerceProducts'
 import Home from './Home'
 
 const banco = {
@@ -94,6 +95,28 @@ describe('inicio del hincha', () => {
     expect(screen.getByRole('heading', { name: 'Butacas para la platea' })).toBeInTheDocument()
     expect(container.querySelector('svg[data-forma="butacas"]')).not.toBeNull()
     expect(within(pestanas).getByRole('button', { name: /Butacas para la platea/ })).toHaveAttribute('aria-pressed', 'true')
+  })
+
+  it('si el club elimina el producto elegido, el inicio vuelve al banco y se van las pestañas', async () => {
+    proyectosDelCaso = [banco, butacas]
+    verElInicio()
+    const pestanas = await screen.findByRole('group', { name: 'Productos de la hinchada' })
+    fireEvent.click(within(pestanas).getByRole('button', { name: /Butacas para la platea/ }))
+    // El panel lo elimina (en esta pestaña o en otra): el store cambia y el inicio vuelve a pedir.
+    proyectosDelCaso = [banco]
+    act(() => useCommerceProductsStore.setState({ creados: [] }))
+    await waitFor(() =>
+      expect(screen.queryByRole('group', { name: 'Productos de la hinchada' })).not.toBeInTheDocument(),
+    )
+    expect(screen.getByRole('heading', { name: 'Banco de suplentes con el plástico de la hinchada' })).toBeInTheDocument()
+  })
+
+  it('con el banco elegido, «Sumá tus tapitas» no deja ningún Punto R elegido', async () => {
+    proyectosDelCaso = [banco, butacas]
+    verElInicio()
+    await screen.findByRole('group', { name: 'Productos de la hinchada' })
+    fireEvent.click(screen.getByRole('link', { name: /Sumá tus tapitas/ }))
+    expect(sessionStorage.getItem(claveDeAlmacenamiento('scan-point'))).toBeNull()
   })
 
   it('con el producto nuevo elegido, «Sumá tus tapitas» deja su Punto R listo para el escáner', async () => {

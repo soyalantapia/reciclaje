@@ -68,12 +68,13 @@ export default function Home() {
             <ErrorState message={projectsError} onRetry={reloadProjects} />
           ) : featured && esBanco ? (
             <div className="space-y-3">
-              {/* Un producto por pestaña, si el club publicó alguno además del banco */}
+              {/* Un producto por pestaña, si el club publicó alguno además del banco. Bajan de renglón en
+                  vez de scrollear: en 390 px dos nombres ya no entran, y un scroll recortaba el borde. */}
               {productos.length > 1 && (
                 <div
                   role="group"
                   aria-label="Productos de la hinchada"
-                  className="no-scrollbar flex gap-2 overflow-x-auto"
+                  className="flex flex-wrap gap-2"
                 >
                   {productos.map((p) => {
                     const activo = p.id === featured.id
@@ -84,7 +85,7 @@ export default function Home() {
                         aria-pressed={activo}
                         onClick={() => setElegidoId(p.id)}
                         className={cn(
-                          'inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-semibold transition-colors',
+                          'inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-semibold transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
                           activo
                             ? 'bg-eco-600 text-white'
                             : 'bg-card text-muted-foreground ring-1 ring-border hover:bg-muted',
@@ -95,7 +96,9 @@ export default function Home() {
                           <span
                             className={cn(
                               'rounded-full px-1.5 py-px text-[10px] font-bold uppercase tracking-wide',
-                              activo ? 'bg-white/20 text-white' : 'bg-xp-100 text-xp-700',
+                              activo
+                                ? 'bg-white text-eco-700'
+                                : 'bg-xp-100 text-xp-700 dark:bg-xp-700/20 dark:text-xp-300',
                             )}
                           >
                             nuevo
