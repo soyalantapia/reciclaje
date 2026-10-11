@@ -114,6 +114,57 @@ describe('el aviso de que en los botones el color va más oscuro', () => {
     verMarca()
     expect(screen.queryByText(AVISO)).not.toBeInTheDocument()
   })
+
+  // El verde de ReciclaXP es el «todavía no eligió el suyo»: no pisa la paleta, así que no hay nada que oscurecer.
+  it('con el verde de ReciclaXP y un escudo, tampoco: el panel no lo oscurece', () => {
+    useMarcaDelClubStore.getState().guardar('s_club', { escudo: ESCUDO, color: '#059669' })
+    verMarca()
+    expect(screen.getByRole('img', { name: 'Escudo de Talleres' })).toHaveAttribute('src', ESCUDO)
+    expect(screen.queryByText(AVISO)).not.toBeInTheDocument()
+  })
+
+  it('un escudo del que no sale ningún color (blanco y gris) no deja el aviso, aunque quede guardado el verde', async () => {
+    preparar.mockResolvedValue({ escudo: ESCUDO, color: null })
+    verMarca()
+    fireEvent.change(screen.getByLabelText('Archivo del escudo'), { target: { files: [archivo()] } })
+    await screen.findByRole('img', { name: 'Escudo de Talleres' })
+    expect(useMarcaDelClubStore.getState().marcas.s_club).toEqual({ escudo: ESCUDO, color: '#059669' })
+    expect(screen.getByLabelText('Color de la marca')).toHaveValue('#059669')
+    expect(screen.queryByText(AVISO)).not.toBeInTheDocument()
+  })
+})
+
+// Lo que el navegador tiene guardado puede no respetar la forma: una versión vieja, o alguien que lo tocó.
+// La pantalla de la marca tiene que abrir igual, con el verde de ReciclaXP, para poder arreglarlo desde ahí.
+describe('si lo guardado en el navegador viene roto', () => {
+  /** Lo que podría haber en el store si se lee algo que no respeta el tipo. */
+  const guardadoRoto = (marcas: unknown) => useMarcaDelClubStore.setState({ marcas } as never)
+
+  it('sin ninguna marca (marcas: null), abre con el verde de ReciclaXP y sin escudo', () => {
+    guardadoRoto(null)
+    verMarca()
+    expect(screen.getByRole('heading', { level: 1, name: 'La marca de Talleres' })).toBeInTheDocument()
+    expect(screen.getByLabelText('Color de la marca')).toHaveValue('#059669')
+    expect(screen.queryByRole('img', { name: 'Escudo de Talleres' })).not.toBeInTheDocument()
+  })
+
+  it.each([
+    ['sin color', { escudo: ESCUDO }],
+    ['con el color en un número', { escudo: ESCUDO, color: 123 }],
+  ])('una marca %s abre con el verde de ReciclaXP, conserva el escudo y no avisa nada', (_, marca) => {
+    guardadoRoto({ s_club: marca })
+    verMarca()
+    expect(screen.getByLabelText('Color de la marca')).toHaveValue('#059669')
+    expect(screen.getByRole('img', { name: 'Escudo de Talleres' })).toHaveAttribute('src', ESCUDO)
+    expect(screen.queryByText(/En los botones va un poco más oscuro/)).not.toBeInTheDocument()
+  })
+
+  it('elegir un color desde ahí lo arregla', () => {
+    guardadoRoto({ s_club: { escudo: ESCUDO, color: 123 } })
+    verMarca()
+    fireEvent.change(screen.getByLabelText('Color de la marca'), { target: { value: '#123456' } })
+    expect(useMarcaDelClubStore.getState().marcas.s_club).toEqual({ escudo: ESCUDO, color: '#123456' })
+  })
 })
 
 // Lo que el brief no fija y que, si se rompe, se nota recién en el uso: el escudo que se pierde al

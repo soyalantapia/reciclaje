@@ -80,6 +80,16 @@ describe('la marca del club en su panel', () => {
     expect(screen.queryByRole('img', { name: 'Escudo de Talleres' })).not.toBeInTheDocument()
   })
 
+  // Un escudo del que no sale ningún color (blanco y gris) se guarda con el verde de ReciclaXP, que es el
+  // «todavía no eligió el suyo»: el panel no se oscurece como si el club hubiera elegido ese color.
+  it('con el escudo y el verde de ReciclaXP, el escudo se ve y el panel no lleva ninguna variable', async () => {
+    useMarcaDelClubStore.getState().guardar('s_club', { escudo: ESCUDO, color: '#059669' })
+    const c = await verElPanelEn('/comercio/reportes', 'Informe para la Comisión Directiva')
+    expect(conMarca(c)).toBeNull()
+    expect(c.querySelectorAll('[style*="--eco-"]')).toHaveLength(0)
+    expect(screen.getAllByRole('img', { name: 'Escudo de Talleres' })).toHaveLength(3)
+  })
+
   it('un comercio no toma una marca de club', async () => {
     useMarcaDelClubStore.getState().guardar('s_cafe', { color: '#0b2d6b' })
     const c = await verElPanelEn('/comercio/reportes', 'Reportes', { ...club, id: 's_cafe', name: 'Café', category: 'comercio' })
@@ -143,6 +153,24 @@ describe('la paleta de la marca en <html>, para lo que se monta fuera del panel'
     act(() => useMarcaDelClubStore.getState().quitar('s_club'))
     expect(variablesEnLaRaiz()).toEqual([])
     expect(conMarca(c)).toBeNull()
+  })
+
+  it('con el escudo y el verde de ReciclaXP, <html> no lleva ninguna variable', async () => {
+    useMarcaDelClubStore.getState().guardar('s_club', { escudo: ESCUDO, color: '#059669' })
+    await abrirElPanelEn('/comercio/reportes', 'Informe para la Comisión Directiva')
+    expect(variablesEnLaRaiz()).toEqual([])
+  })
+
+  it('si el club pasa de un color propio al verde de ReciclaXP con el panel abierto, <html> y el panel quedan sin paleta', async () => {
+    useMarcaDelClubStore.getState().guardar('s_club', { escudo: ESCUDO, color: '#0b2d6b' })
+    const c = await verElPanelEn('/comercio/reportes', 'Informe para la Comisión Directiva')
+    expect(variablesEnLaRaiz()).toHaveLength(PALETA.length)
+    expect(conMarca(c)).not.toBeNull()
+
+    act(() => useMarcaDelClubStore.getState().guardar('s_club', { escudo: ESCUDO, color: '#059669' }))
+    expect(variablesEnLaRaiz()).toEqual([])
+    expect(conMarca(c)).toBeNull()
+    expect(screen.getAllByRole('img', { name: 'Escudo de Talleres' })).toHaveLength(3)
   })
 
   it('un Modal del panel, que cuelga de <body> y no del panel, también ve el color de la marca', async () => {
@@ -216,5 +244,37 @@ describe('el escudo y la inicial del club en su panel', () => {
   it('la inicial es decorativa: el nombre del club ya está al lado, y no se lee dos veces', async () => {
     await verElPanelEn('/comercio/reportes', 'Informe para la Comisión Directiva')
     for (const inicial of iniciales()) expect(inicial).toHaveAttribute('aria-hidden', 'true')
+  })
+})
+
+// Lo que el navegador tiene guardado puede no respetar la forma: una versión vieja, o alguien que lo tocó.
+// Antes, una marca sin color, con el color en un número o sin ninguna marca (marcas: null) tumbaba el panel
+// entero y mostraba la pantalla de error; ahora abre igual, con el verde de ReciclaXP.
+describe('si lo guardado en el navegador viene roto, el panel abre igual', () => {
+  /** Lo que podría haber en el store si se lee algo que no respeta el tipo. */
+  const guardadoRoto = (marcas: unknown) => useMarcaDelClubStore.setState({ marcas } as never)
+
+  it('sin ninguna marca (marcas: null), el informe abre sin variables y sin escudo', async () => {
+    guardadoRoto(null)
+    const c = await verElPanelEn('/comercio/reportes', 'Informe para la Comisión Directiva')
+    expect(conMarca(c)).toBeNull()
+    expect(screen.queryByRole('img', { name: 'Escudo de Talleres' })).not.toBeInTheDocument()
+  })
+
+  it('sin ninguna marca (marcas: null), «Marca» abre con el verde de ReciclaXP', async () => {
+    guardadoRoto(null)
+    await verElPanelEn('/comercio/marca', 'La marca de Talleres')
+    expect(screen.getByLabelText('Color de la marca')).toHaveValue('#059669')
+  })
+
+  it.each([
+    ['sin color', { escudo: ESCUDO }],
+    ['con el color en un número', { escudo: ESCUDO, color: 123 }],
+  ])('una marca %s: el escudo se ve y el panel no lleva ninguna variable', async (_, marca) => {
+    guardadoRoto({ s_club: marca })
+    const c = await verElPanelEn('/comercio/reportes', 'Informe para la Comisión Directiva')
+    expect(conMarca(c)).toBeNull()
+    expect(screen.getAllByRole('img', { name: 'Escudo de Talleres' })).toHaveLength(3)
+    expect(document.documentElement.style.getPropertyValue('--eco-600')).toBe('')
   })
 })

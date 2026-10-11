@@ -1,6 +1,14 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { TONOS, colorDominante, colorLegible, contrasteConBlanco, estiloDeMarca, paletaDeMarca } from './marca'
+import {
+  TONOS,
+  colorDominante,
+  colorLegible,
+  contrasteConBlanco,
+  esColorPropio,
+  estiloDeMarca,
+  paletaDeMarca,
+} from './marca'
 
 /** Una imagen de mentira: tramos de `n` píxeles RGBA iguales. */
 const pixeles = (...tramos: [n: number, r: number, g: number, b: number, a: number][]) =>
@@ -29,6 +37,39 @@ describe('paletaDeMarca', () => {
 
   it('un color roto vuelve al de ReciclaXP', () => {
     expect(paletaDeMarca('rojo')['600']).toBe('#059669')
+  })
+
+  // Lo que está guardado en el navegador puede venir sin color, o con uno que no es texto: no tiene que tirar.
+  it.each([[undefined], [null], [123], [{}]])('un color que ni siquiera es texto (%j) vuelve al de ReciclaXP, sin tirar', (roto) => {
+    const color = roto as unknown as string
+    expect(colorLegible(color)).toBe('#059669')
+    expect(paletaDeMarca(color)['600']).toBe('#059669')
+    expect(estiloDeMarca(color)['--eco-600']).toBe('#059669')
+    expect(contrasteConBlanco(color)).toBe(contrasteConBlanco('#059669'))
+  })
+})
+
+describe('esColorPropio', () => {
+  it('un color que la institución eligió lo es, sea claro u oscuro', () => {
+    expect(esColorPropio('#0b2d6b')).toBe(true)
+    expect(esColorPropio('#ffe14d')).toBe(true)
+    expect(esColorPropio('#0B2D6B')).toBe(true)
+  })
+
+  it('el verde de ReciclaXP no: es el «todavía no eligió el suyo», y no pisa la paleta', () => {
+    expect(esColorPropio('#059669')).toBe(false)
+    // Y tampoco si llega con otra forma: sin la # o con espacios.
+    expect(esColorPropio('059669')).toBe(false)
+    expect(esColorPropio(' #059669 ')).toBe(false)
+  })
+
+  it('un verde parecido, pero que no es el de ReciclaXP, sí es propio', () => {
+    expect(esColorPropio('#059668')).toBe(true)
+    expect(esColorPropio('#05a669')).toBe(true)
+  })
+
+  it.each([[undefined], [null], [123], [{}], [''], ['rojo'], ['#12345']])('lo que no es un color (%j) no lo es', (roto) => {
+    expect(esColorPropio(roto)).toBe(false)
   })
 })
 

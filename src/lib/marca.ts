@@ -8,12 +8,17 @@
 export const TONOS = ['50', '100', '200', '300', '400', '500', '600', '700', '800', '900', '950'] as const
 export type Tono = (typeof TONOS)[number]
 
-/** El color de ReciclaXP: el que queda si llega un color roto, y el de una institución que todavía no eligió el suyo. */
+/**
+ * El color de ReciclaXP: el que queda si llega un color roto, y el de una institución que todavía no
+ * eligió el suyo. Como no es un color que la institución haya puesto, no pisa la paleta (`esColorPropio`).
+ */
 export const COLOR_DE_RECICLAXP = '#059669'
 
 type Rgb = [number, number, number]
 
-function hexARgb(hex: string): Rgb | null {
+function hexARgb(hex: unknown): Rgb | null {
+  // Lo guardado en el navegador puede venir sin color, o con uno que no es texto: es un color roto.
+  if (typeof hex !== 'string') return null
   const m = /^#?([0-9a-f]{6})$/i.exec(hex.trim())
   if (!m) return null
   const n = parseInt(m[1], 16)
@@ -82,6 +87,17 @@ export function paletaDeMarca(color: string): Record<Tono, string> {
 export function estiloDeMarca(color: string): Record<`--eco-${Tono}`, string> {
   const paleta = paletaDeMarca(color)
   return Object.fromEntries(TONOS.map((t) => [`--eco-${t}`, paleta[t]])) as Record<`--eco-${Tono}`, string>
+}
+
+/**
+ * ¿La institución eligió un color propio? El verde de ReciclaXP no cuenta: es el que queda si todavía no
+ * eligió ninguno, o si del escudo no salió ningún color, y no tiene que pisar la paleta ni oscurecerla
+ * como si lo hubiera elegido. Un color roto tampoco, porque cae a ese verde. La comparación es por el
+ * color y no por el texto: `#059669`, `059669` y ` #059669 ` son el mismo.
+ */
+export function esColorPropio(color: unknown): boolean {
+  const rgb = hexARgb(color)
+  return rgb !== null && rgbAHex(rgb) !== COLOR_DE_RECICLAXP.toLowerCase()
 }
 
 /**

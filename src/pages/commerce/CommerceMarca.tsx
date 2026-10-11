@@ -5,7 +5,7 @@ import { ImageUp, RotateCcw } from 'lucide-react'
 import { useSessionStore } from '@/store/session'
 import { useMarcaDelClubStore } from '@/store/marcaDelClub'
 import { esInstitucion } from '@/lib/vocabulario'
-import { COLOR_DE_RECICLAXP, colorLegible } from '@/lib/marca'
+import { COLOR_DE_RECICLAXP, colorLegible, esColorPropio } from '@/lib/marca'
 import { ESCUDO_TOPE_MB, EscudoInvalido, TIPOS_DE_ESCUDO, prepararEscudo } from '@/lib/escudo'
 import { Button } from '@/components/ui/button'
 
@@ -16,7 +16,7 @@ import { Button } from '@/components/ui/button'
  */
 export default function CommerceMarca() {
   const commerce = useSessionStore((s) => s.commerce)
-  const marca = useMarcaDelClubStore((s) => (commerce ? s.marcas[commerce.id] : undefined))
+  const marca = useMarcaDelClubStore((s) => (commerce ? s.marcas?.[commerce.id] : undefined))
   const guardar = useMarcaDelClubStore((s) => s.guardar)
   const quitar = useMarcaDelClubStore((s) => s.quitar)
   const [leyendo, setLeyendo] = useState(false)
@@ -27,7 +27,8 @@ export default function CommerceMarca() {
   if (!esInstitucion(commerce.category)) return <Navigate to="/comercio" replace />
 
   const id = commerce.id
-  const color = marca?.color ?? COLOR_DE_RECICLAXP
+  // Lo guardado en el navegador puede venir sin color, o con uno que no es texto: se muestra el verde de ReciclaXP.
+  const color = typeof marca?.color === 'string' ? marca.color : COLOR_DE_RECICLAXP
 
   async function subir(archivo: File | undefined) {
     if (!archivo) return
@@ -108,8 +109,9 @@ export default function CommerceMarca() {
           />
           <span className="font-mono text-sm">{color}</span>
         </div>
-        {/* Sin marca todavía no se eligió nada: el verde de ReciclaXP no es un color que el club haya puesto. */}
-        {marca && colorLegible(color) !== color.toLowerCase() && (
+        {/* El verde de ReciclaXP (lo que hay sin marca, o con un escudo del que no salió ningún color) no es un color
+            que el club haya puesto: no pisa la paleta, así que no hay nada más oscuro que avisar. */}
+        {esColorPropio(color) && colorLegible(color) !== color.toLowerCase() && (
           <p className="mt-2 text-xs text-muted-foreground">
             En los botones va un poco más oscuro, para que el texto blanco se lea.
           </p>

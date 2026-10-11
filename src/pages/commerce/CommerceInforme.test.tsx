@@ -260,6 +260,18 @@ describe('informe para la Comisión Directiva', () => {
     expect(imprimir).toHaveBeenCalledOnce()
   })
 
+  // «Descargar PDF» no baja un archivo: abre la ventana de impresión del navegador. La ayuda lo dice, y como
+  // vive junto a los botones no sale en el papel.
+  it('junto a los botones dice que se abre la ventana del navegador para elegir «Guardar como PDF», y no se imprime', async () => {
+    verElInforme()
+    await screen.findByRole('button', { name: /^Descargar PDF$/ })
+    const ayuda = screen.getByText('Se abre la ventana del navegador: elegí «Guardar como PDF».')
+    expect(ayuda.closest('[data-no-imprimir]')).not.toBeNull()
+    // Está en el mismo bloque que los botones de arriba, no en el cuerpo del informe.
+    expect(ayuda.closest('[data-no-imprimir]')).toBe(screen.getByRole('button', { name: /^Descargar PDF$/ }).closest('[data-no-imprimir]'))
+    expect(ayuda.closest('article')).toBeNull()
+  })
+
   it('«Descargar CSV» baja el reporte con el aviso de datos de ejemplo', async () => {
     descargar.mockClear()
     verElInforme()

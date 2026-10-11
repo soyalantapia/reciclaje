@@ -5,7 +5,7 @@ import { useSessionStore } from '@/store/session'
 import { useMarcaDelPanel } from '@/hooks/useMarcaDelPanel'
 import { cn } from '@/lib/utils'
 import { ESCENARIO } from '@/lib/escenario'
-import { estiloDeMarca } from '@/lib/marca'
+import { esColorPropio, estiloDeMarca } from '@/lib/marca'
 import { esInstitucion } from '@/lib/vocabulario'
 import { CommerceSideNav, etiquetaDelPanel, navDelPanel } from './CommerceSideNav'
 import { AvisoDemo } from './AvisoDemo'
@@ -23,7 +23,8 @@ export function CommerceLayout() {
   // Los Modal se montan en document.body, fuera de este contenedor: mientras el panel está abierto,
   // la paleta de la marca va también en <html>, y se saca al salir. Es un efecto de layout para que
   // se saque en el mismo cuadro en que se sale: el login no pinta ni un cuadro con los colores del club.
-  const colorDeLaMarca = marca?.color
+  // Sin un color propio (el verde de ReciclaXP) no hay nada que poner: la paleta de siempre ya es esa.
+  const colorDeLaMarca = marca && esColorPropio(marca.color) ? marca.color : undefined
   useLayoutEffect(() => {
     if (!colorDeLaMarca) return
     const raiz = document.documentElement

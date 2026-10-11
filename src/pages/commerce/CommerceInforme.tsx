@@ -153,6 +153,10 @@ export default function CommerceInforme() {
         <Button size="sm" variant="secondary" onClick={descargarCsv}>
           <Download size={15} /> Descargar CSV
         </Button>
+        {/* «Descargar PDF» no baja un archivo, abre la ventana de impresión: la ayuda va en este bloque, que no se imprime */}
+        <p className="w-full text-right text-xs text-muted-foreground">
+          Se abre la ventana del navegador: elegí «Guardar como PDF».
+        </p>
       </div>
 
       <article className="space-y-6 rounded-2xl border border-border bg-card p-5 [-webkit-print-color-adjust:exact] [print-color-adjust:exact] sm:p-8 print:rounded-none print:border-0 print:p-0">
