@@ -13,6 +13,8 @@ import { shortCode } from '@/lib/utils'
 import { conMesesHastaHoy, metricsFor } from '@/lib/metrics'
 import { buscarBeneficio } from '@/lib/beneficiosDeLaRed'
 import { useCommerceBenefitsStore } from '@/store/commerceBenefits'
+import { proyectoDelPunto, trazaDeUnProducto } from '@/lib/productosDelClub'
+import { useCommerceProductsStore } from '@/store/commerceProducts'
 import { datos } from './datos'
 
 // Los datos dependen del escenario elegido al compilar (ver src/lib/escenario.ts).
@@ -35,6 +37,9 @@ const {
 // (/reciclaje/).
 const BASE = (import.meta.env.BASE_URL || '/').replace(/\/$/, '')
 const api = (path: string) => `${BASE}/api${path}`
+
+/** Los productos que el club publicó desde el panel: en la demo viven en el navegador, como sus beneficios. */
+const creados = () => useCommerceProductsStore.getState().creados
 
 /**
  * Métricas del comercio: usa las seedeadas o las genera de forma
@@ -75,12 +80,12 @@ export const handlers = [
 
   http.get(api('/projects'), async () => {
     await delay(200)
-    return HttpResponse.json(projects)
+    return HttpResponse.json([...projects, ...creados()])
   }),
 
   http.get(api('/projects/:id'), async ({ params }) => {
     await delay(200)
-    const project = projects.find((p) => p.id === params.id)
+    const project = [...projects, ...creados()].find((p) => p.id === params.id)
     if (!project) {
       return HttpResponse.json({ message: 'Proyecto no encontrado' }, { status: 404 })
     }
@@ -89,7 +94,14 @@ export const handlers = [
 
   http.get(api('/projects/:id/trace'), async ({ params }) => {
     await delay(200)
-    const trace = traceByProject[String(params.id)] ?? []
+    const id = String(params.id)
+    // Un producto del panel tiene su recorrido sin hacer, con su Punto R.
+    const creado = creados().find((p) => p.id === id)
+    if (creado) {
+      const punto = points.find((p) => p.id === creado.puntoId)?.name ?? 'Punto R'
+      return HttpResponse.json(trazaDeUnProducto(creado, punto))
+    }
+    const trace = traceByProject[id] ?? []
     return HttpResponse.json(trace)
   }),
 
@@ -140,7 +152,8 @@ export const handlers = [
     const units = Math.max(1, Math.round(body.units))
     const xpEarned = units * (XP_PER_UNIT[body.material] ?? 1)
     const sponsor = sponsors.find((s) => s.id === point.sponsorId)
-    const project = projects.find((p) => p.sponsorId === point.sponsorId)
+    // El producto que el club publicó para este Punto R; si no hay, el del club.
+    const project = proyectoDelPunto(point, projects, creados())
     const result: ScanResult = {
       xpEarned,
       project,
