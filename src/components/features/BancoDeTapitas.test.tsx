@@ -54,4 +54,21 @@ describe('BancoDeTapitas: las formas', () => {
       expect(cy - r).toBeGreaterThan(7)
     }
   })
+
+  it.each([
+    ['banco', '0 0 166 90'],
+    ['butacas', '0 0 190 90'],
+    ['arco', '0 0 178 72'],
+    ['libre', '0 0 166 66'],
+  ] as const)('el dibujo «%s» mide %s', (forma, viewBox) => {
+    const { container } = render(<BancoDeTapitas forma={forma} progreso={0} propias={0} />)
+    expect(container.querySelector('svg')!.getAttribute('viewBox')).toBe(viewBox)
+  })
+
+  it('las butacas son cuatro respaldos de cuatro columnas, con un hueco entre uno y otro', () => {
+    const { container } = render(<BancoDeTapitas forma="butacas" progreso={1} propias={0} />)
+    const columnas = [...new Set([...container.querySelectorAll('circle')].map((c) => Number(c.getAttribute('cx'))))]
+    const pasos = columnas.slice(1).map((x, i) => x - columnas[i])
+    expect(pasos).toEqual([10, 10, 10, 18, 10, 10, 10, 18, 10, 10, 10, 18, 10, 10, 10])
+  })
 })

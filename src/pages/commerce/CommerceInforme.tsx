@@ -9,7 +9,7 @@ import { useMetricasDelPanel } from '@/hooks/useMetricasDelPanel'
 import { useSessionStore } from '@/store/session'
 import { useActivityStore } from '@/store/activity'
 import { useCommerceProductsStore } from '@/store/commerceProducts'
-import { conAporteDeLaSesionEnLaTraza, conAportesDeLaSesion } from '@/lib/aportesDeLaSesion'
+import { conAporteDeLaSesionEnLaTraza, conAportesDeLaSesion, nombreCorto } from '@/lib/aportesDeLaSesion'
 import { estadoDelRecorrido } from '@/lib/recorridoDeLaTapita'
 import { esDelPanel, kilosDeLaMeta, puntosDelProducto } from '@/lib/productosDelClub'
 import { ETAPAS_DEL_PILOTO, SIN_PESAJES, topDeLaHinchada } from '@/lib/informe'
@@ -102,7 +102,7 @@ export default function CommerceInforme() {
   const posicion = red ? textoDePosicion(posicionEnLaRed(commerce.id, m.greenScore, red)) : undefined
   const maxMes = Math.max(1, ...m.monthlySeries.map((s) => s.value))
   const maxPunto = Math.max(1, ...m.byPoint.map((p) => p.contributions))
-  const top = topDeLaHinchada(productos)
+  const top = topDeLaHinchada(productos, 5, nombreDelHincha ? nombreCorto(nombreDelHincha) : undefined)
   const numeros: [string, string][] = [
     ['Kilos recuperados', formatNumber(m.kgRecovered)],
     ['Tapitas', formatNumber(m.capsRecovered)],
@@ -173,12 +173,15 @@ export default function CommerceInforme() {
             <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
               {productos.map((p) => (
                 <div key={p.id} className="break-inside-avoid rounded-xl border border-border p-3">
-                  <BancoDeTapitas
-                    className="max-w-[16rem]"
-                    forma={p.forma}
-                    progreso={p.goalUnits > 0 ? p.collectedUnits / p.goalUnits : 0}
-                    propias={0}
-                  />
+                  {/* Un recuadro de la misma proporción para cada forma: los textos quedan a la misma altura */}
+                  <div className="aspect-[2/1] w-full max-w-[16rem]">
+                    <BancoDeTapitas
+                      className="h-full"
+                      forma={p.forma}
+                      progreso={p.goalUnits > 0 ? p.collectedUnits / p.goalUnits : 0}
+                      propias={0}
+                    />
+                  </div>
                   <p className="mt-2 font-bold leading-tight">{p.title}</p>
                   <p className="text-sm text-muted-foreground">
                     {formatNumber(p.collectedUnits)} de {formatNumber(p.goalUnits)} tapitas ·{' '}

@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, within } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
-import type { Contribution, Coupon, ImpactProject, RecyclePoint, Sponsor, TraceEvent } from '@/types'
+import type { Contribution, Coupon, ImpactProject, RecyclePoint, Sponsor, TraceEvent, User } from '@/types'
 import { useActivityStore } from '@/store/activity'
 import { useCommerceProductsStore } from '@/store/commerceProducts'
 import { useCouponsStore } from '@/store/coupons'
@@ -46,7 +46,8 @@ vi.mock('@/services/api', async (original) => ({
   api: {
     getPoints: () => Promise.resolve(puntos),
     getSponsors: () => Promise.resolve([club, { ...club, id: 's_cafe', name: 'Café Lúmen', category: 'comercio', greenScore: 70 }]),
-    getProjects: () => Promise.resolve([banco]),
+    // Como el simulador: los del seed más los que publicó el club.
+    getProjects: () => Promise.resolve([banco, ...useCommerceProductsStore.getState().creados]),
     getProjectTrace: () => Promise.resolve(traza),
   },
 }))
@@ -134,6 +135,28 @@ describe('informe para la Comisión Directiva', () => {
     expect(productos.querySelector('svg[data-forma="banco"]')).not.toBeNull()
     expect(await within(productos).findByText(/Junta en: Punto R · Estadio, Punto R · Sede social/)).toBeInTheDocument()
     expect(productos.textContent).toContain('Etapa actual: Recolección')
+  })
+
+  it('entre los que más aportan, quien usa la demo suma lo de todos los productos', async () => {
+    const butacas = {
+      ...banco, id: 'pr_nuevo_1', title: 'Butacas para la platea', goalUnits: 119000, collectedUnits: 0,
+      myContributionUnits: 0, estimatedDate: '', topContributors: [], forma: 'butacas', puntoId: 'p_club_sede',
+    } as ImpactProject
+    useCommerceProductsStore.setState({ creados: [butacas] })
+    useSessionStore.setState({ user: { name: 'Camila Ríos' } as User })
+    useActivityStore.setState({
+      sessionContributions: [
+        {
+          id: 'c_s1', userId: 'u', pointId: 'p_club_sede', pointName: 'Punto R · Sede social', sponsorId: 's_club',
+          sponsorName: 'Talleres', material: 'tapitas', units: 50, xpEarned: 100, projectId: 'pr_nuevo_1',
+          status: 'validado', createdAt: '2026-10-10T12:00:00.000Z',
+        } as Contribution,
+      ],
+    })
+    verElInforme()
+    const top = await seccion('Los que más aportan')
+    // 640 en el banco y 50 en las butacas: en el informe figura con todo lo suyo.
+    expect(await within(top).findByText('690 tapitas')).toBeInTheDocument()
   })
 
   it('«Partido por partido» muestra la tabla con sus columnas y sin ningún número de partido', async () => {

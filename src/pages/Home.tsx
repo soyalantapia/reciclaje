@@ -115,6 +115,7 @@ export default function Home() {
                 items={aportesDelBanco}
                 propias={propias}
                 enlace={`/proyecto/${featured.id}`}
+                invitacion="Todavía nadie sumó tapitas. ¡La primera puede ser la tuya!"
                 accion={
                   <Link
                     to="/escanear"

@@ -23,6 +23,14 @@ describe('topDeLaHinchada', () => {
     ])
   })
 
+  it('quien usa la demo suma también lo que aportó a un producto donde todavía no figura', () => {
+    const banco = { ...producto('banco', [{ name: 'Camila R.', units: 640, avatarColor: '#059669' }]), myContributionUnits: 640 }
+    const butacas = { ...producto('butacas', []), myContributionUnits: 50 }
+    expect(topDeLaHinchada([banco, butacas], 5, 'Camila R.').map((c) => [c.name, c.units])).toEqual([['Camila R.', 690]])
+    // Sin saber quién usa la demo, no se le atribuye nada a nadie.
+    expect(topDeLaHinchada([banco, butacas]).map((c) => [c.name, c.units])).toEqual([['Camila R.', 640]])
+  })
+
   it('corta en el tope y, sin aportantes, no inventa ninguno', () => {
     const muchos = Array.from({ length: 8 }, (_, i) => ({ name: `H${i}`, units: i, avatarColor: '#000' }))
     expect(topDeLaHinchada([producto('banco', muchos)])).toHaveLength(5)

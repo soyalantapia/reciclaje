@@ -121,8 +121,10 @@ export default function CommerceProducts() {
           const dondeJunta = puntosDelProducto(p, puntos ?? [], mios)
           return (
             <div key={p.id} className="rounded-2xl border border-border bg-card p-4 shadow-sm">
-              <div className="rounded-xl bg-cancha p-3">
+              {/* Un recuadro de la misma proporción para cada forma: las tarjetas quedan parejas */}
+              <div className="aspect-[2/1] rounded-xl bg-cancha p-3">
                 <BancoDeTapitas
+                  className="h-full"
                   forma={p.forma}
                   progreso={p.goalUnits > 0 ? p.collectedUnits / p.goalUnits : 0}
                   propias={0}

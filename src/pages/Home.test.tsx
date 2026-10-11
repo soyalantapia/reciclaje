@@ -95,6 +95,8 @@ describe('inicio del hincha', () => {
     expect(screen.getByRole('heading', { name: 'Butacas para la platea' })).toBeInTheDocument()
     expect(container.querySelector('svg[data-forma="butacas"]')).not.toBeNull()
     expect(within(pestanas).getByRole('button', { name: /Butacas para la platea/ })).toHaveAttribute('aria-pressed', 'true')
+    // Recién publicado, sin aportes: en vez de una lista vacía, la invitación a sumar la primera.
+    expect(screen.getByText('Todavía nadie sumó tapitas. ¡La primera puede ser la tuya!')).toBeInTheDocument()
   })
 
   it('si el club elimina el producto elegido, el inicio vuelve al banco y se van las pestañas', async () => {

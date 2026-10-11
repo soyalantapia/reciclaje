@@ -17,4 +17,16 @@ describe('BancoDeLaHinchada con un producto que publicó el club', () => {
     expect(container.textContent).toContain('La hinchada que suma')
     expect(container.textContent).not.toContain('La hinchada en el banco')
   })
+
+  it('sin aportes todavía, muestra la invitación en lugar de una lista vacía', () => {
+    const recien = { ...butacas, collectedUnits: 0, myContributionUnits: 0 }
+    const invitacion = 'Todavía nadie sumó tapitas. ¡La primera puede ser la tuya!'
+    const { container, rerender } = render(<BancoDeLaHinchada proyecto={recien} items={[]} propias={0} invitacion={invitacion} />)
+    expect(container.textContent).toContain(invitacion)
+    // Con aportes, va la lista y no la invitación.
+    const items = [{ id: 'c1', nombre: 'Camila R.', texto: 'dejó 50 tapitas', esTuyo: true }]
+    rerender(<BancoDeLaHinchada proyecto={butacas} items={items} propias={1} invitacion={invitacion} />)
+    expect(container.textContent).not.toContain(invitacion)
+    expect(container.textContent).toContain('La hinchada que suma')
+  })
 })
