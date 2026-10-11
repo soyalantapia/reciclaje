@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
-import type { Contribution, ImpactProject, Sponsor } from '@/types'
+import type { Contribution, ImpactProject, Sponsor, User } from '@/types'
 import { useActivityStore } from '@/store/activity'
 import { useSessionStore } from '@/store/session'
 import CommerceResumen from './CommerceResumen'
@@ -44,7 +44,7 @@ const sponsor = (id: string, name: string): Sponsor => ({
 
 function verElResumenDe(sponsorDelPanel: Sponsor) {
   useSessionStore.setState({ commerce: sponsorDelPanel })
-  render(
+  return render(
     <MemoryRouter>
       <CommerceResumen />
     </MemoryRouter>,
@@ -65,6 +65,7 @@ beforeAll(() => {
 
 beforeEach(() => {
   useActivityStore.setState({ sessionContributions: [] })
+  useSessionStore.setState({ user: null })
 })
 
 describe('resumen del panel del club', () => {
@@ -87,6 +88,21 @@ describe('resumen del panel del club', () => {
     verElResumenDe(sponsor('s_club', 'Club'))
     expect(await screen.findByText('42.890')).toBeInTheDocument()
     expect(screen.queryByText('42.840')).not.toBeInTheDocument()
+  })
+
+  it('en el panel nada figura como «tuyo», aunque el hincha esté en la sesión', async () => {
+    // «Camila Ríos» es «Camila R.», el que más aporta del banco: en el hincha esa fila sería «tuya».
+    useSessionStore.setState({ user: { name: 'Camila Ríos' } as User })
+    const aporte: Contribution = {
+      id: 'c_sesion', userId: 'u1', pointId: 'p1', pointName: 'Punto', sponsorId: 's_club', sponsorName: 'Club',
+      material: 'tapitas', units: 50, xpEarned: 10, projectId: 'pr_banco_club', status: 'validado',
+      createdAt: new Date().toISOString(),
+    }
+    useActivityStore.setState({ sessionContributions: [aporte] })
+    const { container } = verElResumenDe(sponsor('s_club', 'Club'))
+    expect(await screen.findByText('El banco de tu hinchada')).toBeInTheDocument()
+    expect(screen.getByText('dejó 50 tapitas')).toBeInTheDocument()
+    expect(container.querySelector('[data-tuyo="true"]')).toBeNull()
   })
 
   it('una institución sin banco no lo muestra y el resumen queda como estaba', async () => {
