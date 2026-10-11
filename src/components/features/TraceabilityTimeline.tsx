@@ -1,30 +1,12 @@
-import {
-  Boxes,
-  CheckCircle2,
-  Factory,
-  MapPin,
-  PackageCheck,
-  Recycle,
-  Truck,
-} from 'lucide-react'
-import type { TraceEvent, TraceStage } from '@/types'
+import type { TraceEvent } from '@/types'
 import { cn, formatDate } from '@/lib/utils'
-
-const STAGE_ICON: Record<TraceStage, typeof MapPin> = {
-  aporte: MapPin,
-  validacion: CheckCircle2,
-  lote: Boxes,
-  retiro: Truck,
-  clasificacion: Recycle,
-  transformacion: Factory,
-  producto: PackageCheck,
-}
+import { ICONO_DE_ETAPA } from './iconosDeEtapa'
 
 export function TraceabilityTimeline({ events }: { events: TraceEvent[] }) {
   return (
     <ol className="relative">
       {events.map((ev, i) => {
-        const Icon = STAGE_ICON[ev.stage]
+        const Icon = ICONO_DE_ETAPA[ev.stage]
         const last = i === events.length - 1
         return (
           <li key={ev.stage} className="relative flex gap-3 pb-5 last:pb-0">

@@ -6,7 +6,7 @@ export function nombreCorto(nombre: string): string {
   return apellido ? `${nombrePila} ${apellido[0]}.` : (nombrePila ?? '')
 }
 
-const esAporte = (item: ActivityItem): item is Contribution => !('kind' in item)
+export const esAporte = (item: ActivityItem): item is Contribution => !('kind' in item)
 
 /**
  * El proyecto con los aportes que la persona registró en esta sesión.

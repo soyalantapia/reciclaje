@@ -122,6 +122,7 @@ Dirección visual de los momentos clave. Diseño: `docs/superpowers/specs/2026-1
 | `UltimosAportes` | La hinchada en el banco |
 | `BancoDeLaHinchada` | El inicio y el panel |
 | `FestejoDelAporte` | El festejo del aporte |
+| `RecorridoDeLaTapita` | La trazabilidad de un banco: la línea de cal, tu tapita, lo que sigue y el destino (lógica en `src/lib/recorridoDeLaTapita.ts`) |
 
 **Lógica con pruebas:** `src/lib/bancoDeTapitas.ts` y `src/lib/ultimosAportes.ts`.
 

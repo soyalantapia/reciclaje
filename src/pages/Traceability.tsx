@@ -4,9 +4,12 @@ import { api } from '@/services/api'
 import { useApi } from '@/hooks/useApi'
 import { TraceabilityTimeline } from '@/components/features/TraceabilityTimeline'
 import { ErrorState } from '@/components/features/ErrorState'
+import { RecorridoDeLaTapita } from '@/components/features/RecorridoDeLaTapita'
 import { Skeleton } from '@/components/ui/skeleton'
-import { conAporteDeLaSesionEnLaTraza } from '@/lib/aportesDeLaSesion'
+import { conAporteDeLaSesionEnLaTraza, conAportesDeLaSesion } from '@/lib/aportesDeLaSesion'
+import { puntoDeTuTapita } from '@/lib/recorridoDeLaTapita'
 import { useActivityStore } from '@/store/activity'
+import { useSessionStore } from '@/store/session'
 
 export default function Traceability() {
   const { projectId = '' } = useParams()
@@ -18,6 +21,27 @@ export default function Traceability() {
   const actividad = useActivityStore((s) => s.sessionContributions)
   // El hito «Tu aporte» muestra el último aporte de esta sesión a este proyecto, si lo hubo.
   const eventos = trace && project ? conAporteDeLaSesionEnLaTraza(trace, project, actividad) : trace
+  const nombre = useSessionStore((s) => s.user?.name)
+  const { data: historial } = useApi(() => api.getContributions(), [])
+  // El proyecto con los aportes de la sesión: el destino muestra los mismos números que el inicio.
+  const proyecto = project && conAportesDeLaSesion(project, actividad, nombre)
+  const esBanco = proyecto?.illustration === 'bench'
+
+  if (esBanco && proyecto && eventos && eventos.length > 0) {
+    return (
+      <div className="mx-auto max-w-3xl space-y-4">
+        <RecorridoDeLaTapita
+          eventos={eventos}
+          proyecto={proyecto}
+          punto={puntoDeTuTapita(proyecto, actividad, historial ?? [])}
+          propias={proyecto.collectedUnits > 0 ? proyecto.myContributionUnits / proyecto.collectedUnits : 0}
+        />
+        <Link to={`/proyecto/${projectId}`} className="block text-center text-sm font-semibold text-eco-700">
+          ← Volver al proyecto
+        </Link>
+      </div>
+    )
+  }
 
   return (
     <div className="mx-auto max-w-3xl space-y-4">

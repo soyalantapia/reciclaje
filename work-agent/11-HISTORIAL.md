@@ -164,6 +164,12 @@ WhatsApp del proyecto y de la reunión del 03/08 (acta en `docs/producto/reunion
   - El festejo hace subir el marcador de 42.840 a 42.890.
   - El panel arranca con «El banco de tu hinchada».
   - Se hizo tarea por tarea con subagentes, cada una con su revisión: 9 tareas y 3 arreglos por revisión.
+- Rama `feat/recorrido-de-la-tapita`: la trazabilidad de un banco pasa a ser «El recorrido de tu tapita». Alan aprobó la maqueta («me encanta»).
+  - Es una línea de cal sobre césped, con tu tapita en ámbar en la etapa actual.
+  - El pesaje que hace el club va destacado como «lo que sigue».
+  - Las etapas que faltan dicen «pendiente», sin fechas.
+  - El destino es el banco, con el mismo avance que el inicio.
+  - Los proyectos que no son banco conservan la lista de hoy.
 
 ---
 
