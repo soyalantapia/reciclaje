@@ -15,6 +15,12 @@ import { esDelPanel, kilosDeLaMeta, puntosDelProducto } from '@/lib/productosDel
 import { ETAPAS_DEL_PILOTO, SIN_PESAJES, topDeLaHinchada } from '@/lib/informe'
 import { posicionEnLaRed, textoDePosicion } from '@/lib/posicionEnLaRed'
 import { AVISO_DE_EJEMPLO, csvDelReporte } from '@/lib/reporte'
+import {
+  NOTA_DEL_REPORTE,
+  SIN_REFERENCIA,
+  csvDeIndicadores,
+  indicadoresParaElReporte,
+} from '@/lib/reporteSustentabilidad'
 import { esInstitucion } from '@/lib/vocabulario'
 import { downloadBlob, formatNumber, pct } from '@/lib/utils'
 import { BancoDeTapitas } from '@/components/features/BancoDeTapitas'
@@ -112,9 +118,26 @@ export default function CommerceInforme() {
     ['Huella Verde', `${m.greenScore} de 100`],
   ]
 
+  // Los mismos datos, ordenados para el Reporte de Sustentabilidad que el club publica con su memoria.
+  const indicadores = indicadoresParaElReporte({
+    m,
+    productos,
+    puntosR: (points ?? []).filter((p) => p.sponsorId === commerce.id).length,
+  })
+  const dimensiones = [...new Set(indicadores.map((f) => f.dimension))]
+
   function descargarCsv() {
     downloadBlob(`informe-${commerce!.slug}.csv`, csvDelReporte(m!), 'text/csv;charset=utf-8')
     toast.success('CSV descargado 📄')
+  }
+
+  function descargarIndicadores() {
+    downloadBlob(
+      `indicadores-reporte-sustentabilidad-${commerce!.slug}.csv`,
+      csvDeIndicadores(indicadores),
+      'text/csv;charset=utf-8',
+    )
+    toast.success('Indicadores descargados 📄')
   }
 
   return (
@@ -279,6 +302,69 @@ export default function CommerceInforme() {
             </ol>
           </section>
         )}
+
+        <section className="break-inside-avoid">
+          <h2 id="informe-sustentabilidad" className="text-lg font-extrabold">
+            Para el Reporte de Sustentabilidad de {commerce.name}
+          </h2>
+          <div className="mt-3 overflow-x-auto">
+            <table aria-labelledby="informe-sustentabilidad" className="w-full text-left text-sm">
+              <thead>
+                <tr className="border-b-2 border-border text-xs uppercase tracking-wide text-muted-foreground">
+                  <th scope="col" className="py-2 pr-2 font-bold">
+                    Indicador
+                  </th>
+                  <th scope="col" className="py-2 pr-2 text-right font-bold sm:pr-4 print:pr-4">
+                    Valor
+                  </th>
+                  <th scope="col" className="hidden py-2 font-bold sm:table-cell print:table-cell">
+                    Referencia
+                  </th>
+                </tr>
+              </thead>
+              {/* Agrupado por las dimensiones del reporte del club, con los nombres que usa el club */}
+              {dimensiones.map((dimension) => (
+                <tbody key={dimension}>
+                  <tr>
+                    <th
+                      scope="rowgroup"
+                      colSpan={3}
+                      className="pb-1 pt-3 text-xs font-bold uppercase tracking-wide text-eco-700 dark:text-eco-300"
+                    >
+                      {dimension}
+                    </th>
+                  </tr>
+                  {indicadores
+                    .filter((f) => f.dimension === dimension)
+                    .map((f) => (
+                      <tr key={f.id} className="border-b border-border">
+                        <th scope="row" className="py-2 pr-2 font-normal">
+                          {f.indicador}
+                          {/* En el celular no entran tres columnas: la referencia va debajo del indicador.
+                              En el papel van siempre las tres, aunque se imprima con la escala agrandada. */}
+                          {f.referencia !== SIN_REFERENCIA && (
+                            <span className="mt-0.5 block text-xs text-muted-foreground sm:hidden print:hidden">
+                              {f.referencia}
+                            </span>
+                          )}
+                        </th>
+                        <td className="py-2 pr-2 text-right font-bold tabular-nums sm:pr-4 print:pr-4">{f.valor}</td>
+                        <td className="hidden py-2 text-xs text-muted-foreground sm:table-cell print:table-cell">
+                          {f.referencia}
+                        </td>
+                      </tr>
+                    ))}
+                </tbody>
+              ))}
+            </table>
+          </div>
+          <p className="mt-2 text-xs text-muted-foreground">{NOTA_DEL_REPORTE}</p>
+          <div data-no-imprimir className="mt-3">
+            <Button size="sm" variant="secondary" onClick={descargarIndicadores}>
+              <Download size={15} /> Descargar indicadores (CSV)
+            </Button>
+          </div>
+        </section>
 
         <section className="break-inside-avoid">
           <h2 className="text-lg font-extrabold">Lo que sigue</h2>

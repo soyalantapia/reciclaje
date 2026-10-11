@@ -60,7 +60,7 @@ Fuentes de lo prometido: la presentación general, el resumen ejecutivo para el 
 |---|---|---|---|---|
 | Lectura de QR y pesaje | A medias | El QR existe; el pesaje falta: carga por lote y por partido desde el panel | M | piloto |
 | Datos y seguridad de los hinchas | Falta | Servidor, login, datos mínimos y consentimiento | M | piloto |
-| Informe de resultados para la comisión directiva | A medias | Desde el 10/10/2026, en la demo: `/comercio/informe`, imprimible, con los datos del panel y «Partido por partido» sin números. Falta lo real: los pesajes por partido (E1.4) y los costos del piloto | M | piloto, etapa 4 |
+| Informe de resultados para la comisión directiva | A medias | Desde el 10/10/2026, en la demo: `/comercio/informe`, imprimible, con los datos del panel y «Partido por partido» sin números. Desde el 11/10/2026 trae también esos datos ordenados para el Reporte de Sustentabilidad del club, alineados con GRI y la Agenda 2030 (no verificados), con su CSV. Falta lo real: los pesajes por partido (E1.4) y los costos del piloto | M | piloto, etapa 4 |
 | Banco de suplentes u otro producto con el plástico de la hinchada | A medias | La pantalla existe con ejemplo; la fabricación es operación del socio industrial | S en software | demo y piloto |
 | Modelo replicable en otros clubes | A medias | Los sponsors ya son varios en el modelo; falta que cada institución tenga identidad propia | M | fase 2 |
 
