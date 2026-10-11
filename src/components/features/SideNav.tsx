@@ -2,7 +2,9 @@ import { NavLink, useNavigate } from 'react-router-dom'
 import { Coins, Flame, Gift, Heart, Home, MapPin, QrCode, Store, Trophy, User } from 'lucide-react'
 import { useWalletStore } from '@/store/wallet'
 import { cn, formatNumber } from '@/lib/utils'
+import { useToques } from '@/hooks/useToques'
 import { Logo } from './Logo'
+import { IconoQueSeMueve, ZonaQueSeAprieta } from './IconoQueSeMueve'
 
 const items = [
   { to: '/', label: 'Inicio', icon: Home, end: true },
@@ -17,9 +19,12 @@ const items = [
 
 /**
  * Navegación lateral para tablet/desktop (md+). En mobile se usa BottomNav.
+ * Sus íconos se mueven igual que los de la barra de abajo: se achican al apretar el ítem entero y rebotan
+ * en cada toque (ver `IconoQueSeMueve`).
  */
 export function SideNav({ className }: { className?: string }) {
   const navigate = useNavigate()
+  const { tocar, vezDe } = useToques()
   const spendableXp = useWalletStore((s) => s.spendableXp)
   const streakDays = useWalletStore((s) => s.streakDays)
 
@@ -55,21 +60,28 @@ export function SideNav({ className }: { className?: string }) {
       </div>
 
       <nav className="flex flex-col gap-1">
-        {items.map(({ to, label, icon: Icon, end }) => (
+        {items.map(({ to, label, icon, end }) => (
           <NavLink
             key={to}
             to={to}
             end={end}
+            onClick={() => tocar(to)}
             className={({ isActive }) =>
               cn(
-                'flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-colors',
+                'block rounded-xl text-sm font-semibold transition-colors',
                 isActive
                   ? 'bg-eco-600 text-white'
                   : 'text-muted-foreground hover:bg-muted hover:text-foreground',
               )
             }
           >
-            <Icon size={20} strokeWidth={2.2} /> {label}
+            {({ isActive }) => (
+              // El relleno va en la zona, no en el enlace: así apretar en cualquier parte del ítem lo achica.
+              <ZonaQueSeAprieta className="flex w-full items-center gap-3 px-3 py-2.5">
+                <IconoQueSeMueve icon={icon} activo={isActive} vez={vezDe(to)} size={20} strokeWidth={2.2} />
+                {label}
+              </ZonaQueSeAprieta>
+            )}
           </NavLink>
         ))}
       </nav>

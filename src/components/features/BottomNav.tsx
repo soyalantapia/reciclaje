@@ -1,7 +1,9 @@
 import { NavLink } from 'react-router-dom'
 import { motion, useReducedMotion } from 'framer-motion'
-import { Gift, Home, MapPin, QrCode, User, type LucideIcon } from 'lucide-react'
+import { Gift, Home, MapPin, QrCode, User } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useToques } from '@/hooks/useToques'
+import { IconoQueSeMueve, SeAchicaAlApretar, ZonaQueSeAprieta } from './IconoQueSeMueve'
 
 const items = [
   { to: '/', label: 'Inicio', icon: Home, end: true },
@@ -12,26 +14,13 @@ const items = [
 ]
 
 /**
- * El ícono de la barra: al apretarlo se achica, y al quedar elegido rebota (sube y crece un poco, y
- * vuelve). Con «reducir movimiento» del sistema queda quieto.
+ * Cada botón de la barra responde en toda su superficie: al apretarlo, el ícono (y en Escanear el círculo
+ * verde entero) se achica, y en cada toque el ícono rebota, también el de la pestaña en la que ya estás.
+ * Con «reducir movimiento» del sistema queda todo quieto.
  */
-function IconoDeLaBarra({ icon: Icon, activo, centro }: { icon: LucideIcon; activo: boolean; centro?: boolean }) {
-  const reducir = useReducedMotion()
-  return (
-    <motion.span
-      data-icono
-      className="inline-flex"
-      animate={reducir ? undefined : activo ? { y: [0, -5, 0], scale: [1, 1.18, 1] } : { y: 0, scale: 1 }}
-      transition={{ duration: 0.45, ease: 'easeOut' }}
-      whileTap={reducir ? undefined : { scale: centro ? 0.88 : 0.85 }}
-    >
-      <Icon size={centro ? 24 : 22} strokeWidth={centro ? 2.4 : activo ? 2.6 : 2} />
-    </motion.span>
-  )
-}
-
 export function BottomNav() {
   const reducir = useReducedMotion()
+  const { tocar, vezDe } = useToques()
   return (
     <nav className="fixed inset-x-0 bottom-0 z-40 mx-auto max-w-md md:hidden">
       <div className="pb-safe border-t border-border bg-card/95 backdrop-blur-md">
@@ -42,20 +31,24 @@ export function BottomNav() {
                 to={to}
                 end={end}
                 aria-label={label}
+                onClick={() => tocar(to)}
                 className="group flex w-full flex-col items-center gap-0.5"
               >
                 {({ isActive }) =>
                   center ? (
-                    <span className="-mt-7 flex flex-col items-center">
-                      <span
+                    <ZonaQueSeAprieta className="-mt-7 flex w-full flex-col items-center">
+                      <SeAchicaAlApretar
+                        data-circulo
+                        escala={0.92}
                         className={cn(
                           'relative grid h-14 w-14 place-items-center rounded-full bg-eco-600 text-white shadow-lg shadow-eco-600/40 ring-4 ring-card',
                           isActive && 'bg-eco-700',
                         )}
                       >
-                        {/* El pulso del botón del medio al quedar elegido */}
+                        {/* El pulso del botón del medio al quedar elegido, y otra vez en cada toque */}
                         {isActive && !reducir && (
                           <motion.span
+                            key={vezDe(to)}
                             aria-hidden
                             className="pointer-events-none absolute inset-0 rounded-full bg-eco-500"
                             initial={{ scale: 1, opacity: 0.45 }}
@@ -63,20 +56,20 @@ export function BottomNav() {
                             transition={{ duration: 0.7, ease: 'easeOut' }}
                           />
                         )}
-                        <IconoDeLaBarra icon={icon} activo={isActive} centro />
-                      </span>
+                        <IconoQueSeMueve icon={icon} activo={isActive} vez={vezDe(to)} size={24} strokeWidth={2.4} />
+                      </SeAchicaAlApretar>
                       <span className="mt-0.5 text-[11px] font-semibold text-eco-700">{label}</span>
-                    </span>
+                    </ZonaQueSeAprieta>
                   ) : (
-                    <span
+                    <ZonaQueSeAprieta
                       className={cn(
-                        'flex flex-col items-center gap-0.5 py-1.5 text-[11px] font-semibold transition-colors',
+                        'flex w-full flex-col items-center gap-0.5 py-1.5 text-[11px] font-semibold transition-colors',
                         isActive ? 'text-eco-700' : 'text-muted-foreground',
                       )}
                     >
-                      <IconoDeLaBarra icon={icon} activo={isActive} />
+                      <IconoQueSeMueve icon={icon} activo={isActive} vez={vezDe(to)} strokeWidth={isActive ? 2.6 : 2} />
                       {label}
-                    </span>
+                    </ZonaQueSeAprieta>
                   )
                 }
               </NavLink>
