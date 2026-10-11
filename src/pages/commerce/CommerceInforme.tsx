@@ -309,10 +309,10 @@ export default function CommerceInforme() {
                   <th scope="col" className="py-2 pr-2 font-bold">
                     Indicador
                   </th>
-                  <th scope="col" className="py-2 pr-2 text-right font-bold">
+                  <th scope="col" className="py-2 pr-2 text-right font-bold sm:pr-4">
                     Valor
                   </th>
-                  <th scope="col" className="py-2 font-bold">
+                  <th scope="col" className="hidden py-2 font-bold sm:table-cell">
                     Referencia
                   </th>
                 </tr>
@@ -333,9 +333,15 @@ export default function CommerceInforme() {
                     .filter((f) => f.dimension === dimension)
                     .map((f) => (
                       <tr key={f.indicador} className="border-b border-border">
-                        <td className="py-2 pr-2">{f.indicador}</td>
-                        <td className="py-2 pr-2 text-right font-bold tabular-nums">{f.valor}</td>
-                        <td className="py-2 text-xs text-muted-foreground">{f.referencia}</td>
+                        <td className="py-2 pr-2">
+                          {f.indicador}
+                          {/* En el celular no entran tres columnas: la referencia va debajo del indicador */}
+                          {f.referencia !== '—' && (
+                            <span className="mt-0.5 block text-xs text-muted-foreground sm:hidden">{f.referencia}</span>
+                          )}
+                        </td>
+                        <td className="py-2 pr-2 text-right font-bold tabular-nums sm:pr-4">{f.valor}</td>
+                        <td className="hidden py-2 text-xs text-muted-foreground sm:table-cell">{f.referencia}</td>
                       </tr>
                     ))}
                 </tbody>
