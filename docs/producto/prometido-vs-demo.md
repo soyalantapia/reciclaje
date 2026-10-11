@@ -22,7 +22,7 @@ Fuentes de lo prometido: la presentación general, el resumen ejecutivo para el 
 | Punto R con su QR | A medias | El punto con QR para descargar e imprimir: `src/pages/commerce/CommercePoints.tsx:36-38` | Llamarlo «Punto R» | S | demo |
 | Sumar XP de mérito y XP canjeables | A medias | `src/store/wallet.ts:44-57` | Se calcula en el navegador; en el piloto lo tiene que calcular el servidor | M | piloto |
 | Canjear beneficios en comercios y recibir un cupón con QR | A medias | `src/services/mocks/handlers.ts:106-122` | El comercio no tiene cómo validar el cupón; el saldo se descuenta en el navegador | M | piloto |
-| Elegir a qué producto va el aporte | Falta | Hoy el proyecto lo define el punto: `src/services/mocks/handlers.ts:139` | Elección al escanear, sólo si el club tiene dos o más productos a la vez | M | fase 2, o piloto si el club lo pide |
+| Elegir a qué producto va el aporte | Falta | Hoy lo define el punto: el producto que el club publicó para ese Punto R o, si no hay, el del club (`proyectoDelPunto` en `src/lib/productosDelClub.ts`) | Elección al escanear, sólo si el club tiene dos o más productos a la vez | M | fase 2, o piloto si el club lo pide |
 | Ver el producto con meta, barra de avance y aporte propio | A medias | `src/services/mocks/data.ts:239-266`, `src/components/features/ImpactProgress.tsx` | Los valores son fijos, la meta está en unidades y no en kilos, y la barra no se mueve con los aportes | M | demo (con ejemplo) y piloto (real) |
 | Trazabilidad del material hasta el producto | A medias | `src/pages/Traceability.tsx`, `src/services/mocks/data.ts:297-355` | Las 7 etapas son fijas; nadie registra lote, retiro ni planta | L | piloto, al menos lote y pesaje |
 | Causas: tapitas que se vuelven insumos de hospital | A medias | `src/pages/Causes.tsx`, `src/services/mocks/data.ts:696-761` | Datos de ejemplo | S | fase 2 |
@@ -42,7 +42,7 @@ Fuentes de lo prometido: la presentación general, el resumen ejecutivo para el 
 |---|---|---|---|---|---|
 | Alta en tres pasos | Existe | `src/pages/commerce/CommerceOnboarding.tsx`; el rubro club o estadio está en la línea 19 | — | — | — |
 | Panel de institución (club) | A medias | El club usa el mismo panel del comercio | Vistas propias: producto con meta, hinchada, pesajes y constancia | M | piloto |
-| La institución crea su producto con meta de kilos | Falta | Los proyectos son fijos: `src/services/mocks/data.ts:239` | Alta de producto desde el panel | M | piloto |
+| La institución crea su producto con meta de kilos | A medias | Desde el 10/10/2026, «Productos» en el panel: forma, nombre, meta en kilos y Punto R (`src/pages/commerce/CommerceProducts.tsx`, `src/lib/productosDelClub.ts`). La hinchada lo ve y le suma, en el mismo navegador | Que se guarde en el servidor y pase entre aparatos (E1.1) | S | piloto |
 | Resumen con Huella Verde, seis indicadores y aportes por mes y por punto | A medias | `src/pages/commerce/CommerceResumen.tsx`; números de una fórmula en `src/lib/metrics.ts:9-34` | Datos reales. La posición en la red ya no es un «Top 12%» fijo: se calcula con la Huella Verde (`src/lib/posicionEnLaRed.ts`) | M | piloto |
 | Publicar beneficios | Existe | `src/pages/commerce/CommerceBenefits.tsx` | Se guardan en el navegador. Desde el 10/10/2026 la app del hincha los muestra y los deja canjear, y lo pausado no se ve, en el mismo navegador; entre aparatos distintos hace falta el servidor (E1.1) | S | piloto |
 | Campañas: premio del mes y desafíos | A medias | `src/pages/commerce/CommerceCampaigns.tsx` | Desde el 10/10/2026, el premio del mes y los desafíos que el panel lanza o pausa se ven en la pestaña del ranking de ese sponsor, en el mismo navegador (`src/lib/campanasDeLaRed.ts`). Falta que pase entre aparatos (servidor, E1.1) y en los comercios sin pestaña propia, que el panel avisa | M | fase 2 |
@@ -60,7 +60,7 @@ Fuentes de lo prometido: la presentación general, el resumen ejecutivo para el 
 |---|---|---|---|---|
 | Lectura de QR y pesaje | A medias | El QR existe; el pesaje falta: carga por lote y por partido desde el panel | M | piloto |
 | Datos y seguridad de los hinchas | Falta | Servidor, login, datos mínimos y consentimiento | M | piloto |
-| Informe de resultados para la comisión directiva | Falta | Kilos, participación, funcionamiento y costos del piloto | M | piloto, etapa 4 |
+| Informe de resultados para la comisión directiva | A medias | Desde el 10/10/2026, en la demo: `/comercio/informe`, imprimible, con los datos del panel y «Partido por partido» sin números. Falta lo real: los pesajes por partido (E1.4) y los costos del piloto | M | piloto, etapa 4 |
 | Banco de suplentes u otro producto con el plástico de la hinchada | A medias | La pantalla existe con ejemplo; la fabricación es operación del socio industrial | S en software | demo y piloto |
 | Modelo replicable en otros clubes | A medias | Los sponsors ya son varios en el modelo; falta que cada institución tenga identidad propia | M | fase 2 |
 
