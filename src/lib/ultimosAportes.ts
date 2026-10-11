@@ -15,10 +15,13 @@ export interface AporteDeLaHinchada {
 
 const esAporte = (i: ActivityItem): i is Contribution => !('kind' in i)
 
+/** Cuántos aportes de esta sesión entran en la lista: el resto del lugar es para los que más aportan. */
+const FILAS_DE_LA_SESION = 2
+
 /**
- * Lo que muestra el banco de la hinchada: primero los aportes de esta sesión a ese proyecto, con
- * su hora real; después el acumulado de los que más aportan. No dice «en vivo» ni inventa
- * horarios: el acumulado de `topContributors` no tiene hora.
+ * Lo que muestra el banco de la hinchada: primero los aportes de esta sesión a ese proyecto (los
+ * 2 más nuevos, tal como vienen), con su hora real; después el acumulado de los que más aportan.
+ * No dice «en vivo» ni inventa horarios: el acumulado de `topContributors` no tiene hora.
  */
 export function ultimosAportesDeLaHinchada(
   proyecto: ImpactProject,
@@ -26,10 +29,12 @@ export function ultimosAportesDeLaHinchada(
   nombreDelUsuario?: string,
   tope = 5,
 ): AporteDeLaHinchada[] {
-  const corto = nombreDelUsuario ? nombreCorto(nombreDelUsuario) : undefined
+  // Un nombre de sólo espacios no es un nombre: figura como «Un hincha».
+  const corto = (nombreDelUsuario && nombreCorto(nombreDelUsuario)) || undefined
   const deLaSesion: AporteDeLaHinchada[] = actividad
     .filter(esAporte)
     .filter((c) => c.projectId === proyecto.id && c.material === proyecto.material)
+    .slice(0, FILAS_DE_LA_SESION)
     .map((c) => ({
       id: c.id,
       nombre: corto ?? 'Un hincha',

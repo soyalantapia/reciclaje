@@ -26,6 +26,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { claveDeAlmacenamiento } from '@/lib/escenario'
 import { vocabularioDelEscenario } from '@/lib/vocabulario'
 import { conAportesDeLaSesion } from '@/lib/aportesDeLaSesion'
+import { sumaAlBanco } from '@/lib/festejo'
 
 const PENDING_POINT_KEY = claveDeAlmacenamiento('scan-point')
 
@@ -111,16 +112,10 @@ export default function Scan() {
   if (mode === 'reciclar' && step === 'done' && result) {
     // El festejo, sólo si el aporte suma a un banco: mismo proyecto y mismo material.
     const proyectoConAporte = result.project && conAportesDeLaSesion(result.project, actividad, nombre)
-    const sumaAlBanco =
-      !!proyectoConAporte &&
-      proyectoConAporte.illustration === 'bench' &&
-      result.contribution.projectId === proyectoConAporte.id &&
-      result.contribution.material === proyectoConAporte.material &&
-      (result.contribution.units ?? 0) > 0
 
     return (
       <div className="flex flex-col items-center pt-6 text-center">
-        {sumaAlBanco && proyectoConAporte ? (
+        {proyectoConAporte && sumaAlBanco(result.contribution, proyectoConAporte) ? (
           <>
             <h1 className="text-2xl font-extrabold">¡Aporte registrado!</h1>
             <p className="mb-4 text-muted-foreground">{result.contribution.pointName}</p>
