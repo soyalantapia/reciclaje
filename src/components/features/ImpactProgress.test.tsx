@@ -33,5 +33,29 @@ describe('ImpactProgress del banco', () => {
     expect(container.querySelectorAll('circle[data-estado]')).toHaveLength(0)
     expect(container.querySelector('[aria-label^="Banco de tapitas"]')).toBeNull()
     expect(container.querySelector('svg[aria-label="Mobiliario y cartelería reciclada"]')).not.toBeNull()
+    // «Los titulares de la hinchada» es sólo del banco: los demás proyectos siguen con «Top aportantes».
+    expect(container.textContent).toContain('Top aportantes')
+    expect(container.textContent).not.toContain('hinchada')
+  })
+
+  it('la línea de cal no es hija directa de la lista y la etapa actual se anuncia como paso actual', () => {
+    const { container } = render(<ImpactProgress project={banco} />)
+    const lista = container.querySelector('ol')!
+    expect(lista.querySelector(':scope > span')).toBeNull()
+    expect(lista.parentElement?.querySelector(':scope > span[aria-hidden="true"]')).not.toBeNull()
+    expect([...lista.children].every((hijo) => hijo.tagName === 'LI')).toBe(true)
+    const actual = container.querySelector('li[aria-current="step"]')
+    expect(actual?.textContent).toContain('Recolección')
+    expect(container.querySelectorAll('li[aria-current]')).toHaveLength(1)
+  })
+
+  it('sin hitos o sin aportantes no dibuja encabezados vacíos', () => {
+    const { container } = render(
+      <ImpactProgress project={{ ...banco, milestones: [], topContributors: [] } as ImpactProject} />,
+    )
+    expect(container.querySelector('ol')).toBeNull()
+    expect(container.textContent).not.toContain('Hitos del proyecto')
+    expect(container.textContent).not.toContain('Los titulares de la hinchada')
+    expect(container.textContent).not.toContain('Top aportantes')
   })
 })

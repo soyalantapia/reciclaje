@@ -115,72 +115,85 @@ export function ImpactProgress({ project, compact = false, className, nombreCort
       {!compact && (
         <>
           {/* Hitos: una línea de cal con la etapa actual marcada */}
-          <div>
-            <p className="mb-3 text-sm font-bold">Hitos del proyecto</p>
-            <ol
-              className="relative grid gap-1"
-              style={{ gridTemplateColumns: `repeat(${project.milestones.length}, minmax(0, 1fr))` }}
-            >
-              <span
-                aria-hidden
-                className="absolute top-[11px] h-0.5 bg-eco-200 dark:bg-eco-800"
-                style={{
-                  left: `${50 / project.milestones.length}%`,
-                  right: `${50 / project.milestones.length}%`,
-                }}
-              />
-              {project.milestones.map((m, i) => {
-                const actual = i === project.milestones.findIndex((h) => !h.done)
-                return (
-                  <li key={m.label} data-hito-actual={actual} className="relative flex flex-col items-center gap-1.5 text-center">
-                    <span
+          {project.milestones.length > 0 && (
+            <div>
+              <p className="mb-3 text-sm font-bold">Hitos del proyecto</p>
+              <div className="relative">
+                <span
+                  aria-hidden
+                  className="absolute top-[11px] h-0.5 bg-eco-200 dark:bg-eco-800"
+                  style={{
+                    left: `${50 / project.milestones.length}%`,
+                    right: `${50 / project.milestones.length}%`,
+                  }}
+                />
+                <ol
+                  className="grid gap-1"
+                  style={{ gridTemplateColumns: `repeat(${project.milestones.length}, minmax(0, 1fr))` }}
+                >
+                  {project.milestones.map((m, i) => {
+                    const actual = i === project.milestones.findIndex((h) => !h.done)
+                    return (
+                      <li
+                        key={m.label}
+                        data-hito-actual={actual}
+                        aria-current={actual ? 'step' : undefined}
+                        className="relative flex flex-col items-center gap-1.5 text-center"
+                      >
+                        <span
+                          className={cn(
+                            'grid h-6 w-6 place-items-center rounded-full border-2 text-[11px] font-bold',
+                            m.done
+                              ? 'border-eco-600 bg-eco-600 text-white'
+                              : actual
+                                ? 'border-xp-500 bg-xp-100 text-xp-700'
+                                : 'border-eco-200 bg-card text-muted-foreground dark:border-eco-800',
+                          )}
+                        >
+                          {m.done ? '✓' : i + 1}
+                        </span>
+                        <span className={cn('text-xs leading-tight', actual ? 'font-bold text-foreground' : 'text-muted-foreground')}>
+                          {m.label}
+                        </span>
+                      </li>
+                    )
+                  })}
+                </ol>
+              </div>
+            </div>
+          )}
+
+          {/* Los titulares de la hinchada (en un banco) o los que más aportan (en el resto) */}
+          {project.topContributors.length > 0 && (
+            <div>
+              <p className="mb-2 text-sm font-bold">
+                {project.illustration === 'bench' ? 'Los titulares de la hinchada' : 'Top aportantes'}
+              </p>
+              <ul className="space-y-1.5">
+                {project.topContributors.map((c, i) => {
+                  const tuyo = c.name === nombreCorto
+                  return (
+                    <li
+                      key={c.name}
+                      data-titular-tuyo={tuyo}
                       className={cn(
-                        'grid h-6 w-6 place-items-center rounded-full border-2 text-[11px] font-bold',
-                        m.done
-                          ? 'border-eco-600 bg-eco-600 text-white'
-                          : actual
-                            ? 'border-xp-500 bg-xp-100 text-xp-700'
-                            : 'border-eco-200 bg-card text-muted-foreground dark:border-eco-800',
+                        'flex items-center gap-3 rounded-xl px-2 py-1.5',
+                        tuyo && 'bg-xp-50 ring-1 ring-xp-300 dark:bg-xp-700/20',
                       )}
                     >
-                      {m.done ? '✓' : i + 1}
-                    </span>
-                    <span className={cn('text-xs leading-tight', actual ? 'font-bold text-foreground' : 'text-muted-foreground')}>
-                      {m.label}
-                    </span>
-                  </li>
-                )
-              })}
-            </ol>
-          </div>
-
-          {/* Los titulares de la hinchada */}
-          <div>
-            <p className="mb-2 text-sm font-bold">Los titulares de la hinchada</p>
-            <ul className="space-y-1.5">
-              {project.topContributors.map((c, i) => {
-                const tuyo = c.name === nombreCorto
-                return (
-                  <li
-                    key={c.name}
-                    data-titular-tuyo={tuyo}
-                    className={cn(
-                      'flex items-center gap-3 rounded-xl px-2 py-1.5',
-                      tuyo && 'bg-xp-50 ring-1 ring-xp-300 dark:bg-xp-700/20',
-                    )}
-                  >
-                    <span className="w-5 font-marcador text-base font-bold text-muted-foreground">{i + 1}</span>
-                    <Avatar name={c.name} color={c.avatarColor} size="sm" />
-                    <span className="flex-1 text-sm font-semibold">
-                      {c.name}
-                      {tuyo && ' (vos)'}
-                    </span>
-                    <span className="font-marcador text-base font-bold tabular-nums text-eco-700">{formatNumber(c.units)}</span>
-                  </li>
-                )
-              })}
-            </ul>
-          </div>
+                      <span className="w-5 font-marcador text-base font-bold text-muted-foreground">{i + 1}</span>
+                      <Avatar name={c.name} color={c.avatarColor} size="sm" />
+                      <span className="flex-1 text-sm font-semibold">
+                        {c.name}
+                        {tuyo && ' (vos)'}
+                      </span>
+                      <span className="font-marcador text-base font-bold tabular-nums text-eco-700">{formatNumber(c.units)}</span>
+                    </li>
+                  )
+                })}
+              </ul>
+            </div>
+          )}
         </>
       )}
     </div>
