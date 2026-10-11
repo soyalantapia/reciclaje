@@ -62,7 +62,7 @@ En `src/components/features/`:
 
 | Pieza | Props | Qué hace |
 |---|---|---|
-| `BancoDeTapitas` | `progreso`, `propias`, `nuevas?`, `tamano: 'chico' \| 'grande'` | Dibuja en SVG el banco: respaldo y asiento hechos de tapitas (16 × 5), patas de contorno. Con `nuevas`, esas tapitas entran animadas |
+| `BancoDeTapitas` | `progreso`, `propias`, `animarTuyas?`, `tamano: 'chico' \| 'grande'` | Dibuja en SVG el banco: respaldo hecho de tapitas (16 × 5), asiento y patas de contorno. Con `animarTuyas`, las tapitas de la persona entran cayendo. Un aporte de 50 sobre una meta de 300.000 no enciende otra tapita del dibujo: lo que se anima es la tuya |
 | `Marcador` | `valor`, `etiqueta`, `desde?` | Número grande en `--font-marcador`, con su etiqueta. Con `desde`, cuenta de un valor al otro |
 | `Cancha` | `children`, `className?`, `conLinea?` | Fondo de franjas de césped, opcionalmente con una línea de cal |
 | `UltimosAportes` | `items` | La lista de `ultimosAportesDeLaHinchada` |
@@ -81,7 +81,7 @@ Arriba de todo va el **banco de la hinchada**, sobre `Cancha`:
 
 Usa el primer proyecto con meta (el del club), con `conAportesDeLaSesion`.
 
-La tarjeta de nivel y XP baja a una franja compacta. Causas, marcas, ranking y actividad quedan donde están.
+La billetera de XP baja debajo del banco, igual que hoy. El botón «Escanear un aporte» se va: lo reemplaza el del banco, y en la barra de abajo sigue «Escanear». Causas, marcas, ranking y actividad quedan donde están.
 
 ### 2 · Proyecto (`src/pages/ImpactProjectPage.tsx`)
 
@@ -94,7 +94,7 @@ La tarjeta de nivel y XP baja a una franja compacta. Causas, marcas, ranking y a
 La secuencia dura unos 2 segundos:
 1. Las tapitas del aporte entran al banco y se encienden en ámbar.
 2. El `Marcador` sube del total anterior al nuevo, por ejemplo de 42.840 a 42.890.
-3. Aparece «+100 XP» estilo tablero y «Tus 50 tapitas ya están en el banco de la hinchada».
+3. Aparece «+100 XP» estilo tablero y «Tus 50 tapitas ya suman al banco de la hinchada». Dice «suman» y no «están» porque falta el pesaje del lote.
 4. Siguen los botones de siempre: ver el proyecto, la trazabilidad y escanear otro.
 
 Tocar la pantalla salta al estado final. Con movimiento reducido, se ve todo quieto.
@@ -112,9 +112,9 @@ Sólo aparece si el comercio o la institución tiene un proyecto (`getProjects` 
 
 ## La capa de cancha en el resto
 
-- Los encabezados de sección del inicio y del proyecto, y los separadores, usan la línea de cal.
-- Los números grandes que ya existen (XP de la billetera, indicadores del panel) pasan a `--font-marcador`.
+- Los números grandes que ya existen pasan a `--font-marcador`: la billetera de XP, los indicadores del panel y el XP del ranking.
 - Nada más cambia de estructura.
+- Las líneas de cal se usan sólo sobre césped (`Cancha`), porque sobre el fondo claro no se ven.
 
 ## Reglas que se mantienen
 
