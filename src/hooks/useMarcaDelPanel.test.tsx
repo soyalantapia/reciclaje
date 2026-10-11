@@ -24,6 +24,13 @@ describe('useMarcaDelPanel', () => {
     expect(result.current?.estilo).toMatchObject({ '--eco-600': '#0b2d6b' })
   })
 
+  it('cada institución toma la suya, no la de otra', () => {
+    useMarcaDelClubStore.getState().guardar('s_club', { color: '#0b2d6b' })
+    useMarcaDelClubStore.getState().guardar('s_estadio', { color: '#aa0000' })
+    useSessionStore.setState({ commerce: { ...club, id: 's_estadio', category: 'estadio' } })
+    expect(renderHook(() => useMarcaDelPanel()).result.current).toMatchObject({ color: '#aa0000' })
+  })
+
   it('sin marca guardada, no hay marca', () => {
     expect(renderHook(() => useMarcaDelPanel()).result.current).toBeNull()
   })

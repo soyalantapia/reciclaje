@@ -21,6 +21,16 @@ describe('la marca de cada institución', () => {
     expect(useMarcaDelClubStore.getState().marcas).toEqual({ s_otro: { color: '#aa0000' } })
   })
 
+  it('guardar la marca de una institución no pisa la de otra', () => {
+    const { guardar } = useMarcaDelClubStore.getState()
+    guardar('s_club', { escudo: ESCUDO, color: '#0b2d6b' })
+    guardar('s_otro', { color: '#aa0000' })
+    expect(useMarcaDelClubStore.getState().marcas).toEqual({
+      s_club: { escudo: ESCUDO, color: '#0b2d6b' },
+      s_otro: { color: '#aa0000' },
+    })
+  })
+
   it('queda en el navegador, con su clave y la versión de los datos', () => {
     useMarcaDelClubStore.getState().guardar('s_club', { color: '#0b2d6b' })
     expect(JSON.parse(localStorage.getItem(clave)!)).toMatchObject({
