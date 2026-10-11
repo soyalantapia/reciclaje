@@ -101,3 +101,31 @@ Grid responsive para listas de tarjetas. `cols`: `2` · `3` (default, 1→2→3)
 4. Animaciones: framer-motion, sutiles y de un solo sentido
    (`whileInView` + `viewport={{ once: true }}`), respetando `useReducedMotion()`.
 5. Íconos: lucide-react, tamaño 14–22 según contexto.
+
+## Día de cancha (10/10/2026)
+
+Dirección visual de los momentos clave. Diseño: `docs/superpowers/specs/2026-10-10-dia-de-cancha-design.md`.
+
+**Tokens:**
+- `--font-marcador`: Barlow Condensed 600/700, sólo para números grandes, con `tabular-nums`.
+- `bg-cancha`: franjas de césped.
+- `bg-cal`: la línea de cal, sólo sobre césped.
+- `--color-cancha-claro` y `--color-cancha-oscuro`, con valores para claro y oscuro.
+
+**Piezas** (`src/components/features/`):
+
+| Pieza | Para qué |
+|---|---|
+| `Cancha` | El fondo de césped |
+| `Marcador` | Los números de tablero, con cuenta animada opcional |
+| `BancoDeTapitas` | El banco dibujado con 80 tapitas, según el avance real; las de la persona en ámbar |
+| `UltimosAportes` | La hinchada en el banco |
+| `BancoDeLaHinchada` | El inicio y el panel |
+| `FestejoDelAporte` | El festejo del aporte |
+
+**Lógica con pruebas:** `src/lib/bancoDeTapitas.ts` y `src/lib/ultimosAportes.ts`.
+
+**Reglas:**
+- Nada dice «en vivo» ni inventa horarios: una prueba revisa los datos de las dos demos.
+- Con movimiento reducido, nada se anima.
+- En el panel del club nada es «tuyo».

@@ -8,6 +8,8 @@ import { MATERIAL_EMOJI, MATERIAL_UNIT, formatNumber, formatXp, timeAgo } from '
 import { XpWallet } from '@/components/features/XpWallet'
 import { ImpactProgress } from '@/components/features/ImpactProgress'
 import { conAportesDeLaSesion } from '@/lib/aportesDeLaSesion'
+import { ultimosAportesDeLaHinchada } from '@/lib/ultimosAportes'
+import { BancoDeLaHinchada } from '@/components/features/BancoDeLaHinchada'
 import { CauseCard } from '@/components/features/CauseCard'
 import { ErrorState } from '@/components/features/ErrorState'
 import { Badge } from '@/components/ui/badge'
@@ -28,6 +30,10 @@ export default function Home() {
 
   // El proyecto destacado suma los aportes de esta sesión (ver src/lib/aportesDeLaSesion.ts).
   const featured = projects?.[0] && conAportesDeLaSesion(projects[0], sessionContributions, user?.name)
+  // El banco de la hinchada: sólo para un proyecto que se dibuja como banco.
+  const esBanco = featured?.illustration === 'bench'
+  const aportesDelBanco = featured && esBanco ? ultimosAportesDeLaHinchada(featured, sessionContributions, user?.name) : []
+  const propias = featured && featured.collectedUnits > 0 ? featured.myContributionUnits / featured.collectedUnits : 0
   const featuredCause = causes?.[0]
   const recent = [...sessionContributions, ...(history ?? [])].slice(0, 4)
 
@@ -43,39 +49,54 @@ export default function Home() {
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-3 lg:items-start">
         {/* Columna principal */}
         <div className="space-y-5 lg:col-span-2">
-          <XpWallet />
-
-          <Link to="/escanear" className="block">
-            <Button block size="lg" className="shadow-md shadow-eco-600/20">
-              <QrCode size={20} /> Escanear un aporte
-            </Button>
-          </Link>
-
-          {/* Proyecto de impacto destacado */}
+          {/* El banco de la hinchada del club, o el proyecto destacado si no se dibuja como banco */}
           {projectsError && !featured ? (
             <ErrorState message={projectsError} onRetry={reloadProjects} />
-          ) : featured ? (
-            <Card>
-              <div className="flex items-center justify-between p-5 pb-3">
-                <div className="flex items-center gap-2">
-                  <Sparkles size={18} className="text-eco-600" />
-                  <h2 className="font-bold">Tu impacto</h2>
-                </div>
-                <Link
-                  to={`/proyecto/${featured.id}`}
-                  className="inline-flex items-center text-sm font-semibold text-eco-700"
-                >
-                  Ver <ChevronRight size={16} />
+          ) : featured && esBanco ? (
+            <BancoDeLaHinchada
+              proyecto={featured}
+              items={aportesDelBanco}
+              propias={propias}
+              enlace={`/proyecto/${featured.id}`}
+              accion={
+                <Link to="/escanear" className="block">
+                  <Button block size="lg" variant="xp">
+                    <QrCode size={20} /> Sumá tus tapitas
+                  </Button>
                 </Link>
-              </div>
-              <div className="px-5 pb-5">
-                <p className="mb-3 font-bold leading-tight">{featured.title}</p>
-                <ImpactProgress project={featured} compact />
-              </div>
-            </Card>
+              }
+            />
+          ) : featured ? (
+            <>
+              <Link to="/escanear" className="block">
+                <Button block size="lg" className="shadow-md shadow-eco-600/20">
+                  <QrCode size={20} /> Escanear un aporte
+                </Button>
+              </Link>
+              <Card>
+                <div className="flex items-center justify-between p-5 pb-3">
+                  <div className="flex items-center gap-2">
+                    <Sparkles size={18} className="text-eco-600" />
+                    <h2 className="font-bold">Tu impacto</h2>
+                  </div>
+                  <Link
+                    to={`/proyecto/${featured.id}`}
+                    className="inline-flex items-center text-sm font-semibold text-eco-700"
+                  >
+                    Ver <ChevronRight size={16} />
+                  </Link>
+                </div>
+                <div className="px-5 pb-5">
+                  <p className="mb-3 font-bold leading-tight">{featured.title}</p>
+                  <ImpactProgress project={featured} compact />
+                </div>
+              </Card>
+            </>
           ) : (
-            <Skeleton className="h-72 w-full" />
+            <Skeleton className="h-80 w-full rounded-2xl" />
           )}
+
+          <XpWallet />
         </div>
 
         {/* Columna lateral */}

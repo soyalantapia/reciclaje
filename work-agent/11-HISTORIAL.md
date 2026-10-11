@@ -159,6 +159,11 @@ WhatsApp del proyecto y de la reunión del 03/08 (acta en `docs/producto/reunion
   - Ahora las dos demos usan el mismo caso: `casoDelClub` y `conElCasoDelClub` en `src/services/mocks/escenarioClub.ts`.
   - Se sacaron de `data.ts` los bloques del Talleres viejo.
 - Rama `fix/csv-del-reporte-con-aviso`: el CSV del reporte arranca diciendo que son datos de ejemplo, como el PDF, y lleva la marca BOM para que Excel lea bien los acentos (`src/lib/reporte.ts`).
+- Rama `feat/dia-de-cancha`: el rediseño de los cuatro momentos (inicio, proyecto, festejo del aporte y panel del club) con la dirección «Día de cancha» (Alan aprobó la dirección; las capturas finales esperan su OK antes de mergear).
+  - El banco de suplentes se dibuja con tapitas que se llenan con el avance real; las de la persona van en ámbar.
+  - El festejo hace subir el marcador de 42.840 a 42.890.
+  - El panel arranca con «El banco de tu hinchada».
+  - Se hizo tarea por tarea con subagentes, cada una con su revisión: 9 tareas y 3 arreglos por revisión.
 
 ---
 

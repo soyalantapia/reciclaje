@@ -26,7 +26,7 @@ export function RankingRow({ entry }: { entry: RankingEntry }) {
       >
         {entry.name}
       </span>
-      <span className="text-sm font-extrabold text-eco-700">
+      <span className="font-marcador text-base font-bold tabular-nums text-eco-700">
         {formatNumber(entry.xpThisMonth)} XP
       </span>
     </div>
