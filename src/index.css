@@ -21,18 +21,19 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
 
-  /* Brand — Eco green (primario) */
-  --color-eco-50: #ecfdf5;
-  --color-eco-100: #d1fae5;
-  --color-eco-200: #a7f3d0;
-  --color-eco-300: #6ee7b7;
-  --color-eco-400: #34d399;
-  --color-eco-500: #10b981;
-  --color-eco-600: #059669;
-  --color-eco-700: #047857;
-  --color-eco-800: #065f46;
-  --color-eco-900: #064e3b;
-  --color-eco-950: #022c22;
+  /* Brand — Eco green (primario). Pasa por variables (:root, abajo): el panel de una institución
+     con marca las pisa con la suya (src/lib/marca.ts). Los valores siguen siendo los de siempre. */
+  --color-eco-50: var(--eco-50);
+  --color-eco-100: var(--eco-100);
+  --color-eco-200: var(--eco-200);
+  --color-eco-300: var(--eco-300);
+  --color-eco-400: var(--eco-400);
+  --color-eco-500: var(--eco-500);
+  --color-eco-600: var(--eco-600);
+  --color-eco-700: var(--eco-700);
+  --color-eco-800: var(--eco-800);
+  --color-eco-900: var(--eco-900);
+  --color-eco-950: var(--eco-950);
 
   /* XP / recompensas (acento ámbar) */
   --color-xp-50: #fffbeb;
@@ -69,6 +70,21 @@
   --color-cancha-claro: var(--cancha-claro);
   --color-cancha-oscuro: var(--cancha-oscuro);
   --color-cal: var(--cal);
+}
+
+/* La paleta eco de ReciclaXP. Un contenedor la pisa con la marca de una institución (src/lib/marca.ts). */
+:root {
+  --eco-50: #ecfdf5;
+  --eco-100: #d1fae5;
+  --eco-200: #a7f3d0;
+  --eco-300: #6ee7b7;
+  --eco-400: #34d399;
+  --eco-500: #10b981;
+  --eco-600: #059669;
+  --eco-700: #047857;
+  --eco-800: #065f46;
+  --eco-900: #064e3b;
+  --eco-950: #022c22;
 }
 
 :root {
