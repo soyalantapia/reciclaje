@@ -7,7 +7,8 @@ import { useApi } from '@/hooks/useApi'
 import { useSessionStore } from '@/store/session'
 import { useCreatedCommerceStore } from '@/store/createdCommerce'
 import { metricsFor } from '@/lib/metrics'
-import { metricasConLaSesion } from '@/lib/aportesDeLaSesion'
+import { conAportesDeLaSesion, metricasConLaSesion } from '@/lib/aportesDeLaSesion'
+import { ultimosAportesDeLaHinchada } from '@/lib/ultimosAportes'
 import { useActivityStore } from '@/store/activity'
 import { useCouponsStore } from '@/store/coupons'
 import { posicionEnLaRed, textoDePosicion } from '@/lib/posicionEnLaRed'
@@ -15,6 +16,7 @@ import { vocabularioDelPanel } from '@/lib/vocabulario'
 import { downloadBlob, formatNumber } from '@/lib/utils'
 import { StatCard } from '@/components/features/StatCard'
 import { HuellaVerde } from '@/components/features/HuellaVerde'
+import { BancoDeLaHinchada } from '@/components/features/BancoDeLaHinchada'
 import { ErrorState } from '@/components/features/ErrorState'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
@@ -34,6 +36,16 @@ export default function CommerceResumen() {
   const cupones = useCouponsStore((s) => s.coupons)
   const { data: red } = useApi(() => api.getSponsors(), [])
   const v = vocabularioDelPanel(commerce?.category)
+
+  // El banco de la hinchada de esta institución, con lo que hizo la hinchada en la sesión.
+  const { data: proyectos } = useApi(() => api.getProjects(), [])
+  const nombreDelHincha = useSessionStore((s) => s.user?.name)
+  const proyectoBase = proyectos?.find((p) => p.sponsorId === commerce?.id && p.illustration === 'bench')
+  const proyecto = proyectoBase && conAportesDeLaSesion(proyectoBase, actividad, nombreDelHincha)
+  // En el panel nada es «tuyo»: el club ve a toda la hinchada.
+  const aportesDelBanco = proyecto
+    ? ultimosAportesDeLaHinchada(proyecto, actividad, nombreDelHincha).map((a) => ({ ...a, esTuyo: false }))
+    : []
 
   const m = useMemo(() => {
     if (!commerce || !points) return null
@@ -76,6 +88,10 @@ export default function CommerceResumen() {
         <h1 className="text-2xl font-extrabold leading-tight">Resumen</h1>
         <p className="text-sm text-muted-foreground">Tu impacto y tu comunidad, desde que te sumaste.</p>
       </div>
+
+      {proyecto && (
+        <BancoDeLaHinchada proyecto={proyecto} items={aportesDelBanco} propias={0} antetitulo="El banco de tu hinchada" />
+      )}
 
       {/* Huella Verde accionable */}
       <div className="rounded-2xl border border-eco-200 bg-eco-50 p-5 dark:border-eco-700/40 dark:bg-eco-900/20">
