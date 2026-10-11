@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
-import { Link, Navigate } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
 import { toast } from 'sonner'
-import { ChevronLeft, Download, Printer } from 'lucide-react'
+import { Download } from 'lucide-react'
 import type { TraceEvent } from '@/types'
 import { api } from '@/services/api'
 import { useApi } from '@/hooks/useApi'
@@ -142,21 +142,15 @@ export default function CommerceInforme() {
 
   return (
     <div className="mx-auto max-w-4xl space-y-4 print:max-w-none">
-      <div data-no-imprimir className="flex flex-wrap items-center justify-between gap-2">
-        <Link
-          to="/comercio/reportes"
-          className="inline-flex items-center gap-1 text-sm font-semibold text-eco-700 dark:text-eco-300"
-        >
-          <ChevronLeft size={16} /> Reportes
-        </Link>
-        <div className="flex flex-wrap gap-2">
-          <Button size="sm" variant="secondary" onClick={descargarCsv}>
-            <Download size={15} /> Descargar CSV
-          </Button>
-          <Button size="sm" onClick={() => window.print()}>
-            <Printer size={15} /> Imprimir o guardar PDF
-          </Button>
-        </div>
+      {/* El informe es la pantalla de Reportes de una institución: arriba, sus dos descargas */}
+      <div data-no-imprimir className="flex flex-wrap items-center justify-end gap-2">
+        {/* El PDF sale de la ventana del navegador («Guardar como PDF»): las hojas A4, con texto nítido */}
+        <Button size="sm" onClick={() => window.print()}>
+          <Download size={15} /> Descargar PDF
+        </Button>
+        <Button size="sm" variant="secondary" onClick={descargarCsv}>
+          <Download size={15} /> Descargar CSV
+        </Button>
       </div>
 
       <article className="space-y-6 rounded-2xl border border-border bg-card p-5 [-webkit-print-color-adjust:exact] [print-color-adjust:exact] sm:p-8 print:rounded-none print:border-0 print:p-0">

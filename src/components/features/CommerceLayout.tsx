@@ -3,6 +3,7 @@ import { LogOut } from 'lucide-react'
 import { useSessionStore } from '@/store/session'
 import { cn } from '@/lib/utils'
 import { ESCENARIO } from '@/lib/escenario'
+import { esInstitucion } from '@/lib/vocabulario'
 import { CommerceSideNav, etiquetaDelPanel, navDelPanel } from './CommerceSideNav'
 import { AvisoDemo } from './AvisoDemo'
 
@@ -10,10 +11,13 @@ export function CommerceLayout() {
   const navigate = useNavigate()
   const commerce = useSessionStore((s) => s.commerce)
   const logoutCommerce = useSessionStore((s) => s.logoutCommerce)
-  // El informe lleva su propio aviso, arriba y al pie: sólo ahí el de la demo no se imprime.
-  const enElInforme = useMatch('/comercio/informe')
+  // El informe lleva su propio aviso, arriba y al pie: sólo ahí el de la demo no se imprime. El
+  // informe de una institución es su pantalla de Reportes.
+  const enReportes = useMatch('/comercio/reportes')
 
   if (!commerce) return null
+
+  const enElInforme = Boolean(enReportes) && esInstitucion(commerce.category)
 
   function salir() {
     logoutCommerce()
