@@ -105,6 +105,7 @@ describe('proyectoDelPunto', () => {
     const viejo = nuevo({ id: 'pr_viejo', creadoEn: '2026-10-09T12:00:00.000Z' })
     const reciente = nuevo({ id: 'pr_reciente', creadoEn: '2026-10-10T12:00:00.000Z' })
     expect(proyectoDelPunto(sede, [banco], [viejo, reciente])?.id).toBe('pr_reciente')
+    expect(proyectoDelPunto(sede, [banco], [reciente, viejo])?.id).toBe('pr_reciente')
   })
 
   it('un punto de otro sponsor no toma los productos del club', () => {

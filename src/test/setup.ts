@@ -2,8 +2,8 @@ import '@testing-library/jest-dom/vitest'
 
 /**
  * Node 25 trae un `localStorage` propio que, sin `--localstorage-file`, no tiene `setItem`, y le
- * gana al de jsdom: los stores con persist no podían guardar. Si el almacenamiento del entorno no
- * anda, uno en memoria, nuevo para cada archivo de prueba, como un navegador recién abierto.
+ * gana al de jsdom: los stores con persist no podían guardar. Donde está el de Node, va uno en
+ * memoria, nuevo para cada archivo de prueba, como un navegador recién abierto.
  */
 function almacenEnMemoria(): Storage {
   const memoria = new Map<string, string>()
@@ -20,10 +20,14 @@ function almacenEnMemoria(): Storage {
 }
 
 for (const nombre of ['localStorage', 'sessionStorage'] as const) {
-  try {
-    globalThis[nombre].setItem('__prueba__', '1')
-    globalThis[nombre].removeItem('__prueba__')
-  } catch {
-    globalThis[nombre] = almacenEnMemoria()
+  // Se mira el descriptor sin leer la propiedad: leer la de Node imprime una advertencia en cada archivo.
+  const descriptor = Object.getOwnPropertyDescriptor(globalThis, nombre)
+  if (descriptor?.get?.name === `get ${nombre}`) {
+    Object.defineProperty(globalThis, nombre, {
+      value: almacenEnMemoria(),
+      writable: true,
+      configurable: true,
+      enumerable: true,
+    })
   }
 }
