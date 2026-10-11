@@ -7,6 +7,7 @@ import {
   LayoutDashboard,
   LogOut,
   Megaphone,
+  Palette,
   QrCode,
 } from 'lucide-react'
 import { useSessionStore } from '@/store/session'
@@ -21,19 +22,23 @@ export const COMMERCE_NAV = [
   { to: '/comercio/campanias', label: 'Campañas', icon: Megaphone },
   { to: '/comercio/puntos', label: 'Puntos / QR', icon: QrCode },
   { to: '/comercio/reportes', label: 'Reportes', icon: FileText },
+  { to: '/comercio/marca', label: 'Marca', icon: Palette },
   { to: '/comercio/plan', label: 'Plan', icon: CreditCard },
 ]
 
+/** Lo que es sólo de un club o un estadio: lo que construye la hinchada y la marca del club. */
+const SOLO_INSTITUCIONES = new Set(['/comercio/productos', '/comercio/marca'])
+
 /**
  * El menú del panel: el del escritorio y el del celular salen de acá, para que no difieran.
- * En la demo del club no está «Plan» (ver `muestraPrecios`), y «Productos» es sólo de las
- * instituciones: lo que construye la hinchada es de un club o un estadio, no de un comercio.
+ * En la demo del club no está «Plan» (ver `muestraPrecios`), y «Productos» y «Marca» son sólo de
+ * las instituciones: un comercio no tiene hinchada ni escudo de club.
  */
 export function navDelPanel(escenario: Escenario = ESCENARIO, categoria?: string) {
   return COMMERCE_NAV.filter(
     (i) =>
       (i.to !== '/comercio/plan' || muestraPrecios(escenario)) &&
-      (i.to !== '/comercio/productos' || esInstitucion(categoria)),
+      (!SOLO_INSTITUCIONES.has(i.to) || esInstitucion(categoria)),
   )
 }
 
