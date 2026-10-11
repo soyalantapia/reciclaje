@@ -2,9 +2,12 @@ import { colorDominante } from './marca'
 
 /** El escudo más pesado que se acepta. */
 export const ESCUDO_TOPE_BYTES = 2 * 1024 * 1024
+/** Ese mismo tope en MB: el número que se le dice a quien sube el escudo, para que los textos no se despeguen del tope. */
+export const ESCUDO_TOPE_MB = ESCUDO_TOPE_BYTES / (1024 * 1024)
 /** El lado más largo del escudo guardado: alcanza para el menú, el encabezado y el PDF. */
 const LADO = 256
-const TIPOS = ['image/png', 'image/jpeg', 'image/svg+xml', 'image/webp']
+/** Los tipos de imagen que se aceptan: los que valida `prepararEscudo` y los que ofrece el campo de archivo. */
+export const TIPOS_DE_ESCUDO: readonly string[] = ['image/png', 'image/jpeg', 'image/svg+xml', 'image/webp']
 
 /** Un escudo que no se puede usar, con un mensaje para quien lo subió. */
 export class EscudoInvalido extends Error {}
@@ -15,8 +18,8 @@ export class EscudoInvalido extends Error {}
  * navegador: usa canvas.
  */
 export async function prepararEscudo(archivo: File): Promise<{ escudo: string; color: string | null }> {
-  if (!TIPOS.includes(archivo.type)) throw new EscudoInvalido('El escudo tiene que ser una imagen PNG, JPG, SVG o WebP.')
-  if (archivo.size > ESCUDO_TOPE_BYTES) throw new EscudoInvalido('El escudo pesa más de 2 MB: probá con uno más liviano.')
+  if (!TIPOS_DE_ESCUDO.includes(archivo.type)) throw new EscudoInvalido('El escudo tiene que ser una imagen PNG, JPG, SVG o WebP.')
+  if (archivo.size > ESCUDO_TOPE_BYTES) throw new EscudoInvalido(`El escudo pesa más de ${ESCUDO_TOPE_MB} MB: probá con uno más liviano.`)
   const url = URL.createObjectURL(archivo)
   try {
     const img = await cargarImagen(url)

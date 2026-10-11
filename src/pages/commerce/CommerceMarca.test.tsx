@@ -162,6 +162,27 @@ describe('la pantalla en uso', () => {
     await waitFor(() => expect(screen.getByRole('button', { name: /Cambiar el escudo/ })).toBeEnabled())
   })
 
+  it('el campo de archivo, que está oculto, no es una parada del Tab y mientras se lee el escudo queda deshabilitado', async () => {
+    let terminar!: (leido: { escudo: string; color: string | null }) => void
+    preparar.mockReturnValue(new Promise((resolve) => (terminar = resolve)))
+    verMarca()
+    const campo = screen.getByLabelText('Archivo del escudo')
+    // El botón «Subir el escudo» es la única entrada con teclado; el campo sólo lo abre el botón.
+    expect(campo).toHaveAttribute('tabindex', '-1')
+    expect(campo).toBeEnabled()
+    fireEvent.change(campo, { target: { files: [archivo()] } })
+    expect(campo).toBeDisabled()
+    terminar({ escudo: ESCUDO, color: '#0b2d6b' })
+    await screen.findByRole('img', { name: 'Escudo de Talleres' })
+    await waitFor(() => expect(campo).toBeEnabled())
+  })
+
+  it('el campo acepta los cuatro tipos de imagen del escudo y la ayuda dice el tope de peso', () => {
+    verMarca()
+    expect(screen.getByLabelText('Archivo del escudo')).toHaveAttribute('accept', 'image/png,image/jpeg,image/svg+xml,image/webp')
+    expect(screen.getByText('PNG, JPG, SVG o WebP, hasta 2 MB.')).toBeInTheDocument()
+  })
+
   it('el aviso de error se va cuando se sube un escudo que sirve', async () => {
     preparar.mockRejectedValueOnce(new EscudoInvalido('El escudo pesa más de 2 MB: probá con uno más liviano.'))
     preparar.mockResolvedValueOnce({ escudo: ESCUDO, color: '#0b2d6b' })

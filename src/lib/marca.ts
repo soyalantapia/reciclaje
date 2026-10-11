@@ -8,8 +8,8 @@
 export const TONOS = ['50', '100', '200', '300', '400', '500', '600', '700', '800', '900', '950'] as const
 export type Tono = (typeof TONOS)[number]
 
-/** El color de ReciclaXP: el que queda si llega un color roto. */
-const COLOR_DE_RECICLAXP = '#059669'
+/** El color de ReciclaXP: el que queda si llega un color roto, y el de una institución que todavía no eligió el suyo. */
+export const COLOR_DE_RECICLAXP = '#059669'
 
 type Rgb = [number, number, number]
 

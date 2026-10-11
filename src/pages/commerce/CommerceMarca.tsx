@@ -5,12 +5,9 @@ import { ImageUp, RotateCcw } from 'lucide-react'
 import { useSessionStore } from '@/store/session'
 import { useMarcaDelClubStore } from '@/store/marcaDelClub'
 import { esInstitucion } from '@/lib/vocabulario'
-import { colorLegible } from '@/lib/marca'
-import { EscudoInvalido, prepararEscudo } from '@/lib/escudo'
+import { COLOR_DE_RECICLAXP, colorLegible } from '@/lib/marca'
+import { ESCUDO_TOPE_MB, EscudoInvalido, TIPOS_DE_ESCUDO, prepararEscudo } from '@/lib/escudo'
 import { Button } from '@/components/ui/button'
-
-/** El color de ReciclaXP: el de una institución que todavía no eligió el suyo. */
-const COLOR_DE_RECICLAXP = '#059669'
 
 /**
  * La marca del club: sube su escudo y elige su color, y todo su panel y su informe los usan. Queda
@@ -71,18 +68,22 @@ export default function CommerceMarca() {
             </span>
           )}
           <div className="space-y-2">
+            {/* El campo está oculto y el botón de abajo es la única entrada con teclado: sin tabIndex sería una parada del Tab
+                que no se ve (no tiene indicador de foco) y un lector anunciaría dos controles para una sola acción. */}
             <input
               ref={entrada}
               type="file"
               aria-label="Archivo del escudo"
-              accept="image/png,image/jpeg,image/svg+xml,image/webp"
+              accept={TIPOS_DE_ESCUDO.join(',')}
+              tabIndex={-1}
+              disabled={leyendo}
               className="sr-only"
               onChange={(e) => void subir(e.target.files?.[0])}
             />
             <Button type="button" onClick={() => entrada.current?.click()} disabled={leyendo}>
               <ImageUp size={18} /> {marca?.escudo ? 'Cambiar el escudo' : 'Subir el escudo'}
             </Button>
-            <p className="text-xs text-muted-foreground">PNG, JPG, SVG o WebP, hasta 2 MB.</p>
+            <p className="text-xs text-muted-foreground">{`PNG, JPG, SVG o WebP, hasta ${ESCUDO_TOPE_MB} MB.`}</p>
           </div>
         </div>
         {error && (
