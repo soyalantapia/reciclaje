@@ -1,16 +1,13 @@
-import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { toast } from 'sonner'
 import { Coins, Download, FileText, Gift, Recycle, Scale, Users } from 'lucide-react'
 import { api } from '@/services/api'
 import { useApi } from '@/hooks/useApi'
+import { useMetricasDelPanel } from '@/hooks/useMetricasDelPanel'
 import { useSessionStore } from '@/store/session'
-import { useCreatedCommerceStore } from '@/store/createdCommerce'
-import { metricsFor } from '@/lib/metrics'
-import { conAportesDeLaSesion, metricasConLaSesion } from '@/lib/aportesDeLaSesion'
+import { conAportesDeLaSesion } from '@/lib/aportesDeLaSesion'
 import { ultimosAportesDeLaHinchada } from '@/lib/ultimosAportes'
 import { useActivityStore } from '@/store/activity'
-import { useCouponsStore } from '@/store/coupons'
 import { posicionEnLaRed, textoDePosicion } from '@/lib/posicionEnLaRed'
 import { vocabularioDelPanel } from '@/lib/vocabulario'
 import { downloadBlob, formatNumber } from '@/lib/utils'
@@ -28,12 +25,9 @@ function badgeSvg(name: string, score: number) {
 
 export default function CommerceResumen() {
   const commerce = useSessionStore((s) => s.commerce)
-  const createdCommerce = useCreatedCommerceStore((s) => s.commerce)
-  const createdPoint = useCreatedCommerceStore((s) => s.point)
-  const { data: points, loading, error, reload } = useApi(() => api.getPoints(), [])
-  // Lo que la comunidad hizo en esta sesión (mismo navegador): aportes, XP y canjes.
+  // Las métricas con lo que la comunidad hizo en esta sesión (mismo navegador): aportes, XP y canjes.
+  const { m, loading, error, reload } = useMetricasDelPanel()
   const actividad = useActivityStore((s) => s.sessionContributions)
-  const cupones = useCouponsStore((s) => s.coupons)
   const { data: red } = useApi(() => api.getSponsors(), [])
   const v = vocabularioDelPanel(commerce?.category)
 
@@ -46,12 +40,6 @@ export default function CommerceResumen() {
   const aportesDelBanco = proyecto
     ? ultimosAportesDeLaHinchada(proyecto, actividad, nombreDelHincha).map((a) => ({ ...a, esTuyo: false }))
     : []
-
-  const m = useMemo(() => {
-    if (!commerce || !points) return null
-    const extra = createdCommerce?.id === commerce.id && createdPoint ? [createdPoint] : []
-    return metricasConLaSesion(metricsFor(commerce, [...points, ...extra]), actividad, cupones)
-  }, [commerce, points, createdCommerce, createdPoint, actividad, cupones])
 
   if (!commerce) return null
 

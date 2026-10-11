@@ -62,6 +62,7 @@ const CommerceBenefits = lazyWithRetry(() => import('@/pages/commerce/CommerceBe
 const CommerceCampaigns = lazyWithRetry(() => import('@/pages/commerce/CommerceCampaigns'))
 const CommercePoints = lazyWithRetry(() => import('@/pages/commerce/CommercePoints'))
 const CommerceReports = lazyWithRetry(() => import('@/pages/commerce/CommerceReports'))
+const CommerceInforme = lazyWithRetry(() => import('@/pages/commerce/CommerceInforme'))
 const CommercePlan = lazyWithRetry(() => import('@/pages/commerce/CommercePlan'))
 
 function PageFallback() {
@@ -123,6 +124,7 @@ export const router = createBrowserRouter(
             { path: 'campanias', element: withSuspense(<CommerceCampaigns />) },
             { path: 'puntos', element: withSuspense(<CommercePoints />) },
             { path: 'reportes', element: withSuspense(<CommerceReports />) },
+            { path: 'informe', element: withSuspense(<CommerceInforme />) },
             // En la demo del club no hay pantalla de planes (ver muestraPrecios en src/lib/escenario.ts).
             { path: 'plan', element: muestraPrecios() ? withSuspense(<CommercePlan />) : <Navigate to="/comercio" replace /> },
           ],

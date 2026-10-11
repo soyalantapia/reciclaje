@@ -55,6 +55,7 @@ export function CommerceSideNav({ className }: { className?: string }) {
 
   return (
     <aside
+      data-no-imprimir
       className={cn(
         'pt-safe sticky top-0 h-dvh w-64 shrink-0 flex-col border-r border-border bg-card/40 px-3 pb-4',
         className,

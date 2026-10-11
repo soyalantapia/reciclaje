@@ -163,3 +163,17 @@
     );
   }
 }
+
+/*
+ * Al imprimir (el informe para la Comisión Directiva) no salen el menú, el aviso de la demo ni los
+ * botones: van marcados con `data-no-imprimir`. El informe lleva su propio aviso, arriba y al pie.
+ */
+@media print {
+  [data-no-imprimir] {
+    display: none !important;
+  }
+}
+
+@page {
+  margin: 14mm;
+}
