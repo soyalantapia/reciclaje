@@ -6,7 +6,7 @@ import { useSessionStore } from '@/store/session'
 import { usePuntosDelPanel } from './usePuntosDelPanel'
 
 const punto = (id: string, sponsorId: string): RecyclePoint => ({
-  id, name: id, sponsorId, type: 'deposito', address: '', city: 'Córdoba', x: 0, y: 0,
+  id, name: id, sponsorId, type: 'deposito', address: '', city: 'Córdoba', lat: 0, lng: 0,
   acceptedMaterials: ['tapitas'], openNow: true,
 })
 const delSimulador = [punto('p_club_estadio', 's_club')]

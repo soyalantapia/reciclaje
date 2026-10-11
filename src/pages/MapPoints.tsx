@@ -51,7 +51,8 @@ export default function MapPoints() {
                   onClick={() => setSelected(active ? null : p.id)}
                   aria-label={p.name}
                   className="absolute -translate-x-1/2 -translate-y-full transition-transform"
-                  style={{ left: `${p.x}%`, top: `${p.y}%` }}
+                  // Provisorio hasta el mapa de Córdoba: el recuadro del Kempes al Centro, en porcentaje.
+                  style={{ left: `${((p.lng + 64.26) / 0.1) * 100}%`, top: `${((-31.36 - p.lat) / 0.08) * 100}%` }}
                 >
                   <span
                     className={cn(

@@ -85,9 +85,10 @@ export default function CommerceOnboarding() {
       sponsorId: sponsor.id,
       type: pointType,
       address: address.trim() || 'A definir',
-      city: city.trim() || 'CABA',
-      x: 50,
-      y: 50,
+      city: city.trim() || 'Córdoba',
+      // Sin una dirección elegida en un mapa, el punto nuevo se ve en Nueva Córdoba (Paseo del Buen Pastor).
+      lat: -31.424083,
+      lng: -64.18642,
       acceptedMaterials: ['tapitas', 'plastico'],
       openNow: true,
     }
@@ -133,7 +134,7 @@ export default function CommerceOnboarding() {
             </div>
             <div>
               <Label htmlFor="ocity">Ciudad</Label>
-              <Input id="ocity" placeholder="CABA" value={city} onChange={(e) => setCity(e.target.value)} />
+              <Input id="ocity" placeholder="Córdoba" value={city} onChange={(e) => setCity(e.target.value)} />
             </div>
             <div>
               <Label>Rubro</Label>
