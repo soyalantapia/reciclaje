@@ -1,0 +1,1 @@
+import{F as e,I as t,j as n}from"./index-DOy6kWq1.js";var r=t()(e(e=>({commerce:null,point:null,plan:`Pro`,set:(t,n,r)=>e({commerce:t,point:n,plan:r}),clear:()=>e({commerce:null,point:null,plan:`Pro`})}),{name:n(`created-commerce`),version:1}));export{r as t};

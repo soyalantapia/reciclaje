@@ -1,0 +1,1 @@
+import{F as e,I as t,T as n,j as r}from"./index-DOy6kWq1.js";var i=r(`commerce-products`),a=t()(e(e=>({creados:[],agregar:t=>e(e=>({creados:[t,...e.creados]})),quitar:t=>e(e=>({creados:e.creados.filter(e=>e.id!==t)}))}),{name:i,...n()}));typeof window<`u`&&window.addEventListener(`storage`,e=>{e.key===i&&a.persist.rehydrate()});export{a as t};
