@@ -143,7 +143,8 @@ export function BancoDeTapitas({
   className?: string
 }) {
   const reduce = useReducedMotion()
-  const dibujo = DIBUJO[forma]
+  // Una forma que no se conoce (algo guardado por otra versión de la demo) se dibuja como banco.
+  const dibujo = DIBUJO[forma] ?? DIBUJO.banco
   const estados = estadosDelBanco({ total: TAPITAS_DEL_BANCO, progreso, propias })
   const encendidas = estados.filter((e) => e !== 'vacia').length
 

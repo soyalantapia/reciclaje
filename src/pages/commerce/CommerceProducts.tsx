@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Navigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import { MapPin, Plus, Trash2 } from 'lucide-react'
 import type { FormaDelProducto } from '@/types'
 import { api } from '@/services/api'
 import { useApi } from '@/hooks/useApi'
+import { usePuntosDelPanel } from '@/hooks/usePuntosDelPanel'
 import { useSessionStore } from '@/store/session'
 import { useActivityStore } from '@/store/activity'
 import { useCommerceProductsStore } from '@/store/commerceProducts'
@@ -39,7 +40,10 @@ export default function CommerceProducts() {
   const agregar = useCommerceProductsStore((s) => s.agregar)
   const quitar = useCommerceProductsStore((s) => s.quitar)
   const { data: proyectos, loading } = useApi(() => api.getProjects(), [])
-  const { data: puntos } = useApi(() => api.getPoints(), [])
+  // Los del simulador más el del alta: un club dado de alta en vivo también publica.
+  const { points: puntos } = usePuntosDelPanel()
+  // Un doble clic llega al formulario que se está cerrando, con su `publicar` de antes: la marca vive en un ref.
+  const yaPublicado = useRef(false)
 
   const [abierto, setAbierto] = useState(false)
   const [forma, setForma] = useState<FormaDelProducto>(FORMA_INICIAL)
@@ -71,6 +75,7 @@ export default function CommerceProducts() {
   }
 
   function publicar() {
+    if (yaPublicado.current) return
     if (!nombre.trim()) return toast.error('Poné el nombre del producto')
     if (kilos < 1) return toast.error('La meta va en kilos: poné 1 o más')
     if (!punto) return toast.error('Elegí el Punto R donde se junta')
@@ -93,6 +98,7 @@ export default function CommerceProducts() {
         creadoEn: new Date().toISOString(),
       }),
     )
+    yaPublicado.current = true
     setAbierto(false)
     setForma(FORMA_INICIAL)
     setNombre(nombrePropuesto(FORMA_INICIAL))
@@ -108,7 +114,13 @@ export default function CommerceProducts() {
           <h1 className="text-2xl font-extrabold leading-tight">Productos</h1>
           <p className="text-sm text-muted-foreground">Lo que construye tu hinchada con sus tapitas.</p>
         </div>
-        <Button size="sm" onClick={() => setAbierto(true)}>
+        <Button
+          size="sm"
+          onClick={() => {
+            yaPublicado.current = false
+            setAbierto(true)
+          }}
+        >
           <Plus size={16} /> Nuevo producto
         </Button>
       </div>
@@ -188,8 +200,8 @@ export default function CommerceProducts() {
                   )}
                 >
                   {/* El dibujo es un ícono de la forma: no representa ninguna cantidad. */}
-                  <span aria-hidden className="block">
-                    <BancoDeTapitas forma={f.forma} progreso={0.4} propias={0} />
+                  <span aria-hidden className="block aspect-[2/1]">
+                    <BancoDeTapitas className="h-full" forma={f.forma} progreso={0.4} propias={0} />
                   </span>
                   <span className="mt-1 block">{f.nombre}</span>
                 </button>

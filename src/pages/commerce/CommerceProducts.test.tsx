@@ -1,10 +1,12 @@
 import { fireEvent, render, screen, within } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
-import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+import { toast } from 'sonner'
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { ImpactProject, RecyclePoint, Sponsor } from '@/types'
 import { crearProducto } from '@/lib/productosDelClub'
 import { useActivityStore } from '@/store/activity'
 import { useCommerceProductsStore } from '@/store/commerceProducts'
+import { useCreatedCommerceStore } from '@/store/createdCommerce'
 import { useSessionStore } from '@/store/session'
 import CommerceProducts from './CommerceProducts'
 
@@ -62,8 +64,13 @@ beforeAll(() => {
   } as unknown as typeof IntersectionObserver
 })
 
+afterEach(() => {
+  vi.restoreAllMocks()
+})
+
 beforeEach(() => {
   useCommerceProductsStore.setState({ creados: [] })
+  useCreatedCommerceStore.setState({ commerce: null, point: null })
   useActivityStore.setState({ sessionContributions: [] })
   useSessionStore.setState({ user: null })
 })
@@ -122,7 +129,9 @@ describe('Productos del panel del club', () => {
     expect(useCommerceProductsStore.getState().creados).toHaveLength(1)
   })
 
-  it('un doble clic en «Publicar» publica una sola vez', async () => {
+  it('un doble clic en «Publicar» publica una sola vez, sin un aviso de rechazo después del éxito', async () => {
+    const error = vi.spyOn(toast, 'error')
+    const exito = vi.spyOn(toast, 'success')
     verProductos()
     const dialogo = await abrirNuevoProducto()
     const publicar = within(dialogo).getByRole('button', { name: 'Publicar para la hinchada' })
@@ -130,6 +139,21 @@ describe('Productos del panel del club', () => {
     fireEvent.click(publicar)
     fireEvent.click(publicar)
     expect(useCommerceProductsStore.getState().creados).toHaveLength(1)
+    expect(exito).toHaveBeenCalledOnce()
+    expect(error).not.toHaveBeenCalled()
+  })
+
+  it('un club dado de alta en vivo publica en el Punto R que creó en el alta', async () => {
+    const clubNuevo: Sponsor = { ...club, id: 's_new_ABC123', name: 'Club Atlético Nuevo', category: 'estadio' }
+    const puntoDelAlta: RecyclePoint = { ...punto('p_new_XYZ789', 'Punto R · Tribuna'), sponsorId: clubNuevo.id }
+    useCreatedCommerceStore.setState({ commerce: clubNuevo, point: puntoDelAlta })
+    verProductos(clubNuevo)
+    fireEvent.click(await screen.findByRole('button', { name: /Nuevo producto/ }))
+    const dialogo = await screen.findByRole('dialog', { name: 'Nuevo producto' })
+    const opciones = [...(within(dialogo).getByLabelText('Punto R') as HTMLSelectElement).options].map((o) => o.text)
+    expect(opciones).toEqual(['Punto R · Tribuna'])
+    fireEvent.click(within(dialogo).getByRole('button', { name: 'Publicar para la hinchada' }))
+    expect(useCommerceProductsStore.getState().creados).toMatchObject([{ puntoId: 'p_new_XYZ789', sponsorId: 's_new_ABC123' }])
   })
 
   it('con la sede ya ocupada, el formulario propone el Punto R que queda libre', async () => {
