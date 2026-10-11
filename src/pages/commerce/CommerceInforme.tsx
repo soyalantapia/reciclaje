@@ -314,7 +314,7 @@ export default function CommerceInforme() {
                   <th scope="col" className="py-2 pr-2 font-bold">
                     Indicador
                   </th>
-                  <th scope="col" className="py-2 pr-2 text-right font-bold sm:pr-4">
+                  <th scope="col" className="py-2 pr-2 text-right font-bold sm:pr-4 print:pr-4">
                     Valor
                   </th>
                   <th scope="col" className="hidden py-2 font-bold sm:table-cell print:table-cell">
@@ -348,7 +348,7 @@ export default function CommerceInforme() {
                             </span>
                           )}
                         </th>
-                        <td className="py-2 pr-2 text-right font-bold tabular-nums sm:pr-4">{f.valor}</td>
+                        <td className="py-2 pr-2 text-right font-bold tabular-nums sm:pr-4 print:pr-4">{f.valor}</td>
                         <td className="hidden py-2 text-xs text-muted-foreground sm:table-cell print:table-cell">
                           {f.referencia}
                         </td>
