@@ -1,1 +1,0 @@
-import{A as e,F as t,P as n,w as r}from"./index-DQTGdsJ8.js";var i=t()(n(e=>({coupons:[],add:t=>e(e=>({coupons:[t,...e.coupons]})),clear:()=>e({coupons:[]})}),{name:e(`coupons`),...r()}));export{i as t};
