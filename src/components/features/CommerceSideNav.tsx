@@ -14,6 +14,7 @@ import { useSessionStore } from '@/store/session'
 import { cn } from '@/lib/utils'
 import { ESCENARIO, muestraPrecios, type Escenario } from '@/lib/escenario'
 import { esInstitucion, vocabularioDelPanel } from '@/lib/vocabulario'
+import { EscudoDelPanel } from './EscudoDelPanel'
 
 export const COMMERCE_NAV = [
   { to: '/comercio', label: 'Resumen', end: true, icon: LayoutDashboard },
@@ -67,12 +68,7 @@ export function CommerceSideNav({ className }: { className?: string }) {
       )}
     >
       <div className="flex items-center gap-2.5 px-2 py-5">
-        <span
-          className="grid h-10 w-10 shrink-0 place-items-center rounded-xl text-base font-extrabold text-white"
-          style={{ backgroundColor: commerce.brandColor }}
-        >
-          {commerce.name[0]}
-        </span>
+        <EscudoDelPanel className="h-10 w-10 text-base" />
         <div className="min-w-0">
           <p className="truncate font-extrabold leading-tight">{commerce.name}</p>
           <p className="text-[11px] text-muted-foreground">{etiquetaDelPanel(commerce.category)} · ReciclaXP</p>

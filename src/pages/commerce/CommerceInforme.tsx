@@ -5,6 +5,7 @@ import { Download } from 'lucide-react'
 import type { TraceEvent } from '@/types'
 import { api } from '@/services/api'
 import { useApi } from '@/hooks/useApi'
+import { useMarcaDelPanel } from '@/hooks/useMarcaDelPanel'
 import { useMetricasDelPanel } from '@/hooks/useMetricasDelPanel'
 import { useSessionStore } from '@/store/session'
 import { useActivityStore } from '@/store/activity'
@@ -75,6 +76,7 @@ export default function CommerceInforme() {
   const nombreDelHincha = useSessionStore((s) => s.user?.name)
   const actividad = useActivityStore((s) => s.sessionContributions)
   const creados = useCommerceProductsStore((s) => s.creados)
+  const marca = useMarcaDelPanel()
   // Las mismas métricas que el resumen y los reportes, con lo que la hinchada hizo en esta sesión.
   const { m, points, loading, error, reload } = useMetricasDelPanel()
   const { data: red } = useApi(() => api.getSponsors(), [])
@@ -156,12 +158,22 @@ export default function CommerceInforme() {
       <article className="space-y-6 rounded-2xl border border-border bg-card p-5 [-webkit-print-color-adjust:exact] [print-color-adjust:exact] sm:p-8 print:rounded-none print:border-0 print:p-0">
         <header className="border-b-4 border-eco-600 pb-4">
           <div className="flex items-start justify-between gap-3">
-            <div className="min-w-0">
-              <p className="text-xs font-bold uppercase tracking-wide text-eco-700 dark:text-eco-300">
-                {commerce.name} · reciclaje con la hinchada
-              </p>
-              <h1 className="mt-1 text-2xl font-extrabold leading-tight sm:text-3xl">Informe para la Comisión Directiva</h1>
-              <p className="mt-1 text-sm text-muted-foreground">Emitido el {emitido}</p>
+            <div className="flex min-w-0 items-start gap-3">
+              {/* El escudo que el club subió en «Marca»: sale también en el PDF */}
+              {marca?.escudo && (
+                <img
+                  src={marca.escudo}
+                  alt={`Escudo de ${commerce.name}`}
+                  className="h-14 w-14 shrink-0 object-contain sm:h-16 sm:w-16"
+                />
+              )}
+              <div className="min-w-0">
+                <p className="text-xs font-bold uppercase tracking-wide text-eco-700 dark:text-eco-300">
+                  {commerce.name} · reciclaje con la hinchada
+                </p>
+                <h1 className="mt-1 text-2xl font-extrabold leading-tight sm:text-3xl">Informe para la Comisión Directiva</h1>
+                <p className="mt-1 text-sm text-muted-foreground">Emitido el {emitido}</p>
+              </div>
             </div>
             <p className="shrink-0 font-extrabold text-eco-700 dark:text-eco-300">ReciclaXP</p>
           </div>
