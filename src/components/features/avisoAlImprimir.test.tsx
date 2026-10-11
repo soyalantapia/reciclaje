@@ -35,22 +35,28 @@ beforeAll(() => {
 })
 
 /** Espera el título de la pantalla: si la prueba termina antes de que cargue, la carga diferida queda colgada. */
-async function verElPanelEn(ruta: string, titulo: string) {
-  useSessionStore.setState({ commerce: club })
-  render(<RouterProvider router={createMemoryRouter(router.routes, { initialEntries: [ruta] })} />)
+async function verElPanelEn(ruta: string, titulo: string, sponsor: Sponsor = club) {
+  useSessionStore.setState({ commerce: sponsor })
+  const r = createMemoryRouter(router.routes, { initialEntries: [ruta] })
+  render(<RouterProvider router={r} />)
   await screen.findByRole('heading', { level: 1, name: titulo })
-  return screen.getByRole('note')
+  return { aviso: screen.getByRole('note'), r }
 }
 
 describe('el aviso de la demo al imprimir', () => {
-  it('en Reportes se imprime', async () => {
-    const aviso = await verElPanelEn('/comercio/reportes', 'Reportes')
+  it('en los Reportes de un comercio se imprime', async () => {
+    const { aviso } = await verElPanelEn('/comercio/reportes', 'Reportes', { ...club, id: 's_cafe', category: 'comercio' })
     expect(aviso).toHaveTextContent('Demo · los números son de ejemplo')
     expect(aviso.closest('[data-no-imprimir]')).toBeNull()
   })
 
-  it('en el informe no, porque el informe lleva el suyo', async () => {
-    const aviso = await verElPanelEn('/comercio/informe', 'Informe para la Comisión Directiva')
+  it('en los Reportes del club, que son el informe, no: el informe lleva el suyo', async () => {
+    const { aviso } = await verElPanelEn('/comercio/reportes', 'Informe para la Comisión Directiva')
     expect(aviso.closest('[data-no-imprimir]')).not.toBeNull()
+  })
+
+  it('la dirección vieja del informe lleva a Reportes', async () => {
+    const { r } = await verElPanelEn('/comercio/informe', 'Informe para la Comisión Directiva')
+    expect(r.state.location.pathname).toBe('/comercio/reportes')
   })
 })

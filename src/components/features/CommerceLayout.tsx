@@ -1,19 +1,43 @@
+import { useLayoutEffect } from 'react'
 import { NavLink, Outlet, useMatch, useNavigate } from 'react-router-dom'
 import { LogOut } from 'lucide-react'
 import { useSessionStore } from '@/store/session'
+import { useMarcaDelPanel } from '@/hooks/useMarcaDelPanel'
 import { cn } from '@/lib/utils'
 import { ESCENARIO } from '@/lib/escenario'
+import { esColorPropio, estiloDeMarca } from '@/lib/marca'
+import { esInstitucion } from '@/lib/vocabulario'
 import { CommerceSideNav, etiquetaDelPanel, navDelPanel } from './CommerceSideNav'
 import { AvisoDemo } from './AvisoDemo'
+import { EscudoDelPanel } from './EscudoDelPanel'
 
 export function CommerceLayout() {
   const navigate = useNavigate()
   const commerce = useSessionStore((s) => s.commerce)
   const logoutCommerce = useSessionStore((s) => s.logoutCommerce)
-  // El informe lleva su propio aviso, arriba y al pie: sólo ahí el de la demo no se imprime.
-  const enElInforme = useMatch('/comercio/informe')
+  // El informe lleva su propio aviso, arriba y al pie: sólo ahí el de la demo no se imprime. El
+  // informe de una institución es su pantalla de Reportes.
+  const enReportes = useMatch('/comercio/reportes')
+  const marca = useMarcaDelPanel()
+
+  // Los Modal se montan en document.body, fuera de este contenedor: mientras el panel está abierto,
+  // la paleta de la marca va también en <html>, y se saca al salir. Es un efecto de layout para que
+  // se saque en el mismo cuadro en que se sale: el login no pinta ni un cuadro con los colores del club.
+  // Sin un color propio (el verde de ReciclaXP) no hay nada que poner: la paleta de siempre ya es esa.
+  const colorDeLaMarca = marca && esColorPropio(marca.color) ? marca.color : undefined
+  useLayoutEffect(() => {
+    if (!colorDeLaMarca) return
+    const raiz = document.documentElement
+    const variables = Object.entries(estiloDeMarca(colorDeLaMarca))
+    for (const [nombre, valor] of variables) raiz.style.setProperty(nombre, valor)
+    return () => {
+      for (const [nombre] of variables) raiz.style.removeProperty(nombre)
+    }
+  }, [colorDeLaMarca])
 
   if (!commerce) return null
+
+  const enElInforme = Boolean(enReportes) && esInstitucion(commerce.category)
 
   function salir() {
     logoutCommerce()
@@ -21,7 +45,7 @@ export function CommerceLayout() {
   }
 
   return (
-    <div className="min-h-dvh bg-background lg:flex">
+    <div className="min-h-dvh bg-background lg:flex" style={marca?.estilo}>
       {/* Navegación lateral (desktop) */}
       <CommerceSideNav className="hidden lg:flex" />
 
@@ -34,12 +58,7 @@ export function CommerceLayout() {
         >
           <div className="flex items-center justify-between px-4 py-3">
             <div className="flex min-w-0 items-center gap-2.5">
-              <span
-                className="grid h-9 w-9 shrink-0 place-items-center rounded-xl text-base font-extrabold text-white"
-                style={{ backgroundColor: commerce.brandColor }}
-              >
-                {commerce.name[0]}
-              </span>
+              <EscudoDelPanel className="h-9 w-9 text-base" />
               <div className="min-w-0">
                 <p className="truncate font-extrabold leading-tight">{commerce.name}</p>
                 <p className="text-[11px] text-muted-foreground">

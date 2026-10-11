@@ -7,12 +7,14 @@ import {
   LayoutDashboard,
   LogOut,
   Megaphone,
+  Palette,
   QrCode,
 } from 'lucide-react'
 import { useSessionStore } from '@/store/session'
 import { cn } from '@/lib/utils'
 import { ESCENARIO, muestraPrecios, type Escenario } from '@/lib/escenario'
 import { esInstitucion, vocabularioDelPanel } from '@/lib/vocabulario'
+import { EscudoDelPanel } from './EscudoDelPanel'
 
 export const COMMERCE_NAV = [
   { to: '/comercio', label: 'Resumen', end: true, icon: LayoutDashboard },
@@ -21,19 +23,23 @@ export const COMMERCE_NAV = [
   { to: '/comercio/campanias', label: 'Campañas', icon: Megaphone },
   { to: '/comercio/puntos', label: 'Puntos / QR', icon: QrCode },
   { to: '/comercio/reportes', label: 'Reportes', icon: FileText },
+  { to: '/comercio/marca', label: 'Marca', icon: Palette },
   { to: '/comercio/plan', label: 'Plan', icon: CreditCard },
 ]
 
+/** Lo que es sólo de un club o un estadio: lo que construye la hinchada y la marca del club. */
+const SOLO_INSTITUCIONES = new Set(['/comercio/productos', '/comercio/marca'])
+
 /**
  * El menú del panel: el del escritorio y el del celular salen de acá, para que no difieran.
- * En la demo del club no está «Plan» (ver `muestraPrecios`), y «Productos» es sólo de las
- * instituciones: lo que construye la hinchada es de un club o un estadio, no de un comercio.
+ * En la demo del club no está «Plan» (ver `muestraPrecios`), y «Productos» y «Marca» son sólo de
+ * las instituciones: un comercio no tiene hinchada ni escudo de club.
  */
 export function navDelPanel(escenario: Escenario = ESCENARIO, categoria?: string) {
   return COMMERCE_NAV.filter(
     (i) =>
       (i.to !== '/comercio/plan' || muestraPrecios(escenario)) &&
-      (i.to !== '/comercio/productos' || esInstitucion(categoria)),
+      (!SOLO_INSTITUCIONES.has(i.to) || esInstitucion(categoria)),
   )
 }
 
@@ -62,12 +68,7 @@ export function CommerceSideNav({ className }: { className?: string }) {
       )}
     >
       <div className="flex items-center gap-2.5 px-2 py-5">
-        <span
-          className="grid h-10 w-10 shrink-0 place-items-center rounded-xl text-base font-extrabold text-white"
-          style={{ backgroundColor: commerce.brandColor }}
-        >
-          {commerce.name[0]}
-        </span>
+        <EscudoDelPanel className="h-10 w-10 text-base" />
         <div className="min-w-0">
           <p className="truncate font-extrabold leading-tight">{commerce.name}</p>
           <p className="text-[11px] text-muted-foreground">{etiquetaDelPanel(commerce.category)} · ReciclaXP</p>

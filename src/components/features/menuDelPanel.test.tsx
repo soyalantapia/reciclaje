@@ -97,3 +97,47 @@ describe('humo del cableado de Productos', () => {
     }
   })
 })
+
+describe('humo del cableado de Marca', () => {
+  it('la ruta real /comercio/marca existe, cuelga de CommerceLayout y está en los dos menús, activa', async () => {
+    useSessionStore.setState({ commerce: club })
+    const r = createMemoryRouter(router.routes, { initialEntries: ['/comercio/marca'] })
+    render(<RouterProvider router={r} />)
+
+    expect(await screen.findByRole('heading', { level: 1, name: 'La marca de Talleres' })).toBeInTheDocument()
+    expect(r.state.location.pathname).toBe('/comercio/marca')
+
+    // Los dos menús salen del mismo `navDelPanel`: «Marca» va después de «Reportes» en ambos.
+    const menus = screen.getAllByRole('navigation')
+    expect(menus).toHaveLength(2)
+    for (const menu of menus) {
+      const enlaces = etiquetas(menu)
+      expect(enlaces).toEqual(navDelPanel(ESCENARIO, 'club').map((i) => i.label))
+      expect(enlaces[enlaces.indexOf('Reportes') + 1]).toBe('Marca')
+    }
+    const activos = screen.getAllByRole('link', { name: 'Marca' })
+    expect(activos).toHaveLength(2)
+    for (const a of activos) expect(a).toHaveAttribute('href', '/comercio/marca')
+    for (const a of activos) expect(a).toHaveAttribute('aria-current', 'page')
+  })
+
+  it('para un estadio también está en los dos menús', async () => {
+    useSessionStore.setState({ commerce: { ...club, category: 'estadio' } })
+    const r = createMemoryRouter(router.routes, { initialEntries: ['/comercio'] })
+    render(<RouterProvider router={r} />)
+    await waitFor(() => expect(screen.getAllByRole('link', { name: 'Marca' })).toHaveLength(2))
+  })
+
+  it('un comercio no ve «Marca» en ningún menú, y si llega a la ruta lo mandan al resumen', async () => {
+    useSessionStore.setState({ commerce: { ...club, id: 's_cafe', category: 'comercio' } })
+    const r = createMemoryRouter(router.routes, { initialEntries: ['/comercio/marca'] })
+    render(<RouterProvider router={r} />)
+    await waitFor(() => expect(r.state.location.pathname).toBe('/comercio'))
+    expect(screen.queryAllByRole('link', { name: 'Marca' })).toHaveLength(0)
+    expect(screen.queryByRole('heading', { name: /La marca de/ })).not.toBeInTheDocument()
+    for (const menu of screen.getAllByRole('navigation')) {
+      expect(etiquetas(menu)).toEqual(navDelPanel(ESCENARIO, 'comercio').map((i) => i.label))
+      expect(etiquetas(menu)).not.toContain('Marca')
+    }
+  })
+})

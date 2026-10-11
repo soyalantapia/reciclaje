@@ -251,13 +251,44 @@ describe('informe para la Comisión Directiva', () => {
     expect(tipo).toBe('text/csv;charset=utf-8')
   })
 
-  it('«Imprimir o guardar PDF» abre la impresión del navegador, y sus botones no se imprimen', async () => {
+  it('«Descargar PDF» abre la ventana del navegador para guardarlo, y sus botones no se imprimen', async () => {
     const imprimir = vi.spyOn(window, 'print').mockImplementation(() => {})
     verElInforme()
-    const boton = await screen.findByRole('button', { name: /Imprimir o guardar PDF/ })
+    const boton = await screen.findByRole('button', { name: /^Descargar PDF$/ })
     expect(boton.closest('[data-no-imprimir]')).not.toBeNull()
     fireEvent.click(boton)
     expect(imprimir).toHaveBeenCalledOnce()
+  })
+
+  // «Descargar PDF» no baja un archivo: abre la ventana de impresión del navegador. La ayuda lo dice, y como
+  // vive junto a los botones no sale en el papel.
+  it('junto a los botones dice que se abre la ventana del navegador para elegir «Guardar como PDF», y no se imprime', async () => {
+    verElInforme()
+    await screen.findByRole('button', { name: /^Descargar PDF$/ })
+    const ayuda = screen.getByText('Se abre la ventana del navegador: elegí «Guardar como PDF».')
+    expect(ayuda.closest('[data-no-imprimir]')).not.toBeNull()
+    // Está en el mismo bloque que los botones de arriba, no en el cuerpo del informe.
+    expect(ayuda.closest('[data-no-imprimir]')).toBe(screen.getByRole('button', { name: /^Descargar PDF$/ }).closest('[data-no-imprimir]'))
+    expect(ayuda.closest('article')).toBeNull()
+  })
+
+  it('«Descargar CSV» baja el reporte con el aviso de datos de ejemplo', async () => {
+    descargar.mockClear()
+    verElInforme()
+    const boton = await screen.findByRole('button', { name: /^Descargar CSV$/ })
+    expect(boton.closest('[data-no-imprimir]')).not.toBeNull()
+    fireEvent.click(boton)
+    expect(descargar).toHaveBeenCalledOnce()
+    const [nombre, contenido, tipo] = descargar.mock.calls[0]
+    expect(nombre).toBe('informe-club.csv')
+    expect(contenido).toContain(AVISO_DE_EJEMPLO)
+    expect(tipo).toBe('text/csv;charset=utf-8')
+  })
+
+  it('ya no tiene el link «Reportes»: el informe es la pantalla de Reportes', async () => {
+    verElInforme()
+    await screen.findByRole('heading', { level: 1, name: 'Informe para la Comisión Directiva' })
+    expect(screen.queryByRole('link', { name: /Reportes/ })).not.toBeInTheDocument()
   })
 
   it('en modo oscuro se imprime en claro, y después vuelve al oscuro', async () => {
