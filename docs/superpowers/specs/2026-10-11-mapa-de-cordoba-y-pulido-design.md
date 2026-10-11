@@ -94,7 +94,7 @@ En `BottomNav`, con `framer-motion`, que ya está en el proyecto:
   - qué materiales recibe, y si está abierto ahora;
   - la distancia, si se sabe dónde estás;
   - «Cómo llegar»: abre Google Maps con el destino (`https://www.google.com/maps/dir/?api=1&destination=<lat>,<lng>`) en otra pestaña;
-  - «Reciclar acá»: va a `/escanear?p=<id>`, con el punto ya elegido;
+  - «Reciclar acá»: como el inicio, deja el punto pendiente (`sessionStorage`, clave `claveDeAlmacenamiento('scan-point')`) y va a Escanear, con el punto ya elegido;
   - una cruz para cerrarla.
 - **Filtros, como chips arriba del mapa:**
   - «Abiertos ahora»;
