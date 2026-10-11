@@ -1,6 +1,6 @@
 // La marca que el club carga en «Marca» se ve en todo su panel: los colores, en el contenedor; el
 // escudo, en la barra lateral, en el encabezado del celular y en el informe. Sin marca, como siempre.
-import { act, fireEvent, render, screen } from '@testing-library/react'
+import { act, fireEvent, render, screen, within } from '@testing-library/react'
 import { RouterProvider, createMemoryRouter } from 'react-router-dom'
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { Sponsor } from '@/types'
@@ -45,7 +45,8 @@ beforeEach(() => {
 async function abrirElPanelEn(ruta: string, titulo: string, sponsor: Sponsor = club) {
   useSessionStore.setState({ commerce: sponsor })
   const vista = render(<RouterProvider router={createMemoryRouter(router.routes, { initialEntries: [ruta] })} />)
-  await screen.findByRole('heading', { level: 1, name: titulo })
+  // La pantalla carga diferida (~0,3 s en frío): con la máquina ocupada, el segundo que se espera por defecto queda justo.
+  await screen.findByRole('heading', { level: 1, name: titulo }, { timeout: 3000 })
   return vista
 }
 
@@ -156,5 +157,64 @@ describe('la paleta de la marca en <html>, para lo que se monta fuera del panel'
     expect(panel!.contains(dialogo)).toBe(false)
     // …y aun así su botón verde tiene el color del club.
     expect(getComputedStyle(dialogo).getPropertyValue('--eco-600')).toBe('#0b2d6b')
+  })
+})
+
+// Lo que el brief no fijaba del escudo: qué se ve en cada lugar, con y sin marca.
+describe('el escudo y la inicial del club en su panel', () => {
+  /** Los cuadrados con la inicial: el de la barra lateral y el del encabezado del celular. */
+  const iniciales = () => {
+    const cuadrados = screen.getAllByText('T')
+    expect(cuadrados).toHaveLength(2)
+    return cuadrados
+  }
+
+  it('el escudo que subió el club es el que se ve en los tres lugares, y cabe sin deformarse', async () => {
+    useMarcaDelClubStore.getState().guardar('s_club', { escudo: ESCUDO, color: '#0b2d6b' })
+    await verElPanelEn('/comercio/reportes', 'Informe para la Comisión Directiva')
+    const escudos = screen.getAllByRole('img', { name: 'Escudo de Talleres' })
+    expect(escudos).toHaveLength(3)
+    for (const escudo of escudos) {
+      expect(escudo).toHaveAttribute('src', ESCUDO)
+      // Se ajusta a su cuadro: un escudo apaisado o alto no se estira.
+      expect(escudo).toHaveClass('object-contain')
+    }
+  })
+
+  it('el escudo del informe va en su encabezado, que es lo que sale en el PDF', async () => {
+    useMarcaDelClubStore.getState().guardar('s_club', { escudo: ESCUDO, color: '#0b2d6b' })
+    await verElPanelEn('/comercio/reportes', 'Informe para la Comisión Directiva')
+    const encabezado = screen.getByRole('heading', { level: 1, name: 'Informe para la Comisión Directiva' }).closest('header')!
+    expect(within(encabezado).getByRole('img', { name: 'Escudo de Talleres' })).toHaveAttribute('src', ESCUDO)
+  })
+
+  it('con el escudo, la inicial no se muestra', async () => {
+    useMarcaDelClubStore.getState().guardar('s_club', { escudo: ESCUDO, color: '#0b2d6b' })
+    await verElPanelEn('/comercio/reportes', 'Informe para la Comisión Directiva')
+    expect(screen.queryByText('T')).not.toBeInTheDocument()
+  })
+
+  it('sin marca, la inicial va en un cuadrado del color que el club ya tenía', async () => {
+    await verElPanelEn('/comercio/reportes', 'Informe para la Comisión Directiva', { ...club, brandColor: '#aa0000' })
+    for (const inicial of iniciales()) {
+      expect(inicial).toHaveStyle({ backgroundColor: '#aa0000' })
+      expect(inicial).not.toHaveClass('bg-eco-600')
+    }
+  })
+
+  it('con color y sin escudo, la inicial va en un cuadrado del color de la marca', async () => {
+    useMarcaDelClubStore.getState().guardar('s_club', { color: '#0b2d6b' })
+    await verElPanelEn('/comercio/reportes', 'Informe para la Comisión Directiva', { ...club, brandColor: '#aa0000' })
+    for (const inicial of iniciales()) {
+      // El fondo es el 600 de la paleta de la marca; el color de antes no lo pisa.
+      expect(inicial).toHaveClass('bg-eco-600')
+      expect(inicial.style.backgroundColor).toBe('')
+      expect(getComputedStyle(inicial).getPropertyValue('--eco-600')).toBe('#0b2d6b')
+    }
+  })
+
+  it('la inicial es decorativa: el nombre del club ya está al lado, y no se lee dos veces', async () => {
+    await verElPanelEn('/comercio/reportes', 'Informe para la Comisión Directiva')
+    for (const inicial of iniciales()) expect(inicial).toHaveAttribute('aria-hidden', 'true')
   })
 })
