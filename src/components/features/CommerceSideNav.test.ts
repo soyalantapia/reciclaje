@@ -9,6 +9,16 @@ describe('menú del panel', () => {
   it('en la demo general sigue estando', () => {
     expect(navDelPanel('general').map((i) => i.to)).toContain('/comercio/plan')
   })
+  it('«Productos» es de las instituciones: un club o un estadio lo ven, un comercio no', () => {
+    expect(navDelPanel('club', 'club').map((i) => i.to)).toContain('/comercio/productos')
+    expect(navDelPanel('general', 'estadio').map((i) => i.to)).toContain('/comercio/productos')
+    expect(navDelPanel('general', 'comercio').map((i) => i.to)).not.toContain('/comercio/productos')
+    expect(navDelPanel('general').map((i) => i.to)).not.toContain('/comercio/productos')
+  })
+
+  it('para el club, «Productos» va segundo, después del resumen', () => {
+    expect(navDelPanel('club', 'club').map((i) => i.label).slice(0, 2)).toEqual(['Resumen', 'Productos'])
+  })
 })
 
 describe('etiqueta del panel', () => {

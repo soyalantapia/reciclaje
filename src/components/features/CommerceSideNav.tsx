@@ -1,5 +1,6 @@
 import { NavLink, useNavigate } from 'react-router-dom'
 import {
+  Armchair,
   CreditCard,
   FileText,
   Gift,
@@ -11,10 +12,11 @@ import {
 import { useSessionStore } from '@/store/session'
 import { cn } from '@/lib/utils'
 import { ESCENARIO, muestraPrecios, type Escenario } from '@/lib/escenario'
-import { vocabularioDelPanel } from '@/lib/vocabulario'
+import { esInstitucion, vocabularioDelPanel } from '@/lib/vocabulario'
 
 export const COMMERCE_NAV = [
   { to: '/comercio', label: 'Resumen', end: true, icon: LayoutDashboard },
+  { to: '/comercio/productos', label: 'Productos', icon: Armchair },
   { to: '/comercio/beneficios', label: 'Beneficios', icon: Gift },
   { to: '/comercio/campanias', label: 'Campañas', icon: Megaphone },
   { to: '/comercio/puntos', label: 'Puntos / QR', icon: QrCode },
@@ -24,10 +26,15 @@ export const COMMERCE_NAV = [
 
 /**
  * El menú del panel: el del escritorio y el del celular salen de acá, para que no difieran.
- * En la demo del club no está «Plan» (ver `muestraPrecios`).
+ * En la demo del club no está «Plan» (ver `muestraPrecios`), y «Productos» es sólo de las
+ * instituciones: lo que construye la hinchada es de un club o un estadio, no de un comercio.
  */
-export function navDelPanel(escenario: Escenario = ESCENARIO) {
-  return muestraPrecios(escenario) ? COMMERCE_NAV : COMMERCE_NAV.filter((i) => i.to !== '/comercio/plan')
+export function navDelPanel(escenario: Escenario = ESCENARIO, categoria?: string) {
+  return COMMERCE_NAV.filter(
+    (i) =>
+      (i.to !== '/comercio/plan' || muestraPrecios(escenario)) &&
+      (i.to !== '/comercio/productos' || esInstitucion(categoria)),
+  )
 }
 
 /** Cómo se llama el panel: un club o un estadio no son un comercio. */
@@ -67,7 +74,7 @@ export function CommerceSideNav({ className }: { className?: string }) {
       </div>
 
       <nav className="flex flex-1 flex-col gap-1">
-        {navDelPanel().map(({ to, label, end, icon: Icon }) => (
+        {navDelPanel(ESCENARIO, commerce.category).map(({ to, label, end, icon: Icon }) => (
           <NavLink
             key={to}
             to={to}

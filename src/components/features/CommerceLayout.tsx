@@ -2,6 +2,7 @@ import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { LogOut } from 'lucide-react'
 import { useSessionStore } from '@/store/session'
 import { cn } from '@/lib/utils'
+import { ESCENARIO } from '@/lib/escenario'
 import { CommerceSideNav, etiquetaDelPanel, navDelPanel } from './CommerceSideNav'
 import { AvisoDemo } from './AvisoDemo'
 
@@ -50,7 +51,7 @@ export function CommerceLayout() {
           </div>
 
           <nav className="no-scrollbar flex gap-1 overflow-x-auto px-3 pb-2">
-            {navDelPanel().map(({ to, label, end, icon: Icon }) => (
+            {navDelPanel(ESCENARIO, commerce.category).map(({ to, label, end, icon: Icon }) => (
               <NavLink
                 key={to}
                 to={to}
