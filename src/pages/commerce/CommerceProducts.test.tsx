@@ -122,6 +122,16 @@ describe('Productos del panel del club', () => {
     expect(useCommerceProductsStore.getState().creados).toHaveLength(1)
   })
 
+  it('un doble clic en «Publicar» publica una sola vez', async () => {
+    verProductos()
+    const dialogo = await abrirNuevoProducto()
+    const publicar = within(dialogo).getByRole('button', { name: 'Publicar para la hinchada' })
+    // El segundo clic llega al botón del formulario que se está cerrando, con la pantalla de antes.
+    fireEvent.click(publicar)
+    fireEvent.click(publicar)
+    expect(useCommerceProductsStore.getState().creados).toHaveLength(1)
+  })
+
   it('con la sede ya ocupada, el formulario propone el Punto R que queda libre', async () => {
     verProductos()
     const primero = await abrirNuevoProducto()

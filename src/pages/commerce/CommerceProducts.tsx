@@ -74,8 +74,11 @@ export default function CommerceProducts() {
     if (!nombre.trim()) return toast.error('Poné el nombre del producto')
     if (kilos < 1) return toast.error('La meta va en kilos: poné 1 o más')
     if (!punto) return toast.error('Elegí el Punto R donde se junta')
-    // Un producto abierto por punto: si no, no se sabría a cuál va un aporte.
-    const ocupado = mios.find((p) => p.puntoId === punto.id)
+    // Un producto abierto por punto: si no, no se sabría a cuál va un aporte. Se mira el store en el
+    // momento: un doble clic llega al formulario que se está cerrando, con la pantalla de antes.
+    const ocupado = useCommerceProductsStore
+      .getState()
+      .creados.find((p) => p.sponsorId === commerce!.id && p.puntoId === punto.id)
     if (ocupado) {
       return toast.error(`El ${punto.name} ya junta para «${ocupado.title}». Elegí otro Punto R o eliminá ese producto.`)
     }
@@ -126,7 +129,7 @@ export default function CommerceProducts() {
                 />
               </div>
               <div className="mt-3 flex items-start justify-between gap-2">
-                <p className="font-bold leading-tight">{p.title}</p>
+                <p className="min-w-0 break-words font-bold leading-tight">{p.title}</p>
                 {delPanel && <Badge variant="xp">Nuevo</Badge>}
               </div>
               <p className="mt-1 text-sm text-muted-foreground">
@@ -146,7 +149,13 @@ export default function CommerceProducts() {
                 </span>
               </div>
               {delPanel && (
-                <Button size="sm" variant="ghost" className="mt-1 text-danger" onClick={() => quitar(p.id)}>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="mt-1 text-danger"
+                  aria-label={`Eliminar ${p.title}`}
+                  onClick={() => quitar(p.id)}
+                >
                   <Trash2 size={14} /> Eliminar
                 </Button>
               )}
@@ -190,6 +199,7 @@ export default function CommerceProducts() {
             <Input
               id="producto-nombre"
               placeholder="Ej.: Cestos para la tribuna"
+              maxLength={60}
               value={nombre}
               onChange={(e) => setNombre(e.target.value)}
             />

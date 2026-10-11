@@ -4,9 +4,14 @@ import { render, screen, waitFor, within } from '@testing-library/react'
 import { RouterProvider, createMemoryRouter } from 'react-router-dom'
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { ImpactProject, RecyclePoint, Sponsor } from '@/types'
+import { ESCENARIO } from '@/lib/escenario'
 import { router } from '@/routes'
 import { useCommerceProductsStore } from '@/store/commerceProducts'
 import { useSessionStore } from '@/store/session'
+import { navDelPanel } from './CommerceSideNav'
+
+/** Los textos de los enlaces de un menú, en orden. «Plan» depende del escenario: se compara con `navDelPanel`. */
+const etiquetas = (menu: HTMLElement) => within(menu).getAllByRole('link').map((a) => a.textContent?.trim())
 
 const punto = (id: string, name: string): RecyclePoint => ({
   id, name, sponsorId: 's_club', type: 'deposito', address: '', city: 'Córdoba', x: 0, y: 0,
@@ -61,9 +66,9 @@ describe('humo del cableado de Productos', () => {
     const menus = screen.getAllByRole('navigation')
     expect(menus).toHaveLength(2)
     for (const menu of menus) {
-      expect(within(menu).getAllByRole('link').map((a) => a.textContent?.trim())).toEqual([
-        'Resumen', 'Productos', 'Beneficios', 'Campañas', 'Puntos / QR', 'Reportes', 'Plan',
-      ])
+      const enlaces = etiquetas(menu)
+      expect(enlaces).toEqual(navDelPanel(ESCENARIO, 'club').map((i) => i.label))
+      expect(enlaces.slice(0, 2)).toEqual(['Resumen', 'Productos'])
     }
     // El de «Productos» es el enlace activo.
     const activos = screen.getAllByRole('link', { name: 'Productos' })
@@ -87,9 +92,8 @@ describe('humo del cableado de Productos', () => {
     expect(screen.queryAllByRole('link', { name: /Productos/ })).toHaveLength(0)
     expect(screen.queryByRole('heading', { name: 'Productos' })).not.toBeInTheDocument()
     for (const menu of screen.getAllByRole('navigation')) {
-      expect(within(menu).getAllByRole('link').map((a) => a.textContent?.trim())).toEqual([
-        'Resumen', 'Beneficios', 'Campañas', 'Puntos / QR', 'Reportes', 'Plan',
-      ])
+      expect(etiquetas(menu)).toEqual(navDelPanel(ESCENARIO, 'comercio').map((i) => i.label))
+      expect(etiquetas(menu)).not.toContain('Productos')
     }
   })
 })
