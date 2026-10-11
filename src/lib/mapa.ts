@@ -38,7 +38,9 @@ export function distanciaKm(a: Lugar, b: Lugar): number {
 
 /** «a 350 m» por debajo del kilómetro (a la decena, desde 10 m); «a 1,2 km» desde ahí. */
 export function textoDeDistancia(km: number): string {
-  if (km < 1) return `a ${Math.max(10, Math.round((km * 1000) / 10) * 10)} m`
+  // Se decide por los metros ya redondeados: 998 m serían «a 1000 m», y eso ya es «a 1,0 km».
+  const metros = Math.max(10, Math.round((km * 1000) / 10) * 10)
+  if (metros < 1000) return `a ${metros} m`
   return `a ${km.toLocaleString('es-AR', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} km`
 }
 
