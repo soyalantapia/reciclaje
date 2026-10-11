@@ -31,5 +31,7 @@ describe('ImpactProgress del banco', () => {
   it('un proyecto que no es un banco sigue con su ilustración', () => {
     const { container } = render(<ImpactProgress project={{ ...banco, illustration: 'totem' } as ImpactProject} />)
     expect(container.querySelectorAll('circle[data-estado]')).toHaveLength(0)
+    expect(container.querySelector('[aria-label^="Banco de tapitas"]')).toBeNull()
+    expect(container.querySelector('svg[aria-label="Mobiliario y cartelería reciclada"]')).not.toBeNull()
   })
 })
