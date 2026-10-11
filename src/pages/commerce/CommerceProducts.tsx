@@ -10,7 +10,7 @@ import { useActivityStore } from '@/store/activity'
 import { useCommerceProductsStore } from '@/store/commerceProducts'
 import { conAportesDeLaSesion } from '@/lib/aportesDeLaSesion'
 import { TAPITAS_POR_KILO } from '@/lib/metrics'
-import { FORMAS, crearProducto, kilosDeLaMeta, puntosDelProducto } from '@/lib/productosDelClub'
+import { FORMAS, crearProducto, esDelPanel, kilosDeLaMeta, puntosDelProducto } from '@/lib/productosDelClub'
 import { esInstitucion } from '@/lib/vocabulario'
 import { cn, formatNumber, pct, shortCode } from '@/lib/utils'
 import { BancoDeTapitas } from '@/components/features/BancoDeTapitas'
@@ -51,13 +51,18 @@ export default function CommerceProducts() {
   if (!esInstitucion(commerce.category)) return <Navigate to="/comercio" replace />
 
   const mios = creados.filter((p) => p.sponsorId === commerce.id)
+  // El simulador también sirve en /projects los que publicó el club: esos salen sólo de `creados`,
+  // que se actualiza al instante. Si salieran también de acá, al eliminar uno su copia de la lista
+  // pedida al abrir la pantalla lo dejaría a la vista, sin su «Nuevo» ni su «Eliminar».
   const delClub = (proyectos ?? []).filter(
-    (p) => p.sponsorId === commerce.id && p.illustration === 'bench' && !mios.some((m) => m.id === p.id),
+    (p) => p.sponsorId === commerce.id && p.illustration === 'bench' && !esDelPanel(p),
   )
   const lista = [...delClub, ...mios].map((p) => conAportesDeLaSesion(p, actividad, nombreDelHincha))
   const puntosDelClub = (puntos ?? []).filter((p) => p.sponsorId === commerce.id)
-  // De entrada, el último Punto R del club: el primero (el estadio) junta para el banco.
-  const punto = puntosDelClub.find((p) => p.id === puntoId) ?? puntosDelClub.at(-1)
+  // De entrada, el último Punto R libre (el primero, el estadio, junta para el banco). Si ya no
+  // queda ninguno libre, el último: al publicar, avisa que ese punto ya junta para otro producto.
+  const libres = puntosDelClub.filter((p) => !mios.some((m) => m.puntoId === p.id))
+  const punto = puntosDelClub.find((p) => p.id === puntoId) ?? libres.at(-1) ?? puntosDelClub.at(-1)
   const kilos = Math.round(Number(metaKg) || 0)
 
   function elegirForma(f: FormaDelProducto) {
@@ -127,10 +132,13 @@ export default function CommerceProducts() {
               <p className="mt-1 text-sm text-muted-foreground">
                 Meta: {formatNumber(kilosDeLaMeta(p))} kg · {formatNumber(p.goalUnits)} tapitas
               </p>
-              <p className="mt-0.5 flex items-center gap-1 text-xs text-muted-foreground">
-                <MapPin size={12} className="shrink-0" />
-                {dondeJunta.length > 0 ? dondeJunta.map((pt) => pt.name).join(', ') : 'Sin Punto R'}
-              </p>
+              {/* Hasta que llegan los puntos no se dice nada: si no, un producto diría «Sin Punto R» un instante. */}
+              {puntos && (
+                <p className="mt-0.5 flex items-center gap-1 text-xs text-muted-foreground">
+                  <MapPin size={12} className="shrink-0" />
+                  {dondeJunta.length > 0 ? dondeJunta.map((pt) => pt.name).join(', ') : 'Sin Punto R'}
+                </p>
+              )}
               <div className="mt-2 flex items-baseline justify-between gap-2">
                 <span className="font-marcador text-2xl font-bold tabular-nums">{formatNumber(p.collectedUnits)}</span>
                 <span className="text-sm font-bold text-eco-700 dark:text-eco-300">
@@ -150,8 +158,11 @@ export default function CommerceProducts() {
       <Modal open={abierto} onClose={() => setAbierto(false)} title="Nuevo producto">
         <div className="space-y-4">
           <div>
-            <Label>¿Qué construye la hinchada?</Label>
-            <div className="grid grid-cols-2 gap-2">
+            {/* Es el título de un grupo de botones, no de un campo: un <label> suelto no etiqueta nada. */}
+            <p id="producto-forma" className="mb-1.5 block text-sm font-semibold text-foreground">
+              ¿Qué construye la hinchada?
+            </p>
+            <div role="group" aria-labelledby="producto-forma" className="grid grid-cols-2 gap-2">
               {FORMAS.map((f) => (
                 <button
                   key={f.forma}

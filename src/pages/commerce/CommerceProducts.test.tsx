@@ -2,6 +2,7 @@ import { fireEvent, render, screen, within } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { ImpactProject, RecyclePoint, Sponsor } from '@/types'
+import { crearProducto } from '@/lib/productosDelClub'
 import { useActivityStore } from '@/store/activity'
 import { useCommerceProductsStore } from '@/store/commerceProducts'
 import { useSessionStore } from '@/store/session'
@@ -23,7 +24,8 @@ const banco = {
 vi.mock('@/services/api', async (original) => ({
   ...(await original<typeof import('@/services/api')>()),
   api: {
-    getProjects: () => Promise.resolve([banco]),
+    // Como el simulador: los del seed más los que publicó el club (handlers.ts, GET /projects).
+    getProjects: () => Promise.resolve([banco, ...useCommerceProductsStore.getState().creados]),
     getPoints: () => Promise.resolve(puntos),
   },
 }))
@@ -114,9 +116,27 @@ describe('Productos del panel del club', () => {
     verProductos()
     for (let i = 0; i < 2; i++) {
       const dialogo = await abrirNuevoProducto()
+      fireEvent.change(within(dialogo).getByLabelText('Punto R'), { target: { value: 'p_club_sede' } })
       fireEvent.click(within(dialogo).getByRole('button', { name: 'Publicar para la hinchada' }))
     }
     expect(useCommerceProductsStore.getState().creados).toHaveLength(1)
+  })
+
+  it('con la sede ya ocupada, el formulario propone el Punto R que queda libre', async () => {
+    verProductos()
+    const primero = await abrirNuevoProducto()
+    fireEvent.click(within(primero).getByRole('button', { name: 'Publicar para la hinchada' }))
+    const segundo = await abrirNuevoProducto()
+    expect(within(segundo).getByLabelText('Punto R')).toHaveValue('p_club_estadio')
+  })
+
+  it('las cuatro formas son un grupo con su título, para quien usa un lector de pantalla', async () => {
+    verProductos()
+    const dialogo = await abrirNuevoProducto()
+    const formas = within(dialogo).getByRole('group', { name: '¿Qué construye la hinchada?' })
+    expect(within(formas).getAllByRole('button').map((b) => b.textContent)).toEqual([
+      'Banco de suplentes', 'Butacas', 'Arco para las inferiores', 'Otro',
+    ])
   })
 
   it('un producto publicado se puede eliminar', async () => {
@@ -125,6 +145,24 @@ describe('Productos del panel del club', () => {
     fireEvent.click(within(dialogo).getByRole('button', { name: 'Publicar para la hinchada' }))
     fireEvent.click(await screen.findByRole('button', { name: /Eliminar/ }))
     expect(useCommerceProductsStore.getState().creados).toHaveLength(0)
+  })
+
+  it('un producto que ya estaba publicado al abrir la pantalla también desaparece al eliminarlo', async () => {
+    useCommerceProductsStore.setState({
+      creados: [
+        crearProducto({
+          id: 'pr_nuevo_ABC123', forma: 'butacas', nombre: 'Butacas para la platea', metaKg: 500, punto: puntos[1],
+          club: { id: 's_club', nombre: 'Talleres' }, creadoEn: '2026-10-11T00:00:00.000Z',
+        }),
+      ],
+    })
+    verProductos()
+    expect(await screen.findByText('Butacas para la platea')).toBeInTheDocument()
+    // El simulador lo sirve también en /projects: no se lista dos veces.
+    expect(screen.getAllByText('Butacas para la platea')).toHaveLength(1)
+    fireEvent.click(screen.getByRole('button', { name: /Eliminar/ }))
+    expect(useCommerceProductsStore.getState().creados).toHaveLength(0)
+    expect(screen.queryByText('Butacas para la platea')).not.toBeInTheDocument()
   })
 
   it('un comercio no tiene esta pantalla', () => {
