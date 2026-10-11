@@ -169,7 +169,9 @@
  * botones: van marcados con `data-no-imprimir`. El informe lleva su propio aviso, arriba y al pie.
  */
 @media print {
-  [data-no-imprimir] {
+  [data-no-imprimir],
+  /* Los avisos de un momento («CSV descargado») tampoco: no son parte del papel. */
+  [data-sonner-toaster] {
     display: none !important;
   }
 }

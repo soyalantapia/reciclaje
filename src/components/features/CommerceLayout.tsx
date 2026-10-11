@@ -1,4 +1,4 @@
-import { NavLink, Outlet, useNavigate } from 'react-router-dom'
+import { NavLink, Outlet, useMatch, useNavigate } from 'react-router-dom'
 import { LogOut } from 'lucide-react'
 import { useSessionStore } from '@/store/session'
 import { cn } from '@/lib/utils'
@@ -10,6 +10,8 @@ export function CommerceLayout() {
   const navigate = useNavigate()
   const commerce = useSessionStore((s) => s.commerce)
   const logoutCommerce = useSessionStore((s) => s.logoutCommerce)
+  // El informe lleva su propio aviso, arriba y al pie: sólo ahí el de la demo no se imprime.
+  const enElInforme = useMatch('/comercio/informe')
 
   if (!commerce) return null
 
@@ -73,8 +75,8 @@ export function CommerceLayout() {
         </header>
 
         <main className="mx-auto w-full max-w-6xl flex-1 px-4 pb-12 pt-4 lg:px-8 lg:pt-8 print:max-w-none print:p-0">
-          {/* El informe impreso lleva su propio aviso, arriba y al pie */}
-          <div data-no-imprimir>
+          {/* Se imprime en todo el panel (un resumen impreso circula sin la pantalla), salvo en el informe */}
+          <div data-no-imprimir={enElInforme ? true : undefined}>
             <AvisoDemo />
           </div>
           <Outlet />

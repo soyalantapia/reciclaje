@@ -179,6 +179,25 @@ describe('informe para la Comisión Directiva', () => {
     expect(document.documentElement.classList.contains('dark')).toBe(true)
   })
 
+  it('si llegan dos avisos de imprimir seguidos, el oscuro igual vuelve', async () => {
+    document.documentElement.classList.add('dark')
+    verElInforme()
+    await screen.findByRole('heading', { level: 1, name: 'Informe para la Comisión Directiva' })
+    window.dispatchEvent(new Event('beforeprint'))
+    window.dispatchEvent(new Event('beforeprint'))
+    window.dispatchEvent(new Event('afterprint'))
+    expect(document.documentElement.classList.contains('dark')).toBe(true)
+  })
+
+  it('el PDF se propone con el nombre del informe, y al salir vuelve el título de la app', async () => {
+    document.title = 'ReciclaXP'
+    const { unmount } = verElInforme()
+    await screen.findByRole('heading', { level: 1, name: 'Informe para la Comisión Directiva' })
+    expect(document.title).toBe('Informe para la Comisión Directiva · Talleres')
+    unmount()
+    expect(document.title).toBe('ReciclaXP')
+  })
+
   it('un comercio no tiene informe: lo manda a Reportes', async () => {
     // Con rutas de verdad y esperando la redirección: sin eso la prueba daba verde aunque faltara
     // la guarda, porque al mirar la pantalla todavía cargaba y no había título.

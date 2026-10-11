@@ -16,7 +16,7 @@ import { ETAPAS_DEL_PILOTO, SIN_PESAJES, topDeLaHinchada } from '@/lib/informe'
 import { posicionEnLaRed, textoDePosicion } from '@/lib/posicionEnLaRed'
 import { AVISO_DE_EJEMPLO, csvDelReporte } from '@/lib/reporte'
 import { esInstitucion } from '@/lib/vocabulario'
-import { downloadBlob, formatDate, formatNumber, pct } from '@/lib/utils'
+import { downloadBlob, formatNumber, pct } from '@/lib/utils'
 import { BancoDeTapitas } from '@/components/features/BancoDeTapitas'
 import { ErrorState } from '@/components/features/ErrorState'
 import { Button } from '@/components/ui/button'
@@ -27,20 +27,36 @@ function useImprimirEnClaro() {
   useEffect(() => {
     const html = document.documentElement
     let eraOscuro = false
+    // Si llegan dos avisos de imprimir seguidos, el segundo no pisa lo que recordó el primero.
     const antes = () => {
-      eraOscuro = html.classList.contains('dark')
+      if (!html.classList.contains('dark')) return
+      eraOscuro = true
       html.classList.remove('dark')
     }
     const despues = () => {
       if (eraOscuro) html.classList.add('dark')
+      eraOscuro = false
     }
     window.addEventListener('beforeprint', antes)
     window.addEventListener('afterprint', despues)
     return () => {
       window.removeEventListener('beforeprint', antes)
       window.removeEventListener('afterprint', despues)
+      despues()
     }
   }, [])
+}
+
+/** Mientras el informe está abierto, la pestaña lo nombra: es el nombre que propone «Guardar como PDF». */
+function useTituloDelDocumento(titulo: string | undefined) {
+  useEffect(() => {
+    if (!titulo) return
+    const anterior = document.title
+    document.title = titulo
+    return () => {
+      document.title = anterior
+    }
+  }, [titulo])
 }
 
 /**
@@ -58,6 +74,9 @@ export default function CommerceInforme() {
   const { data: red } = useApi(() => api.getSponsors(), [])
   const { data: proyectos } = useApi(() => api.getProjects(), [creados])
   useImprimirEnClaro()
+  useTituloDelDocumento(
+    commerce && esInstitucion(commerce.category) ? `Informe para la Comisión Directiva · ${commerce.name}` : undefined,
+  )
 
   // Los productos del club, con lo que la hinchada aportó en esta sesión.
   const productos = (proyectos ?? [])
@@ -78,7 +97,8 @@ export default function CommerceInforme() {
   if (error && !m) return <ErrorState message={error} onRetry={reload} />
   if (loading || !m) return <Skeleton className="h-96 w-full" />
 
-  const emitido = formatDate(new Date())
+  // Con el mes completo: es un documento para la comisión, no una fila de una lista.
+  const emitido = new Date().toLocaleDateString('es-AR', { day: 'numeric', month: 'long', year: 'numeric' })
   const posicion = red ? textoDePosicion(posicionEnLaRed(commerce.id, m.greenScore, red)) : undefined
   const maxMes = Math.max(1, ...m.monthlySeries.map((s) => s.value))
   const maxPunto = Math.max(1, ...m.byPoint.map((p) => p.contributions))
@@ -147,7 +167,7 @@ export default function CommerceInforme() {
         </section>
 
         {productos.length > 0 && (
-          <section className="break-inside-avoid">
+          <section>
             <h2 className="text-lg font-extrabold">Lo que construye la hinchada</h2>
             <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
               {productos.map((p) => (
@@ -179,16 +199,18 @@ export default function CommerceInforme() {
         )}
 
         <section className="break-inside-avoid">
-          <h2 className="text-lg font-extrabold">Partido por partido</h2>
+          <h2 id="informe-partidos" className="text-lg font-extrabold">
+            Partido por partido
+          </h2>
           <div className="mt-3 overflow-x-auto">
-            <table className="w-full text-left text-sm">
+            <table aria-labelledby="informe-partidos" className="w-full text-left text-sm">
               <thead>
                 <tr className="border-b-2 border-border text-xs uppercase tracking-wide text-muted-foreground">
-                  <th className="py-2 pr-2 font-bold">Partido</th>
-                  <th className="py-2 pr-2 font-bold">Fecha</th>
-                  <th className="py-2 pr-2 text-right font-bold">Kilos</th>
-                  <th className="py-2 pr-2 text-right font-bold">Tapitas</th>
-                  <th className="py-2 text-right font-bold">Hinchas</th>
+                  <th scope="col" className="py-2 pr-2 font-bold">Partido</th>
+                  <th scope="col" className="py-2 pr-2 font-bold">Fecha</th>
+                  <th scope="col" className="py-2 pr-2 text-right font-bold">Kilos</th>
+                  <th scope="col" className="py-2 pr-2 text-right font-bold">Tapitas</th>
+                  <th scope="col" className="py-2 text-right font-bold">Hinchas</th>
                 </tr>
               </thead>
               <tbody>
