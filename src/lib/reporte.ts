@@ -26,5 +26,5 @@ export function filasDelReporte(m: SponsorMetrics): { metrica: string; valor: nu
  * para que Excel lea bien los acentos y el «·» de «Punto R · Estadio».
  */
 export function csvDelReporte(m: SponsorMetrics): string {
-  return `﻿"${AVISO_DE_EJEMPLO}"\n${objectsToCsv(filasDelReporte(m))}`
+  return `\uFEFF"${AVISO_DE_EJEMPLO}"\n${objectsToCsv(filasDelReporte(m))}`
 }

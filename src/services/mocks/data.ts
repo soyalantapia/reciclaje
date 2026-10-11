@@ -571,7 +571,7 @@ export const causes: Cause[] = [
     city: 'Cañuelas',
     summary: 'Tu papel y cartón reciclados se vuelven útiles y mobiliario escolar.',
     story:
-      'El papel y cartón recuperado financia útiles, libros y mobiliario para la escuela rural. La comunidad educativa ve el progreso de cada meta en tiempo real.',
+      'El papel y cartón recuperado financia útiles, libros y mobiliario para la escuela rural. La comunidad educativa ve el progreso de cada meta.',
     material: 'papel',
     unitLabel: 'kg de papel',
     kgGoal: 2000,
