@@ -1,6 +1,7 @@
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { toast } from 'sonner'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { Sponsor } from '@/types'
 import { EscudoInvalido } from '@/lib/escudo'
 import { useMarcaDelClubStore } from '@/store/marcaDelClub'
@@ -112,5 +113,95 @@ describe('el aviso de que en los botones el color va más oscuro', () => {
     useMarcaDelClubStore.getState().guardar('s_club', { color: '#0b2d6b' })
     verMarca()
     expect(screen.queryByText(AVISO)).not.toBeInTheDocument()
+  })
+})
+
+// Lo que el brief no fija y que, si se rompe, se nota recién en el uso: el escudo que se pierde al
+// cambiar el color, el botón que queda trabado, el aviso de error que no se va.
+describe('la pantalla en uso', () => {
+  afterEach(() => {
+    vi.restoreAllMocks()
+  })
+
+  it('sin marca muestra el verde de ReciclaXP y no ofrece volver a él', () => {
+    verMarca()
+    expect(screen.getByLabelText('Color de la marca')).toHaveValue('#059669')
+    expect(screen.getByText('#059669')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /Volver a los colores de ReciclaXP/ })).not.toBeInTheDocument()
+  })
+
+  it('sin escudo ofrece subirlo y deja la inicial; con escudo, ofrece cambiarlo', () => {
+    const { unmount } = verMarca()
+    expect(screen.getByRole('button', { name: /Subir el escudo/ })).toBeInTheDocument()
+    expect(screen.getByText('T')).toBeInTheDocument()
+    unmount()
+    useMarcaDelClubStore.getState().guardar('s_club', { escudo: ESCUDO, color: '#0b2d6b' })
+    verMarca()
+    expect(screen.getByRole('button', { name: /Cambiar el escudo/ })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /Subir el escudo/ })).not.toBeInTheDocument()
+  })
+
+  it('cambiar el color conserva el escudo que ya se subió', () => {
+    useMarcaDelClubStore.getState().guardar('s_club', { escudo: ESCUDO, color: '#0b2d6b' })
+    verMarca()
+    fireEvent.change(screen.getByLabelText('Color de la marca'), { target: { value: '#123456' } })
+    expect(useMarcaDelClubStore.getState().marcas.s_club).toEqual({ escudo: ESCUDO, color: '#123456' })
+    expect(screen.getByRole('img', { name: 'Escudo de Talleres' })).toHaveAttribute('src', ESCUDO)
+    // Y el código que se lee al lado del selector es el elegido.
+    expect(screen.getByText('#123456')).toBeInTheDocument()
+  })
+
+  it('mientras lee el escudo no deja subir otro, y cuando termina vuelve a dejar', async () => {
+    let terminar!: (leido: { escudo: string; color: string | null }) => void
+    preparar.mockReturnValue(new Promise((resolve) => (terminar = resolve)))
+    verMarca()
+    fireEvent.change(screen.getByLabelText('Archivo del escudo'), { target: { files: [archivo()] } })
+    expect(screen.getByRole('button', { name: /Subir el escudo/ })).toBeDisabled()
+    terminar({ escudo: ESCUDO, color: '#0b2d6b' })
+    await screen.findByRole('img', { name: 'Escudo de Talleres' })
+    await waitFor(() => expect(screen.getByRole('button', { name: /Cambiar el escudo/ })).toBeEnabled())
+  })
+
+  it('el aviso de error se va cuando se sube un escudo que sirve', async () => {
+    preparar.mockRejectedValueOnce(new EscudoInvalido('El escudo pesa más de 2 MB: probá con uno más liviano.'))
+    preparar.mockResolvedValueOnce({ escudo: ESCUDO, color: '#0b2d6b' })
+    verMarca()
+    const entrada = screen.getByLabelText('Archivo del escudo')
+    fireEvent.change(entrada, { target: { files: [archivo()] } })
+    await screen.findByRole('alert')
+    fireEvent.change(entrada, { target: { files: [archivo()] } })
+    await screen.findByRole('img', { name: 'Escudo de Talleres' })
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+  })
+
+  it('si falla algo que no es del escudo, avisa sin mostrar el texto técnico y no guarda nada', async () => {
+    preparar.mockRejectedValue(new Error('SecurityError: The operation is insecure.'))
+    verMarca()
+    fireEvent.change(screen.getByLabelText('Archivo del escudo'), { target: { files: [archivo()] } })
+    const aviso = await screen.findByRole('alert')
+    expect(aviso).toHaveTextContent('No se pudo leer el escudo. Probá con otra imagen.')
+    expect(aviso).not.toHaveTextContent('SecurityError')
+    expect(useMarcaDelClubStore.getState().marcas).toEqual({})
+  })
+
+  it('el cartel dice si el color salió del escudo o si hay que elegirlo', async () => {
+    const exito = vi.spyOn(toast, 'success')
+    preparar.mockResolvedValueOnce({ escudo: ESCUDO, color: '#0b2d6b' })
+    preparar.mockResolvedValueOnce({ escudo: ESCUDO, color: null })
+    verMarca()
+    const entrada = screen.getByLabelText('Archivo del escudo')
+    fireEvent.change(entrada, { target: { files: [archivo()] } })
+    await waitFor(() => expect(exito).toHaveBeenLastCalledWith('Listo: el panel ya usa tu escudo y su color'))
+    fireEvent.change(entrada, { target: { files: [archivo()] } })
+    await waitFor(() => expect(exito).toHaveBeenLastCalledWith('Listo: subimos el escudo. Elegí el color abajo.'))
+    expect(exito).toHaveBeenCalledTimes(2)
+  })
+
+  it('si no se eligió ningún archivo, no pasa nada', () => {
+    verMarca()
+    fireEvent.change(screen.getByLabelText('Archivo del escudo'), { target: { files: [] } })
+    expect(preparar).not.toHaveBeenCalled()
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+    expect(useMarcaDelClubStore.getState().marcas).toEqual({})
   })
 })

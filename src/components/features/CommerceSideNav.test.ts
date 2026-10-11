@@ -19,6 +19,20 @@ describe('menú del panel', () => {
   it('para el club, «Productos» va segundo, después del resumen', () => {
     expect(navDelPanel('club', 'club').map((i) => i.label).slice(0, 2)).toEqual(['Resumen', 'Productos'])
   })
+
+  it('«Marca» es de las instituciones: un club o un estadio la ven, un comercio no', () => {
+    expect(navDelPanel('club', 'club').map((i) => i.to)).toContain('/comercio/marca')
+    expect(navDelPanel('general', 'estadio').map((i) => i.to)).toContain('/comercio/marca')
+    expect(navDelPanel('general', 'comercio').map((i) => i.to)).not.toContain('/comercio/marca')
+    expect(navDelPanel('general').map((i) => i.to)).not.toContain('/comercio/marca')
+  })
+
+  it('«Marca» va entre «Reportes» y «Plan»; donde no hay «Plan», queda al final', () => {
+    const general = navDelPanel('general', 'club').map((i) => i.label)
+    expect(general.slice(general.indexOf('Reportes'))).toEqual(['Reportes', 'Marca', 'Plan'])
+    const club = navDelPanel('club', 'club').map((i) => i.label)
+    expect(club.slice(club.indexOf('Reportes'))).toEqual(['Reportes', 'Marca'])
+  })
 })
 
 describe('etiqueta del panel', () => {
