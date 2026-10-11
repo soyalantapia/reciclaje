@@ -74,7 +74,11 @@ export function paletaDeMarca(color: string): Record<Tono, string> {
   }
 }
 
-/** Las variables que pisan la paleta eco en un contenedor: `style={estiloDeMarca(color)}`. */
+/**
+ * Las variables que pisan la paleta eco: van en el contenedor del panel de la institución
+ * (`style={estiloDeMarca(color)}`) y, mientras ese panel está abierto, también en `<html>`, para lo que
+ * se monta fuera del contenedor (los Modal).
+ */
 export function estiloDeMarca(color: string): Record<`--eco-${Tono}`, string> {
   const paleta = paletaDeMarca(color)
   return Object.fromEntries(TONOS.map((t) => [`--eco-${t}`, paleta[t]])) as Record<`--eco-${Tono}`, string>

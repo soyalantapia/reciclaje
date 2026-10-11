@@ -72,7 +72,8 @@
   --color-cal: var(--cal);
 }
 
-/* La paleta eco de ReciclaXP. Un contenedor la pisa con la marca de una institución (src/lib/marca.ts). */
+/* La paleta eco de ReciclaXP. La pisa el panel de una institución con marca (src/lib/marca.ts): en su
+   contenedor y en <html> mientras está abierto, para lo que se monta fuera de él (los Modal). */
 :root {
   --eco-50: #ecfdf5;
   --eco-100: #d1fae5;

@@ -68,8 +68,8 @@ export default function CommerceMarca() {
             </span>
           )}
           <div className="space-y-2">
-            {/* El campo está oculto y el botón de abajo es la única entrada con teclado: sin tabIndex sería una parada del Tab
-                que no se ve (no tiene indicador de foco) y un lector anunciaría dos controles para una sola acción. */}
+            {/* El campo está oculto y el botón de abajo es la única entrada con teclado: tabIndex={-1} lo saca del orden
+                del Tab (sería una parada que no se ve, porque no tiene indicador de foco). */}
             <input
               ref={entrada}
               type="file"
