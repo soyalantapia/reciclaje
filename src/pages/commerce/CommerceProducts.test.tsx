@@ -156,6 +156,16 @@ describe('Productos del panel del club', () => {
     expect(useCommerceProductsStore.getState().creados).toMatchObject([{ puntoId: 'p_new_XYZ789', sponsorId: 's_new_ABC123' }])
   })
 
+  it('después de publicar uno, el formulario vuelve a publicar otro en el otro Punto R, sin recargar', async () => {
+    verProductos()
+    const primero = await abrirNuevoProducto()
+    fireEvent.click(within(primero).getByRole('button', { name: 'Publicar para la hinchada' }))
+    const segundo = await abrirNuevoProducto()
+    expect(within(segundo).getByLabelText('Punto R')).toHaveValue('p_club_estadio')
+    fireEvent.click(within(segundo).getByRole('button', { name: 'Publicar para la hinchada' }))
+    expect(useCommerceProductsStore.getState().creados).toHaveLength(2)
+  })
+
   it('con la sede ya ocupada, el formulario propone el Punto R que queda libre', async () => {
     verProductos()
     const primero = await abrirNuevoProducto()

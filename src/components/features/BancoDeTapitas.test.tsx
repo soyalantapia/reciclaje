@@ -65,6 +65,14 @@ describe('BancoDeTapitas: las formas', () => {
     expect(container.querySelector('svg')!.getAttribute('viewBox')).toBe(viewBox)
   })
 
+  it('una forma que no se conoce (guardada por otra versión) se dibuja como banco y no rompe la pantalla', () => {
+    const { container } = render(<BancoDeTapitas forma={'cestos' as FormaDelProducto} progreso={0.5} propias={0} />)
+    const svg = container.querySelector('svg')!
+    expect(svg.getAttribute('viewBox')).toBe('0 0 166 90')
+    expect(svg.getAttribute('aria-label')).toBe('Banco de tapitas: 40 de 80 encendidas')
+    expect(container.querySelectorAll('circle')).toHaveLength(80)
+  })
+
   it('las butacas son cuatro respaldos de cuatro columnas, con un hueco entre uno y otro', () => {
     const { container } = render(<BancoDeTapitas forma="butacas" progreso={1} propias={0} />)
     const columnas = [...new Set([...container.querySelectorAll('circle')].map((c) => Number(c.getAttribute('cx'))))]
