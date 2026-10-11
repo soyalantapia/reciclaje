@@ -58,4 +58,11 @@ describe('ImpactProgress del banco', () => {
     expect(container.textContent).not.toContain('Los titulares de la hinchada')
     expect(container.textContent).not.toContain('Top aportantes')
   })
+
+  it('un producto sin fecha estimada dice «A definir», sin inventar una, y dibuja su forma', () => {
+    const { container } = render(<ImpactProgress project={{ ...banco, estimatedDate: '', forma: 'butacas' }} />)
+    expect(container.textContent).toContain('A definir')
+    expect(container.textContent).not.toContain('Invalid Date')
+    expect(container.querySelector('svg[data-forma="butacas"]')).not.toBeNull()
+  })
 })

@@ -38,6 +38,7 @@ export function ImpactProgress({ project, compact = false, className, nombreCort
           </div>
           <BancoDeTapitas
             className="mt-3"
+            forma={project.forma}
             progreso={project.goalUnits > 0 ? project.collectedUnits / project.goalUnits : 0}
             propias={project.collectedUnits > 0 ? project.myContributionUnits / project.collectedUnits : 0}
           />
@@ -103,10 +104,10 @@ export function ImpactProgress({ project, compact = false, className, nombreCort
             <CalendarClock size={14} /> Fecha estimada
           </div>
           <p className="mt-1 text-lg font-extrabold leading-none">
-            {new Date(project.estimatedDate).toLocaleDateString('es-AR', {
-              month: 'short',
-              year: 'numeric',
-            })}
+            {/* Un producto recién publicado todavía no tiene fecha: no se inventa una. */}
+            {project.estimatedDate
+              ? new Date(project.estimatedDate).toLocaleDateString('es-AR', { month: 'short', year: 'numeric' })
+              : 'A definir'}
           </p>
           <p className="text-xs text-muted-foreground">finalización</p>
         </div>

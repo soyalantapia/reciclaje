@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { ChevronRight } from 'lucide-react'
 import type { ImpactProject } from '@/types'
 import type { AporteDeLaHinchada } from '@/lib/ultimosAportes'
+import { tituloDeLaHinchada } from '@/lib/productosDelClub'
 import { cn, formatNumber, pct } from '@/lib/utils'
 import { BancoDeTapitas } from './BancoDeTapitas'
 import { Cancha } from './Cancha'
@@ -56,12 +57,12 @@ export function BancoDeLaHinchada({
               {pct(proyecto.collectedUnits, proyecto.goalUnits)}%
             </p>
           </div>
-          <BancoDeTapitas className="mt-3" progreso={avance} propias={propias} />
+          <BancoDeTapitas className="mt-3" forma={proyecto.forma} progreso={avance} propias={propias} />
         </div>
         {items.length > 0 && (
           <div>
             <p className="mb-2 text-xs font-bold uppercase tracking-wide text-eco-800 dark:text-eco-200">
-              La hinchada en el banco
+              {tituloDeLaHinchada(proyecto)}
             </p>
             <UltimosAportes items={items} />
           </div>
