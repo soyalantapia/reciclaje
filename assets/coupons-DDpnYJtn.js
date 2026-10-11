@@ -1,0 +1,1 @@
+import{H as e,L as t,V as n,j as r}from"./index-DJ-BE6BQ.js";var i=e()(n(e=>({coupons:[],add:t=>e(e=>({coupons:[t,...e.coupons]})),clear:()=>e({coupons:[]})}),{name:t(`coupons`),...r()}));export{i as t};

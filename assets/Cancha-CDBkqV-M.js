@@ -1,1 +1,0 @@
-import{c as e,f as t}from"./index-DOy6kWq1.js";var n=e();function r({children:e,className:r,conLinea:i=!1}){return(0,n.jsxs)(`div`,{className:t(`relative overflow-hidden rounded-2xl bg-cancha`,r),children:[i&&(0,n.jsx)(`div`,{"aria-hidden":!0,className:`pointer-events-none absolute inset-x-4 top-3 h-0.5 rounded-full bg-cal`}),e]})}export{r as t};

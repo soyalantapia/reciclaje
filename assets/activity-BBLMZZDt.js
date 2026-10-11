@@ -1,0 +1,1 @@
+import{H as e,L as t,V as n,j as r}from"./index-DJ-BE6BQ.js";var i=e()(n(e=>({sessionContributions:[],add:t=>e(e=>({sessionContributions:[t,...e.sessionContributions]})),clear:()=>e({sessionContributions:[]})}),{name:t(`activity`),...r()}));export{i as t};

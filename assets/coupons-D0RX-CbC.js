@@ -1,1 +1,0 @@
-import{F as e,I as t,T as n,j as r}from"./index-DOy6kWq1.js";var i=t()(e(e=>({coupons:[],add:t=>e(e=>({coupons:[t,...e.coupons]})),clear:()=>e({coupons:[]})}),{name:r(`coupons`),...n()}));export{i as t};
