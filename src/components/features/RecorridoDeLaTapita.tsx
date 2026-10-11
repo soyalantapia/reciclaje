@@ -37,7 +37,9 @@ export function RecorridoDeLaTapita({
       <div className="mt-3 space-y-1 rounded-xl bg-card/90 p-3 text-sm">
         <p className="flex items-center gap-2">
           <span aria-hidden className="h-3 w-3 shrink-0 rounded-full bg-xp-400 ring-1 ring-xp-600" />
-          {punto ? (
+          {actual < 0 ? (
+            <span>Tu tapita todavía no entró a este recorrido</span>
+          ) : punto ? (
             <span>
               Tu tapita está en el <b className="font-bold">{punto}</b>
             </span>
@@ -118,7 +120,7 @@ export function RecorridoDeLaTapita({
       <div className="mt-5 rounded-xl bg-card/90 p-3">
         <p className="text-xs font-bold uppercase tracking-wide text-eco-800 dark:text-eco-200">El destino</p>
         <p className="text-sm font-bold">{proyecto.title}</p>
-        <BancoDeTapitas className="mt-2 max-w-xs" progreso={avance} propias={propias} />
+        <BancoDeTapitas className="mt-2 max-w-xs" forma={proyecto.forma} progreso={avance} propias={propias} />
         <p className="mt-1 text-xs text-muted-foreground">
           {formatNumber(proyecto.collectedUnits)} de {formatNumber(proyecto.goalUnits)} {proyecto.unitLabel} ·{' '}
           {pct(proyecto.collectedUnits, proyecto.goalUnits)}%

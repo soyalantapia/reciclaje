@@ -118,7 +118,7 @@ Dirección visual de los momentos clave. Diseño: `docs/superpowers/specs/2026-1
 |---|---|
 | `Cancha` | El fondo de césped |
 | `Marcador` | Los números de tablero, con cuenta animada opcional |
-| `BancoDeTapitas` | El banco dibujado con 80 tapitas, según el avance real; las de la persona en ámbar |
+| `BancoDeTapitas` | El producto dibujado con 80 tapitas, según el avance real; las de la persona en ámbar. Con `forma` cambia el contorno: banco, butacas (cuatro respaldos con un hueco entre uno y otro), arco u otro |
 | `UltimosAportes` | La hinchada en el banco |
 | `BancoDeLaHinchada` | El inicio y el panel |
 | `FestejoDelAporte` | El festejo del aporte |
@@ -130,3 +130,5 @@ Dirección visual de los momentos clave. Diseño: `docs/superpowers/specs/2026-1
 - Nada dice «en vivo» ni inventa horarios: una prueba revisa los datos de las dos demos.
 - Con movimiento reducido, nada se anima.
 - En el panel del club nada es «tuyo».
+- En una lista de productos, cada dibujo va en un recuadro de la misma proporción (`aspect-[2/1]`), así los textos de las tarjetas quedan a la misma altura.
+- Al imprimir (el informe para la Comisión Directiva), `data-no-imprimir` oculta el menú, el aviso de la demo y los botones. El informe sale en claro aunque la app esté en oscuro y lleva su propio aviso de datos de ejemplo.

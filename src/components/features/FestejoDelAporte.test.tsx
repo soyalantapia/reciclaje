@@ -25,4 +25,16 @@ describe('FestejoDelAporte', () => {
     // Después de tocar, el XP ya está en su estado final, sin esperar su demora.
     expect(getByText('+100 XP').style.opacity).not.toBe('0')
   })
+
+  it('con un producto que publicó el club, lo nombra y dibuja su forma', () => {
+    const butacas = {
+      ...proyecto, id: 'pr_nuevo_1', title: 'Butacas para la platea', goalUnits: 119000, collectedUnits: 50,
+      myContributionUnits: 50, forma: 'butacas', puntoId: 'p_club_sede',
+    } as ImpactProject
+    const { container } = render(<FestejoDelAporte proyecto={butacas} unidades={50} xp={100} />)
+    expect(container.textContent).toContain('Talleres · Butacas para la platea')
+    expect(container.textContent).toContain('Tus 50 tapitas ya suman a «Butacas para la platea»')
+    expect(container.textContent).not.toContain('banco de la hinchada')
+    expect(container.querySelector('svg[data-forma="butacas"]')).not.toBeNull()
+  })
 })

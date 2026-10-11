@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import type { ImpactProject } from '@/types'
 import { formatNumber } from '@/lib/utils'
+import { destinoDelProducto } from '@/lib/productosDelClub'
 import { BancoDeTapitas } from './BancoDeTapitas'
 import { Cancha } from './Cancha'
 import { Marcador } from './Marcador'
@@ -34,14 +35,17 @@ export function FestejoDelAporte({ proyecto, unidades, xp }: { proyecto: ImpactP
   const [saltado, setSaltado] = useState(false)
   const quieto = Boolean(reduce) || saltado
   const antes = Math.max(0, proyecto.collectedUnits - unidades)
+  // El banco del club es «el banco de la hinchada»; un producto del panel se nombra por su nombre.
+  const destino = destinoDelProducto(proyecto)
 
   return (
     <div data-testid="festejo" onClick={() => setSaltado(true)} className="w-full cursor-pointer text-left">
       <Cancha conLinea className="p-4 pt-6">
-        <p className="text-xs font-bold text-eco-800 dark:text-eco-200">{proyecto.sponsorName} · banco de la hinchada</p>
+        <p className="text-xs font-bold text-eco-800 dark:text-eco-200">{proyecto.sponsorName} · {destino.rotulo}</p>
         <div className="relative mt-2">
           {!quieto && <TapitasCayendo />}
           <BancoDeTapitas
+            forma={proyecto.forma}
             progreso={proyecto.goalUnits > 0 ? proyecto.collectedUnits / proyecto.goalUnits : 0}
             propias={proyecto.collectedUnits > 0 ? proyecto.myContributionUnits / proyecto.collectedUnits : 0}
             animarTuyas={!quieto}
@@ -66,7 +70,7 @@ export function FestejoDelAporte({ proyecto, unidades, xp }: { proyecto: ImpactP
         </div>
       </Cancha>
       <p className="mt-3 text-center text-lg font-extrabold leading-tight">
-        Tus {formatNumber(unidades)} {proyecto.unitLabel} ya suman al banco de la hinchada
+        Tus {formatNumber(unidades)} {proyecto.unitLabel} ya suman {destino.frase}
       </p>
     </div>
   )

@@ -1,7 +1,8 @@
-import { NavLink, Outlet, useNavigate } from 'react-router-dom'
+import { NavLink, Outlet, useMatch, useNavigate } from 'react-router-dom'
 import { LogOut } from 'lucide-react'
 import { useSessionStore } from '@/store/session'
 import { cn } from '@/lib/utils'
+import { ESCENARIO } from '@/lib/escenario'
 import { CommerceSideNav, etiquetaDelPanel, navDelPanel } from './CommerceSideNav'
 import { AvisoDemo } from './AvisoDemo'
 
@@ -9,6 +10,8 @@ export function CommerceLayout() {
   const navigate = useNavigate()
   const commerce = useSessionStore((s) => s.commerce)
   const logoutCommerce = useSessionStore((s) => s.logoutCommerce)
+  // El informe lleva su propio aviso, arriba y al pie: sólo ahí el de la demo no se imprime.
+  const enElInforme = useMatch('/comercio/informe')
 
   if (!commerce) return null
 
@@ -25,7 +28,10 @@ export function CommerceLayout() {
       {/* Columna de contenido */}
       <div className="flex min-h-dvh min-w-0 flex-1 flex-col">
         {/* Header con pill-nav (mobile/tablet) */}
-        <header className="pt-safe sticky top-0 z-30 border-b border-border bg-background/90 backdrop-blur-md lg:hidden">
+        <header
+          data-no-imprimir
+          className="pt-safe sticky top-0 z-30 border-b border-border bg-background/90 backdrop-blur-md lg:hidden"
+        >
           <div className="flex items-center justify-between px-4 py-3">
             <div className="flex min-w-0 items-center gap-2.5">
               <span
@@ -50,7 +56,7 @@ export function CommerceLayout() {
           </div>
 
           <nav className="no-scrollbar flex gap-1 overflow-x-auto px-3 pb-2">
-            {navDelPanel().map(({ to, label, end, icon: Icon }) => (
+            {navDelPanel(ESCENARIO, commerce.category).map(({ to, label, end, icon: Icon }) => (
               <NavLink
                 key={to}
                 to={to}
@@ -68,8 +74,11 @@ export function CommerceLayout() {
           </nav>
         </header>
 
-        <main className="mx-auto w-full max-w-6xl flex-1 px-4 pb-12 pt-4 lg:px-8 lg:pt-8">
-          <AvisoDemo />
+        <main className="mx-auto w-full max-w-6xl flex-1 px-4 pb-12 pt-4 lg:px-8 lg:pt-8 print:max-w-none print:p-0">
+          {/* Se imprime en todo el panel (un resumen impreso circula sin la pantalla), salvo en el informe */}
+          <div data-no-imprimir={enElInforme ? true : undefined}>
+            <AvisoDemo />
+          </div>
           <Outlet />
         </main>
       </div>

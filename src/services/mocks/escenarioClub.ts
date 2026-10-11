@@ -135,6 +135,7 @@ export function casoDelClub(base: DatosDemo, club: DatosDelClub, ids: IdsDelCaso
   const producto: ImpactProject = {
     id: ids.producto,
     title: 'Banco de suplentes con el plástico de la hinchada',
+    etiqueta: 'Banco de suplentes',
     sponsorId: ids.sponsor,
     sponsorName: club.nombre,
     description: `Cada tapita que la hinchada deja en los Punto R de ${club.nombre} se vuelve plástico para un banco de suplentes nuevo. Cuando lleguemos a la meta, se fabrica y se instala.`,

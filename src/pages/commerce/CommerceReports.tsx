@@ -1,17 +1,12 @@
-import { useMemo } from 'react'
+import { Link } from 'react-router-dom'
 import { toast } from 'sonner'
-import { Download, FileText, Printer } from 'lucide-react'
+import { ChevronRight, Download, FileText, Landmark, Printer } from 'lucide-react'
 import type { SponsorMetrics } from '@/types'
-import { api } from '@/services/api'
-import { useApi } from '@/hooks/useApi'
 import { useSessionStore } from '@/store/session'
-import { useCreatedCommerceStore } from '@/store/createdCommerce'
-import { metricsFor } from '@/lib/metrics'
-import { metricasConLaSesion } from '@/lib/aportesDeLaSesion'
-import { useActivityStore } from '@/store/activity'
-import { useCouponsStore } from '@/store/coupons'
+import { useMetricasDelPanel } from '@/hooks/useMetricasDelPanel'
 import { downloadBlob, formatNumber } from '@/lib/utils'
 import { AVISO_DE_EJEMPLO, csvDelReporte, filasDelReporte } from '@/lib/reporte'
+import { esInstitucion } from '@/lib/vocabulario'
 import { ErrorState } from '@/components/features/ErrorState'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -44,18 +39,8 @@ function printReport(m: SponsorMetrics, name: string) {
 
 export default function CommerceReports() {
   const commerce = useSessionStore((s) => s.commerce)
-  const createdCommerce = useCreatedCommerceStore((s) => s.commerce)
-  const createdPoint = useCreatedCommerceStore((s) => s.point)
-  const { data: points, loading, error, reload } = useApi(() => api.getPoints(), [])
-  // Lo que la comunidad hizo en esta sesión (mismo navegador): aportes, XP y canjes.
-  const actividad = useActivityStore((s) => s.sessionContributions)
-  const cupones = useCouponsStore((s) => s.coupons)
-
-  const m = useMemo(() => {
-    if (!commerce || !points) return null
-    const extra = createdCommerce?.id === commerce.id && createdPoint ? [createdPoint] : []
-    return metricasConLaSesion(metricsFor(commerce, [...points, ...extra]), actividad, cupones)
-  }, [commerce, points, createdCommerce, createdPoint, actividad, cupones])
+  // Las métricas con lo que la comunidad hizo en esta sesión (mismo navegador): aportes, XP y canjes.
+  const { m, loading, error, reload } = useMetricasDelPanel()
 
   if (!commerce) return null
   if (error && !m) return <ErrorState message={error} onRetry={reload} />
@@ -74,6 +59,25 @@ export default function CommerceReports() {
           Así se va a ver tu reporte de impacto. En la demo, los datos son de ejemplo.
         </p>
       </div>
+
+      {/* El informe para la comisión directiva: es de un club o un estadio */}
+      {esInstitucion(commerce.category) && (
+        <Link
+          to="/comercio/informe"
+          className="flex items-center gap-3 rounded-2xl border-2 border-eco-600 bg-eco-50 p-5 transition-colors hover:bg-eco-100 dark:bg-eco-900/20 dark:hover:bg-eco-900/30"
+        >
+          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-eco-600 text-white">
+            <Landmark size={20} />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block font-bold">Informe para la Comisión Directiva</span>
+            <span className="block text-sm text-muted-foreground">
+              Kilos, hinchas, productos y lo que sigue, en una página lista para imprimir o mandar.
+            </span>
+          </span>
+          <ChevronRight size={20} className="shrink-0 text-muted-foreground" />
+        </Link>
+      )}
 
       {/* Preview de lo que incluye */}
       <div className="rounded-2xl border border-border bg-card p-5">

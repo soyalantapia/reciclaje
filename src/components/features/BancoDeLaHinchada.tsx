@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { ChevronRight } from 'lucide-react'
 import type { ImpactProject } from '@/types'
 import type { AporteDeLaHinchada } from '@/lib/ultimosAportes'
+import { tituloDeLaHinchada } from '@/lib/productosDelClub'
 import { cn, formatNumber, pct } from '@/lib/utils'
 import { BancoDeTapitas } from './BancoDeTapitas'
 import { Cancha } from './Cancha'
@@ -20,6 +21,7 @@ export function BancoDeLaHinchada({
   antetitulo,
   enlace,
   accion,
+  invitacion,
   className,
 }: {
   proyecto: ImpactProject
@@ -28,6 +30,8 @@ export function BancoDeLaHinchada({
   antetitulo?: string
   enlace?: string
   accion?: ReactNode
+  /** Lo que se muestra en lugar de la lista mientras nadie aportó (un producto recién publicado). */
+  invitacion?: string
   className?: string
 }) {
   const avance = proyecto.goalUnits > 0 ? proyecto.collectedUnits / proyecto.goalUnits : 0
@@ -56,15 +60,21 @@ export function BancoDeLaHinchada({
               {pct(proyecto.collectedUnits, proyecto.goalUnits)}%
             </p>
           </div>
-          <BancoDeTapitas className="mt-3" progreso={avance} propias={propias} />
+          <BancoDeTapitas className="mt-3" forma={proyecto.forma} progreso={avance} propias={propias} />
         </div>
-        {items.length > 0 && (
+        {items.length > 0 ? (
           <div>
             <p className="mb-2 text-xs font-bold uppercase tracking-wide text-eco-800 dark:text-eco-200">
-              La hinchada en el banco
+              {tituloDeLaHinchada(proyecto)}
             </p>
             <UltimosAportes items={items} />
           </div>
+        ) : (
+          invitacion && (
+            <p className="rounded-xl bg-card/90 p-4 text-center text-sm font-semibold text-eco-900 dark:text-eco-100">
+              {invitacion}
+            </p>
+          )
         )}
       </div>
 

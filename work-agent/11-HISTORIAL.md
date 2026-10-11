@@ -170,6 +170,26 @@ WhatsApp del proyecto y de la reunión del 03/08 (acta en `docs/producto/reunion
   - Las etapas que faltan dicen «pendiente», sin fechas.
   - El destino es el banco, con el mismo avance que el inicio.
   - Los proyectos que no son banco conservan la lista de hoy.
+- Rama `feat/productos-e-informe`: dos entregables del piloto en la demo, aprobados por Alan para la reunión con Talleres. Diseño: `docs/superpowers/specs/2026-10-10-productos-e-informe-design.md`.
+  - **E1.3, el club elige qué construye su hinchada.** En el panel, «Productos» (sólo para un club o un estadio) publica un producto con:
+    - forma: banco, butacas, arco u otro;
+    - nombre;
+    - meta en kilos, a 238 tapitas por kilo;
+    - su Punto R.
+  - La hinchada ve ese producto en una pestaña del inicio. Los aportes en su Punto R suman a él, y el festejo, el recorrido y la página del producto lo nombran y dibujan su forma.
+  - Hay un producto abierto por punto. Vive en el navegador, como los beneficios, y se sincroniza entre dos pestañas.
+  - **E4.2, el informe para la Comisión Directiva** (`/comercio/informe`, desde Reportes). Trae:
+    - los números del panel;
+    - los productos;
+    - «Partido por partido», con su estructura y sin números;
+    - los aportes por mes y por punto;
+    - los que más aportan;
+    - lo que sigue, con las cuatro etapas del piloto.
+  - El informe se imprime o se guarda en PDF sin menú ni botones, en claro aunque la app esté en oscuro, y con el aviso de datos de ejemplo arriba y al pie.
+  - Las métricas del panel salen de un solo hook, `useMetricasDelPanel`. Sus Punto R incluyen el del alta (`usePuntosDelPanel`).
+  - El `localStorage` de Node 25, que no anda en las pruebas, se arregla una vez en `src/test/setup.ts`.
+  - Se hizo en seis tareas con subagentes, cada una con su revisión, más una revisión final de la rama.
+  - La verificación en el navegador sumó tres cosas: las butacas de tribuna, el arco apoyado sobre su línea y, en el informe, el top con lo de todos los productos.
 
 ---
 

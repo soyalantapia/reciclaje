@@ -42,4 +42,16 @@ describe('RecorridoDeLaTapita', () => {
     const { container } = render(<RecorridoDeLaTapita eventos={eventos} proyecto={proyecto} propias={0} />)
     expect(container.querySelector('ol > span')).toBeNull()
   })
+
+  it('si tu tapita todavía no entró, lo dice, no cuenta etapas y dibuja la forma del producto', () => {
+    const sinHacer = eventos.map((e) => ({ ...e, done: false, date: null }))
+    const { container } = render(
+      <RecorridoDeLaTapita eventos={sinHacer} proyecto={{ ...proyecto, forma: 'arco' }} propias={0} />,
+    )
+    const t = container.textContent ?? ''
+    expect(t).toContain('Tu tapita todavía no entró a este recorrido')
+    expect(t).not.toContain('Tu tapita ya está en el recorrido')
+    expect(t).not.toMatch(/Etapa \d+ de/)
+    expect(container.querySelector('svg[data-forma="arco"]')).not.toBeNull()
+  })
 })

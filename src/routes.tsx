@@ -57,10 +57,12 @@ const CommerceLogin = lazyWithRetry(() => import('@/pages/commerce/CommerceLogin
 const CommerceLanding = lazyWithRetry(() => import('@/pages/commerce/CommerceLanding'))
 const CommerceOnboarding = lazyWithRetry(() => import('@/pages/commerce/CommerceOnboarding'))
 const CommerceResumen = lazyWithRetry(() => import('@/pages/commerce/CommerceResumen'))
+const CommerceProducts = lazyWithRetry(() => import('@/pages/commerce/CommerceProducts'))
 const CommerceBenefits = lazyWithRetry(() => import('@/pages/commerce/CommerceBenefits'))
 const CommerceCampaigns = lazyWithRetry(() => import('@/pages/commerce/CommerceCampaigns'))
 const CommercePoints = lazyWithRetry(() => import('@/pages/commerce/CommercePoints'))
 const CommerceReports = lazyWithRetry(() => import('@/pages/commerce/CommerceReports'))
+const CommerceInforme = lazyWithRetry(() => import('@/pages/commerce/CommerceInforme'))
 const CommercePlan = lazyWithRetry(() => import('@/pages/commerce/CommercePlan'))
 
 function PageFallback() {
@@ -117,10 +119,12 @@ export const router = createBrowserRouter(
           element: <CommerceLayout />,
           children: [
             { index: true, element: withSuspense(<CommerceResumen />) },
+            { path: 'productos', element: withSuspense(<CommerceProducts />) },
             { path: 'beneficios', element: withSuspense(<CommerceBenefits />) },
             { path: 'campanias', element: withSuspense(<CommerceCampaigns />) },
             { path: 'puntos', element: withSuspense(<CommercePoints />) },
             { path: 'reportes', element: withSuspense(<CommerceReports />) },
+            { path: 'informe', element: withSuspense(<CommerceInforme />) },
             // En la demo del club no hay pantalla de planes (ver muestraPrecios en src/lib/escenario.ts).
             { path: 'plan', element: muestraPrecios() ? withSuspense(<CommercePlan />) : <Navigate to="/comercio" replace /> },
           ],
