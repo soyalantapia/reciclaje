@@ -108,6 +108,9 @@ export interface TraceEvent {
 
 export type ProjectIllustration = 'bench' | 'totem'
 
+/** Qué dibujan las tapitas de un producto del club (ver `BancoDeTapitas`). */
+export type FormaDelProducto = 'banco' | 'butacas' | 'arco' | 'libre'
+
 export interface ProjectMilestone {
   label: string
   done: boolean
@@ -134,6 +137,14 @@ export interface ImpactProject {
   illustration: ProjectIllustration
   milestones: ProjectMilestone[]
   topContributors: ProjectContributor[]
+  /** Nombre corto, para las pestañas del inicio y el informe: «Banco de suplentes». */
+  etiqueta?: string
+  /** Sólo en los productos que el club publica desde el panel: qué dibujan sus tapitas. */
+  forma?: FormaDelProducto
+  /** El Punto R donde junta un producto del panel: lo que la hinchada deja ahí, suma a él. */
+  puntoId?: string
+  /** Cuándo se publicó desde el panel (ISO). */
+  creadoEn?: string
 }
 
 export type BenefitCategory =

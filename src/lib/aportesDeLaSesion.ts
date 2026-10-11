@@ -1,4 +1,5 @@
 import type { ActivityItem, Contribution, Coupon, ImpactProject, RankingEntry, SponsorMetrics, TraceEvent } from '@/types'
+import { TAPITAS_POR_KILO } from './metrics'
 
 /** «Camila Ríos» → «Camila R.», como figura la persona en los rankings y entre los que más aportan. */
 export function nombreCorto(nombre: string): string {
@@ -94,9 +95,6 @@ export function conAporteDeLaSesionEnLaTraza(
       : e,
   )
 }
-
-/** Tapitas por kilo: la misma cuenta que usa `metricsFor` (`capsRecovered = kg × 238`). */
-const TAPITAS_POR_KILO = 238
 
 /**
  * Las métricas del panel con lo que la hinchada hizo en esta sesión: la cuarta gemela. El hincha

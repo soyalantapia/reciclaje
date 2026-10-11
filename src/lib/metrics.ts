@@ -7,6 +7,9 @@ import type { RecyclePoint, Sponsor, SponsorMetrics } from '@/types'
  */
 const MESES = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
 
+/** Tapitas por kilo: la cuenta de toda la demo (el panel, el informe y la meta de cada producto del club). */
+export const TAPITAS_POR_KILO = 238
+
 /** Los últimos `n` meses terminando en el de `hoy`: el 13/10 da Jun…Oct. */
 export function ultimosMeses(n: number, hoy: Date = new Date()): string[] {
   return Array.from({ length: n }, (_, i) => MESES[(hoy.getMonth() - (n - 1 - i) + 120) % 12])
@@ -57,7 +60,7 @@ export function metricsFor(sponsor: Sponsor, points: RecyclePoint[], hoy: Date =
     xpEmitted: Math.round(contributions * 68),
     benefitsRedeemed: Math.round(contributions * 0.034),
     kgRecovered: kg,
-    capsRecovered: Math.round(kg * 238),
+    capsRecovered: Math.round(kg * TAPITAS_POR_KILO),
     monthlySeries,
     byPoint,
   }
