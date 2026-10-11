@@ -196,6 +196,15 @@ WhatsApp del proyecto y de la reunión del 03/08 (acta en `docs/producto/reunion
   - Dice «alineado», nunca «certificado» ni «verificado». La nota al pie aclara que el armado y la verificación del reporte son del club.
   - No suma números: salen de las mismas métricas y productos del informe (`src/lib/reporteSustentabilidad.ts`).
   - «Descargar indicadores (CSV)» baja una fila por indicador, con el aviso de datos de ejemplo y la marca BOM. El botón no sale al imprimir.
+- Rama `feat/informe-en-reportes-y-marca`: dos pedidos de Alan para la reunión con Talleres. Diseño: `docs/superpowers/specs/2026-10-11-informe-en-reportes-y-marca-del-club-design.md`.
+  - **Reportes es el informe del club.** Para una institución, «Reportes» muestra el informe para la Comisión Directiva. Arriba tiene «Descargar PDF», que abre la ventana del navegador para guardarlo, y «Descargar CSV». `/comercio/informe` redirige ahí. Un comercio sigue con el reporte de impacto.
+  - **La marca del club, cargada en el panel.** «Marca» es sólo para instituciones.
+    - Sube el escudo: PNG, JPG, SVG o WebP, hasta 2 MB. Se achica a 256 px y se guarda en PNG.
+    - El color se toma del escudo y se puede cambiar.
+    - El panel entero y el informe, también el PDF, usan el escudo y la paleta. También los modales: la paleta va en `<html>` mientras el panel está abierto y se saca al salir.
+  - **No se publica.** La marca se guarda sólo en el navegador (`src/store/marcaDelClub.ts`). El escudo y los colores del club no van al repo ni a la dirección publicada, que son públicos.
+  - **Cómo funciona:** la paleta `eco-*` pasa por variables (`--eco-*` en `src/index.css`). `src/lib/marca.ts` arma la de la marca con `color-mix` y oscurece un color claro hasta que el texto blanco se lea (4,5:1).
+  - Se hizo en cuatro tareas con subagentes, cada una con su revisión.
 
 ---
 
