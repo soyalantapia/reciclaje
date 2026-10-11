@@ -115,7 +115,8 @@ export default function Scan() {
       !!proyectoConAporte &&
       proyectoConAporte.illustration === 'bench' &&
       result.contribution.projectId === proyectoConAporte.id &&
-      result.contribution.material === proyectoConAporte.material
+      result.contribution.material === proyectoConAporte.material &&
+      (result.contribution.units ?? 0) > 0
 
     return (
       <div className="flex flex-col items-center pt-6 text-center">

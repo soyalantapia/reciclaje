@@ -54,10 +54,12 @@ export function FestejoDelAporte({ proyecto, unidades, xp }: { proyecto: ImpactP
             etiqueta={`${proyecto.unitLabel} de la hinchada`}
           />
           <motion.p
+            // `initial` sólo se lee al montar: al tocar, la `key` lo vuelve a montar ya en su estado final.
+            key={quieto ? 'quieto' : 'animado'}
             initial={quieto ? false : { scale: 0.6, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 1.4, type: 'spring', damping: 12 }}
-            className="font-marcador text-4xl font-bold tabular-nums text-xp-600"
+            className="font-marcador text-4xl font-bold tabular-nums text-xp-700 dark:text-xp-400"
           >
             +{formatNumber(xp)} XP
           </motion.p>
