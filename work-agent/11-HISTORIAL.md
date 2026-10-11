@@ -190,6 +190,12 @@ WhatsApp del proyecto y de la reunión del 03/08 (acta en `docs/producto/reunion
   - El `localStorage` de Node 25, que no anda en las pruebas, se arregla una vez en `src/test/setup.ts`.
   - Se hizo en seis tareas con subagentes, cada una con su revisión, más una revisión final de la rama.
   - La verificación en el navegador sumó tres cosas: las butacas de tribuna, el arco apoyado sobre su línea y, en el informe, el top con lo de todos los productos.
+- Rama `feat/reporte-sustentabilidad`: el informe para la Comisión Directiva suma «Para el Reporte de Sustentabilidad de <institución>». Alan la eligió entre cinco ideas para la reunión con Talleres. Diseño: `docs/superpowers/specs/2026-10-11-reporte-sustentabilidad-design.md`.
+  - Talleres publica un Reporte de Sustentabilidad con su Memoria y Balance desde 2023, inspirado en GRI y en la Agenda 2030. La sección le entrega los datos del programa ordenados en tres de sus dimensiones: ambiental, comunitaria e infraestructura.
+  - Cada fila lleva la referencia que encaja sin forzar (GRI 306-4, 306-2 y 413-1, ODS 12.5), o «—».
+  - Dice «alineado», nunca «certificado» ni «verificado». La nota al pie aclara que el armado y la verificación del reporte son del club.
+  - No suma números: salen de las mismas métricas y productos del informe (`src/lib/reporteSustentabilidad.ts`).
+  - «Descargar indicadores (CSV)» baja una fila por indicador, con el aviso de datos de ejemplo y la marca BOM. El botón no sale al imprimir.
 
 ---
 
