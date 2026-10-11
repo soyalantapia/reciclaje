@@ -168,7 +168,8 @@ export default function CommerceInforme() {
 
         {productos.length > 0 && (
           <section>
-            <h2 className="text-lg font-extrabold">Lo que construye la hinchada</h2>
+            {/* La sección puede pasar de hoja entre tarjetas, pero su título no queda solo al pie */}
+            <h2 className="break-after-avoid text-lg font-extrabold">Lo que construye la hinchada</h2>
             <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
               {productos.map((p) => (
                 <div key={p.id} className="break-inside-avoid rounded-xl border border-border p-3">

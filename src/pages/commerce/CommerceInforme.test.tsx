@@ -189,6 +189,23 @@ describe('informe para la Comisión Directiva', () => {
     expect(document.documentElement.classList.contains('dark')).toBe(true)
   })
 
+  it('en modo claro, imprimir lo deja claro', async () => {
+    verElInforme()
+    await screen.findByRole('heading', { level: 1, name: 'Informe para la Comisión Directiva' })
+    window.dispatchEvent(new Event('beforeprint'))
+    window.dispatchEvent(new Event('afterprint'))
+    expect(document.documentElement.classList.contains('dark')).toBe(false)
+  })
+
+  it('si se sale del informe a mitad de la impresión, vuelve el oscuro', async () => {
+    document.documentElement.classList.add('dark')
+    const { unmount } = verElInforme()
+    await screen.findByRole('heading', { level: 1, name: 'Informe para la Comisión Directiva' })
+    window.dispatchEvent(new Event('beforeprint'))
+    unmount()
+    expect(document.documentElement.classList.contains('dark')).toBe(true)
+  })
+
   it('el PDF se propone con el nombre del informe, y al salir vuelve el título de la app', async () => {
     document.title = 'ReciclaXP'
     const { unmount } = verElInforme()

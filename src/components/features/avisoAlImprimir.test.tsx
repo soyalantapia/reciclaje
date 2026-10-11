@@ -34,21 +34,23 @@ beforeAll(() => {
   } as unknown as typeof IntersectionObserver
 })
 
-async function verElPanelEn(ruta: string) {
+/** Espera el título de la pantalla: si la prueba termina antes de que cargue, la carga diferida queda colgada. */
+async function verElPanelEn(ruta: string, titulo: string) {
   useSessionStore.setState({ commerce: club })
   render(<RouterProvider router={createMemoryRouter(router.routes, { initialEntries: [ruta] })} />)
-  return screen.findByRole('note')
+  await screen.findByRole('heading', { level: 1, name: titulo })
+  return screen.getByRole('note')
 }
 
 describe('el aviso de la demo al imprimir', () => {
   it('en Reportes se imprime', async () => {
-    const aviso = await verElPanelEn('/comercio/reportes')
+    const aviso = await verElPanelEn('/comercio/reportes', 'Reportes')
     expect(aviso).toHaveTextContent('Demo · los números son de ejemplo')
     expect(aviso.closest('[data-no-imprimir]')).toBeNull()
   })
 
   it('en el informe no, porque el informe lleva el suyo', async () => {
-    const aviso = await verElPanelEn('/comercio/informe')
+    const aviso = await verElPanelEn('/comercio/informe', 'Informe para la Comisión Directiva')
     expect(aviso.closest('[data-no-imprimir]')).not.toBeNull()
   })
 })
