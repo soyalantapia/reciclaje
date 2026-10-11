@@ -90,6 +90,11 @@ describe('la demo del club pasa en Córdoba', () => {
 })
 
 describe('textos que la demo no puede sostener', () => {
+  it('ningún dato de ejemplo promete «en vivo» ni «tiempo real»: la demo no tiene servidor', () => {
+    expect(JSON.stringify(datosGenerales)).not.toMatch(/en vivo|tiempo real/i)
+    expect(JSON.stringify(club)).not.toMatch(/en vivo|tiempo real/i)
+  })
+
   it('no dice que los recicladores están certificados', () => {
     expect(JSON.stringify(datosGenerales.causes)).not.toMatch(/certificad/i)
     expect(JSON.stringify(club.causes)).not.toMatch(/certificad/i)
