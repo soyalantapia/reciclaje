@@ -62,7 +62,7 @@ En `src/components/features/`:
 
 | Pieza | Props | Qué hace |
 |---|---|---|
-| `BancoDeTapitas` | `progreso`, `propias`, `animarTuyas?`, `tamano: 'chico' \| 'grande'` | Dibuja en SVG el banco: respaldo hecho de tapitas (16 × 5), asiento y patas de contorno. Con `animarTuyas`, las tapitas de la persona entran cayendo. Un aporte de 50 sobre una meta de 300.000 no enciende otra tapita del dibujo: lo que se anima es la tuya |
+| `BancoDeTapitas` | `progreso`, `propias`, `animarTuyas?`, `className?` (el ancho lo da el contenedor) | Dibuja en SVG el banco: respaldo hecho de tapitas (16 × 5), asiento y patas de contorno. Con `animarTuyas`, las tapitas de la persona entran cayendo. Un aporte de 50 sobre una meta de 300.000 no enciende otra tapita del dibujo: lo que se anima es la tuya |
 | `Marcador` | `valor`, `etiqueta`, `desde?` | Número grande en `--font-marcador`, con su etiqueta. Con `desde`, cuenta de un valor al otro |
 | `Cancha` | `children`, `className?`, `conLinea?` | Fondo de franjas de césped, opcionalmente con una línea de cal |
 | `UltimosAportes` | `items` | La lista de `ultimosAportesDeLaHinchada` |
