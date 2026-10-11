@@ -83,7 +83,7 @@ Usa el primer proyecto con meta (el del club), con `conAportesDeLaSesion`.
 
 La tarjeta de nivel y XP baja a una franja compacta. Causas, marcas, ranking y actividad quedan donde están.
 
-### 2 · Proyecto (`src/pages/ImpactProject.tsx`)
+### 2 · Proyecto (`src/pages/ImpactProjectPage.tsx`)
 
 - **Encabezado:** `Cancha`, el `BancoDeTapitas` grande y el `Marcador` («42.840 de 300.000»).
 - **Hitos:** van como una línea de cal, con la etapa actual marcada.
