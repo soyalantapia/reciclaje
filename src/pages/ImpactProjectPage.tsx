@@ -7,7 +7,7 @@ import { ErrorState } from '@/components/features/ErrorState'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
-import { conAportesDeLaSesion } from '@/lib/aportesDeLaSesion'
+import { conAportesDeLaSesion, nombreCorto } from '@/lib/aportesDeLaSesion'
 import { useActivityStore } from '@/store/activity'
 import { useSessionStore } from '@/store/session'
 
@@ -60,7 +60,7 @@ export default function ImpactProjectPage() {
         <p className="mt-1 text-sm text-muted-foreground">{project.description}</p>
       </div>
 
-      <ImpactProgress project={project} />
+      <ImpactProgress project={project} nombreCorto={nombre ? nombreCorto(nombre) : undefined} />
 
       <Link to={`/trazabilidad/${project.id}`} className="block">
         <Button block variant="secondary" size="lg">
