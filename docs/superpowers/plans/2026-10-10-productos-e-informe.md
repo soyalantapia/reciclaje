@@ -18,7 +18,7 @@ Spec: `docs/superpowers/specs/2026-10-10-productos-e-informe-design.md`.
 - Los imports van con el alias `@/…`, como en el resto del repo.
 - Una grilla con columnas por breakpoint lleva `grid-cols-1` de base (`grid grid-cols-1 sm:grid-cols-2`).
 - Con movimiento reducido (`useReducedMotion`), nada se anima.
-- Una prueba que importa un store persistido instala antes un `localStorage` en memoria con `vi.hoisted`, copiado de `src/pages/commerce/CommerceResumen.test.tsx`.
+- Las pruebas no copian un `localStorage` en memoria. Desde la Task 1, `src/test/setup.ts` instala uno cuando el del entorno no sirve. Node 25 trae un `localStorage` sin `setItem` que le gana al de jsdom.
 - El resultado de una prueba se lee del comando directo, nunca a través de un pipe: `npx vitest run <archivo>; echo "exit=$?"`.
 - El tipado se revisa con `npx tsc -p tsconfig.app.json; echo "exit=$?"`. No uses `tsc -b`: `node_modules` es un enlace compartido con otro worktree y su caché de compilación también.
 - El lint se revisa con `npx eslint <archivos tocados>; echo "exit=$?"`. Tiene que dar 0 errores. Los 9 avisos que ya tiene el repo no cuentan.
@@ -36,6 +36,7 @@ Spec: `docs/superpowers/specs/2026-10-10-productos-e-informe-design.md`.
 - Modify: `src/services/mocks/escenarioClub.ts` (el `producto` de `casoDelClub`, línea ~132)
 - Create: `src/lib/productosDelClub.ts`
 - Test: `src/lib/productosDelClub.test.ts`
+- Modify: `src/test/setup.ts` (el `localStorage` de las pruebas)
 
 **Interfaces:**
 - Consumes: nada de otras tareas.
@@ -56,6 +57,7 @@ Spec: `docs/superpowers/specs/2026-10-10-productos-e-informe-design.md`.
     - `trazaDeUnProducto(p: ImpactProject, punto: string): TraceEvent[]`
     - `destinoDelProducto(p: ImpactProject): { rotulo: string; frase: string }`
     - `tituloDeLaHinchada(p: ImpactProject): string`
+  - **Entorno de pruebas:** desde esta tarea, `localStorage` y `sessionStorage` andan en todas las pruebas. Las de las tareas siguientes dependen de eso.
 
 - [ ] **Step 1: Escribí la prueba que falla**
 
@@ -445,17 +447,58 @@ export function tituloDeLaHinchada(p: ImpactProject): string {
 Run: `npx vitest run src/lib/productosDelClub.test.ts; echo "exit=$?"`
 Expected: PASS, 13 pruebas y `exit=0`.
 
-- [ ] **Step 8: Corré la suite, el tipado y el lint**
+- [ ] **Step 8: Que las pruebas tengan un `localStorage` que ande**
+
+Node 25 trae un `localStorage` propio que, sin `--localstorage-file`, no tiene `setItem`, y le gana al
+de jsdom. Los stores con persist no podían guardar, y dos pruebas lo parchaban a mano. Reemplazá
+`src/test/setup.ts` entero por:
+
+```ts
+import '@testing-library/jest-dom/vitest'
+
+/**
+ * Node 25 trae un `localStorage` propio que, sin `--localstorage-file`, no tiene `setItem`, y le
+ * gana al de jsdom: los stores con persist no podían guardar. Si el almacenamiento del entorno no
+ * anda, uno en memoria, nuevo para cada archivo de prueba, como un navegador recién abierto.
+ */
+function almacenEnMemoria(): Storage {
+  const memoria = new Map<string, string>()
+  return {
+    getItem: (k: string) => memoria.get(k) ?? null,
+    setItem: (k: string, v: string) => void memoria.set(k, String(v)),
+    removeItem: (k: string) => void memoria.delete(k),
+    clear: () => memoria.clear(),
+    key: (i: number) => [...memoria.keys()][i] ?? null,
+    get length() {
+      return memoria.size
+    },
+  } as Storage
+}
+
+for (const nombre of ['localStorage', 'sessionStorage'] as const) {
+  try {
+    globalThis[nombre].setItem('__prueba__', '1')
+    globalThis[nombre].removeItem('__prueba__')
+  } catch {
+    globalThis[nombre] = almacenEnMemoria()
+  }
+}
+```
+
+No toques las dos pruebas que ya lo parchan (`src/pages/Traceability.test.tsx` y
+`src/pages/commerce/CommerceResumen.test.tsx`). Su parche corre después de este y no rompe nada.
+
+- [ ] **Step 9: Corré la suite, el tipado y el lint**
 
 Run, cada uno por separado:
 - `npx vitest run; echo "exit=$?"`. Tiene que pasar entera, con `exit=0`. `metrics.test.ts`, `aportesDeLaSesion.test.ts` y `escenarioClub.test.ts` siguen verdes.
 - `npx tsc -p tsconfig.app.json; echo "exit=$?"`, con `exit=0`.
-- `npx eslint src/lib/productosDelClub.ts src/lib/productosDelClub.test.ts src/lib/metrics.ts src/lib/aportesDeLaSesion.ts src/types/index.ts src/services/mocks/escenarioClub.ts; echo "exit=$?"`, sin errores.
+- `npx eslint src/lib/productosDelClub.ts src/lib/productosDelClub.test.ts src/lib/metrics.ts src/lib/aportesDeLaSesion.ts src/types/index.ts src/services/mocks/escenarioClub.ts src/test/setup.ts; echo "exit=$?"`, sin errores.
 
-- [ ] **Step 9: Commit**
+- [ ] **Step 10: Commit**
 
 ```bash
-git add src/types/index.ts src/lib/metrics.ts src/lib/aportesDeLaSesion.ts src/services/mocks/escenarioClub.ts src/lib/productosDelClub.ts src/lib/productosDelClub.test.ts
+git add src/types/index.ts src/lib/metrics.ts src/lib/aportesDeLaSesion.ts src/services/mocks/escenarioClub.ts src/lib/productosDelClub.ts src/lib/productosDelClub.test.ts src/test/setup.ts
 git commit -m "feat(productos): la lógica de los productos que publica el club, con meta en kilos y su Punto R
 
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
@@ -493,28 +536,12 @@ Creá `src/services/mocks/handlers.test.ts`:
 
 ```ts
 import { getResponse } from 'msw'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it } from 'vitest'
 import type { ImpactProject, ScanResult, TraceEvent } from '@/types'
 import { crearProducto } from '@/lib/productosDelClub'
 import { useCommerceProductsStore } from '@/store/commerceProducts'
 import { datos } from './datos'
 import { handlers } from './handlers'
-
-// Los stores con persist leen localStorage al importarse y el de jsdom no sirve acá: uno en memoria.
-// vi.hoisted corre antes que los imports, así que está instalado cuando se cargan los stores.
-vi.hoisted(() => {
-  const memoria = new Map<string, string>()
-  globalThis.localStorage = {
-    getItem: (k: string) => memoria.get(k) ?? null,
-    setItem: (k: string, v: string) => void memoria.set(k, String(v)),
-    removeItem: (k: string) => void memoria.delete(k),
-    clear: () => memoria.clear(),
-    key: (i: number) => [...memoria.keys()][i] ?? null,
-    get length() {
-      return memoria.size
-    },
-  } as Storage
-})
 
 /** Le pide al simulador lo mismo que la app, sin red: `getResponse` corre los handlers directo. */
 const base = import.meta.env.BASE_URL.replace(/\/$/, '')
@@ -1206,22 +1233,6 @@ import { useCommerceProductsStore } from '@/store/commerceProducts'
 import { useSessionStore } from '@/store/session'
 import CommerceProducts from './CommerceProducts'
 
-// Los stores con persist leen localStorage al importarse y el de jsdom no sirve acá: uno en memoria.
-// vi.hoisted corre antes que los imports, así que está instalado cuando se cargan los stores.
-vi.hoisted(() => {
-  const memoria = new Map<string, string>()
-  globalThis.localStorage = {
-    getItem: (k: string) => memoria.get(k) ?? null,
-    setItem: (k: string, v: string) => void memoria.set(k, String(v)),
-    removeItem: (k: string) => void memoria.delete(k),
-    clear: () => memoria.clear(),
-    key: (i: number) => [...memoria.keys()][i] ?? null,
-    get length() {
-      return memoria.size
-    },
-  } as Storage
-})
-
 const punto = (id: string, name: string): RecyclePoint => ({
   id, name, sponsorId: 's_club', type: 'deposito', address: '', city: 'Córdoba', x: 0, y: 0,
   acceptedMaterials: ['tapitas', 'plastico'], openNow: true,
@@ -1683,22 +1694,6 @@ import { MemoryRouter } from 'react-router-dom'
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { ImpactProject } from '@/types'
 import Home from './Home'
-
-// Los stores con persist leen localStorage al importarse y el de jsdom no sirve acá: uno en memoria.
-// vi.hoisted corre antes que los imports, así que está instalado cuando se cargan los stores.
-vi.hoisted(() => {
-  const memoria = new Map<string, string>()
-  globalThis.localStorage = {
-    getItem: (k: string) => memoria.get(k) ?? null,
-    setItem: (k: string, v: string) => void memoria.set(k, String(v)),
-    removeItem: (k: string) => void memoria.delete(k),
-    clear: () => memoria.clear(),
-    key: (i: number) => [...memoria.keys()][i] ?? null,
-    get length() {
-      return memoria.size
-    },
-  } as Storage
-})
 
 const banco = {
   id: 'pr_banco_club', title: 'Banco de suplentes con el plástico de la hinchada', sponsorId: 's_club',
@@ -2208,22 +2203,6 @@ import { AVISO_DE_EJEMPLO } from '@/lib/reporte'
 import { SIN_PESAJES } from '@/lib/informe'
 import CommerceInforme from './CommerceInforme'
 
-// Los stores con persist leen localStorage al importarse y el de jsdom no sirve acá: uno en memoria.
-// vi.hoisted corre antes que los imports, así que está instalado cuando se cargan los stores.
-vi.hoisted(() => {
-  const memoria = new Map<string, string>()
-  globalThis.localStorage = {
-    getItem: (k: string) => memoria.get(k) ?? null,
-    setItem: (k: string, v: string) => void memoria.set(k, String(v)),
-    removeItem: (k: string) => void memoria.delete(k),
-    clear: () => memoria.clear(),
-    key: (i: number) => [...memoria.keys()][i] ?? null,
-    get length() {
-      return memoria.size
-    },
-  } as Storage
-})
-
 const club: Sponsor = {
   id: 's_club', name: 'Talleres', slug: 'club', category: 'club', brandColor: '#059669', tagline: '',
   greenScore: 64, kgRecovered: 180,
@@ -2389,22 +2368,6 @@ import { describe, expect, it, vi } from 'vitest'
 import type { Sponsor } from '@/types'
 import { useSessionStore } from '@/store/session'
 import CommerceReports from './CommerceReports'
-
-// Los stores con persist leen localStorage al importarse y el de jsdom no sirve acá: uno en memoria.
-// vi.hoisted corre antes que los imports, así que está instalado cuando se cargan los stores.
-vi.hoisted(() => {
-  const memoria = new Map<string, string>()
-  globalThis.localStorage = {
-    getItem: (k: string) => memoria.get(k) ?? null,
-    setItem: (k: string, v: string) => void memoria.set(k, String(v)),
-    removeItem: (k: string) => void memoria.delete(k),
-    clear: () => memoria.clear(),
-    key: (i: number) => [...memoria.keys()][i] ?? null,
-    get length() {
-      return memoria.size
-    },
-  } as Storage
-})
 
 vi.mock('@/services/api', async (original) => ({
   ...(await original<typeof import('@/services/api')>()),
