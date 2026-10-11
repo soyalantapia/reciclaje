@@ -63,6 +63,12 @@
 
   --font-sans: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
   --font-display: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+
+  /* Día de cancha: los números grandes como el tablero del estadio */
+  --font-marcador: "Barlow Condensed", "Plus Jakarta Sans", system-ui, sans-serif;
+  --color-cancha-claro: var(--cancha-claro);
+  --color-cancha-oscuro: var(--cancha-oscuro);
+  --color-cal: var(--cal);
 }
 
 :root {
@@ -77,6 +83,9 @@
   --border: #dde7e1;
   --input: #dde7e1;
   --ring: #10b981;
+  --cancha-claro: #eaf6e4;
+  --cancha-oscuro: #dcefd3;
+  --cal: #ffffff;
 }
 
 .dark {
@@ -89,6 +98,9 @@
   --border: #1f342b;
   --input: #1f342b;
   --ring: #34d399;
+  --cancha-claro: #0f2a1f;
+  --cancha-oscuro: #12301f;
+  --cal: rgb(231 243 237 / 0.35);
 }
 
 @layer base {
@@ -141,5 +153,13 @@
   .no-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;
+  }
+  /* Césped recién cortado: franjas horizontales en dos verdes */
+  .bg-cancha {
+    background-image: repeating-linear-gradient(
+      180deg,
+      var(--cancha-claro) 0 28px,
+      var(--cancha-oscuro) 28px 56px
+    );
   }
 }
