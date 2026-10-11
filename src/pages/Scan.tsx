@@ -7,6 +7,7 @@ import { api, ApiError } from '@/services/api'
 import { useApi } from '@/hooks/useApi'
 import { useWalletStore } from '@/store/wallet'
 import { useActivityStore } from '@/store/activity'
+import { useSessionStore } from '@/store/session'
 import type { MaterialType, RecyclePoint, ScanResult } from '@/types'
 import {
   MATERIAL_EMOJI,
@@ -17,12 +18,14 @@ import {
   parsePointFromQr,
 } from '@/lib/utils'
 import { BuyFlow } from '@/components/features/BuyFlow'
+import { FestejoDelAporte } from '@/components/features/FestejoDelAporte'
 import { QrScanner } from '@/components/features/QrScanner'
 import { Button } from '@/components/ui/button'
 import { Tabs, type TabItem } from '@/components/ui/tabs'
 import { Skeleton } from '@/components/ui/skeleton'
 import { claveDeAlmacenamiento } from '@/lib/escenario'
 import { vocabularioDelEscenario } from '@/lib/vocabulario'
+import { conAportesDeLaSesion } from '@/lib/aportesDeLaSesion'
 
 const PENDING_POINT_KEY = claveDeAlmacenamiento('scan-point')
 
@@ -38,6 +41,8 @@ export default function Scan() {
   const { data: points } = useApi(() => api.getPoints(), [])
   const earn = useWalletStore((s) => s.earn)
   const addActivity = useActivityStore((s) => s.add)
+  const actividad = useActivityStore((s) => s.sessionContributions)
+  const nombre = useSessionStore((s) => s.user?.name)
 
   const [mode, setMode] = useState<Mode>('reciclar')
   const [step, setStep] = useState<Step>('scan')
@@ -104,26 +109,44 @@ export default function Scan() {
 
   // ─── Paso: resultado ────────────────────────────────────────────────
   if (mode === 'reciclar' && step === 'done' && result) {
+    // El festejo, sólo si el aporte suma a un banco: mismo proyecto y mismo material.
+    const proyectoConAporte = result.project && conAportesDeLaSesion(result.project, actividad, nombre)
+    const sumaAlBanco =
+      !!proyectoConAporte &&
+      proyectoConAporte.illustration === 'bench' &&
+      result.contribution.projectId === proyectoConAporte.id &&
+      result.contribution.material === proyectoConAporte.material
+
     return (
       <div className="flex flex-col items-center pt-6 text-center">
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ type: 'spring', damping: 12 }}
-          className="grid h-24 w-24 place-items-center rounded-full bg-eco-100 text-eco-600 dark:bg-eco-900/40 dark:text-eco-300"
-        >
-          <Check size={56} strokeWidth={3} />
-        </motion.div>
-        <h1 className="mt-4 text-2xl font-extrabold">¡Aporte registrado!</h1>
-        <p className="text-muted-foreground">{result.contribution.pointName}</p>
+        {sumaAlBanco && proyectoConAporte ? (
+          <>
+            <h1 className="text-2xl font-extrabold">¡Aporte registrado!</h1>
+            <p className="mb-4 text-muted-foreground">{result.contribution.pointName}</p>
+            <FestejoDelAporte proyecto={proyectoConAporte} unidades={result.contribution.units ?? 0} xp={result.xpEarned} />
+          </>
+        ) : (
+          <>
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: 'spring', damping: 12 }}
+              className="grid h-24 w-24 place-items-center rounded-full bg-eco-100 text-eco-600 dark:bg-eco-900/40 dark:text-eco-300"
+            >
+              <Check size={56} strokeWidth={3} />
+            </motion.div>
+            <h1 className="mt-4 text-2xl font-extrabold">¡Aporte registrado!</h1>
+            <p className="text-muted-foreground">{result.contribution.pointName}</p>
 
-        <div className="mt-5 w-full rounded-2xl bg-gradient-to-br from-eco-600 to-eco-800 p-5 text-white">
-          <p className="text-sm text-eco-100">Sumaste</p>
-          <p className="text-4xl font-extrabold">+{formatNumber(result.xpEarned)} XP</p>
-          <p className="mt-1 text-sm text-eco-100">
-            {formatNumber(result.contribution.units ?? 0)} {MATERIAL_UNIT[material]}
-          </p>
-        </div>
+            <div className="mt-5 w-full rounded-2xl bg-gradient-to-br from-eco-600 to-eco-800 p-5 text-white">
+              <p className="text-sm text-eco-100">Sumaste</p>
+              <p className="text-4xl font-extrabold">+{formatNumber(result.xpEarned)} XP</p>
+              <p className="mt-1 text-sm text-eco-100">
+                {formatNumber(result.contribution.units ?? 0)} {MATERIAL_UNIT[material]}
+              </p>
+            </div>
+          </>
+        )}
 
         {result.project && (
           <div className="mt-4 w-full rounded-2xl border border-border bg-card p-4 text-left">

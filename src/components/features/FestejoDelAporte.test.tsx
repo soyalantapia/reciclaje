@@ -1,0 +1,21 @@
+import { fireEvent, render } from '@testing-library/react'
+import { describe, expect, it } from 'vitest'
+import type { ImpactProject } from '@/types'
+import { FestejoDelAporte } from './FestejoDelAporte'
+
+const proyecto = {
+  id: 'pr_banco_club', title: 'Banco', sponsorId: 's_club', sponsorName: 'Talleres', description: '',
+  material: 'tapitas', unitLabel: 'tapitas', goalUnits: 300000, collectedUnits: 42890, myContributionUnits: 690,
+  estimatedDate: '2027-03-31', illustration: 'bench', milestones: [], topContributors: [],
+} as ImpactProject
+
+describe('FestejoDelAporte', () => {
+  it('dice lo que sumaste sin prometer de más, y al tocar muestra el total final', () => {
+    const { container, getByTestId } = render(<FestejoDelAporte proyecto={proyecto} unidades={50} xp={100} />)
+    expect(container.textContent).toContain('+100 XP')
+    expect(container.textContent).toContain('Tus 50 tapitas ya suman al banco de la hinchada')
+    expect(container.querySelectorAll('circle[data-estado="tuya"]')).toHaveLength(1)
+    fireEvent.click(getByTestId('festejo'))
+    expect(container.textContent).toContain('42.890')
+  })
+})
