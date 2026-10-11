@@ -39,6 +39,14 @@ const NOMBRE_Y_DIRECCION: Record<string, [string, string]> = {
 // (`p_talleres_*`); en la del club son `p_club_*`. La tabla los lleva como `p_club_*`.
 const idDeLaTabla = (id: string) => id.replace('p_talleres_', 'p_club_')
 
+// Los aportes del historial cuyo nombre no es el del punto de su `pointId`. Que el nombre exista entre
+// los puntos no alcanza: un aporte con el id de un punto y el nombre de otro también pasaría. Si el
+// `pointId` no es de un punto de la demo, el aporte también cuenta.
+const aportesConOtroNombre = (datos: typeof club) =>
+  datos.contributions
+    .filter((c) => c.pointName !== datos.points.find((p) => p.id === c.pointId)?.name)
+    .map((c) => c.id)
+
 describe('los puntos de las dos demos, en Córdoba capital', () => {
   it.each([
     ['general', datosGenerales],
@@ -50,6 +58,14 @@ describe('los puntos de las dos demos, en Córdoba capital', () => {
       expect(p.city, p.id).toBe('Córdoba')
       expect(p).not.toHaveProperty('x')
     }
+  })
+
+  // El Perfil muestra «{ciudad} · desde …»: la persona de la demo también vive en Córdoba capital.
+  it.each([
+    ['general', datosGenerales],
+    ['club', club],
+  ])('en la demo %s, la persona del Perfil es de Córdoba', (_, datos) => {
+    expect(datos.currentUser.city).toBe('Córdoba')
   })
 
   it('cada id queda en su lugar, con los ids de siempre', () => {
@@ -94,11 +110,10 @@ describe('los puntos de las dos demos, en Córdoba capital', () => {
   })
 
   it('el historial y las métricas de la demo general usan los nombres nuevos', () => {
-    const nombres = new Set(datosGenerales.points.map((p) => p.name))
     expect(datosGenerales.contributions.map((c) => c.pointName)).toEqual(
       expect.arrayContaining(['YPF Bv. Perón', 'Café Lúmen Nueva Córdoba', 'Punto Verde Plaza de la Intendencia']),
     )
-    for (const c of datosGenerales.contributions) expect(nombres.has(c.pointName), c.pointName).toBe(true)
+    expect(aportesConOtroNombre(datosGenerales)).toEqual([])
     expect(datosGenerales.contributions.map((c) => c.sponsorName)).not.toContain('Municipio de Vicente López')
     expect(datosGenerales.sponsorMetrics.s_ypf.byPoint.map((p) => p.point)).toEqual(['Bv. Perón', 'San Luis', 'Humberto Primo'])
   })
@@ -114,8 +129,8 @@ describe('los puntos de las dos demos, en Córdoba capital', () => {
   })
 
   it('en la demo del club, el historial y las métricas llevan los mismos nombres de ejemplo', () => {
-    const nombres = new Set(club.points.map((p) => p.name))
-    for (const c of club.contributions) expect(nombres.has(c.pointName), c.pointName).toBe(true)
+    expect(club.contributions.length).toBeGreaterThan(0)
+    expect(aportesConOtroNombre(club)).toEqual([])
     expect(club.sponsorMetrics.s_ypf.byPoint.map((p) => p.point)).toEqual(['Bv. Perón', 'San Luis', 'Humberto Primo'])
   })
 

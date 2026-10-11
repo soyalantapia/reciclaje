@@ -17,7 +17,7 @@ export const currentUser: User = {
   id: 'u_me',
   name: 'Camila Ríos',
   email: 'camila@reciclaxp.app',
-  city: 'CABA',
+  city: 'Córdoba',
   role: 'user',
   avatarColor: '#059669',
   level: 4,

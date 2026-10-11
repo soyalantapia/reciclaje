@@ -13,7 +13,12 @@ import type { DatosDemo } from './datos'
 
 /** El club de ejemplo de la demo general: en este escenario no aparece. */
 const CLUB_DE_EJEMPLO = 's_talleres'
-/** Sponsors de la demo general que no van en la del club: el club de ejemplo y el municipio de ejemplo. */
+/**
+ * Sponsors de la demo general que no van en la del club. El club de ejemplo, porque el club de esta
+ * demo ya entra por `casoDelClub` con sus propios ids (`s_club`, `p_club_…`): si el de ejemplo se
+ * quedara, el club aparecería dos veces, con sus Punto R y su banco. El municipio de ejemplo, porque
+ * la demo del club no muestra a un municipio como aliado de ReciclaXP frente al club.
+ */
 const NO_VAN = new Set([CLUB_DE_EJEMPLO, 's_muni'])
 
 /**
@@ -89,6 +94,7 @@ export function casoDelClub(base: DatosDemo, club: DatosDelClub, ids: IdsDelCaso
     kgRecovered: 180,
   }
 
+  // Lugares de Talleres (el Kempes, donde juega de local, y su sede), de fuentes públicas: a confirmar con el club. Con otro club (VITE_CLUB_NOMBRE) cambia el nombre, no los pines.
   const puntos: RecyclePoint[] = [
     {
       id: `p_${ids.prefijo}_estadio`,
@@ -322,7 +328,7 @@ export function datosDelClub(base: DatosDemo, club: DatosDelClub): DatosDemo {
   }
 
   return conMarcasDeEjemplo({
-    currentUser: { ...base.currentUser, city: 'Córdoba' },
+    currentUser: base.currentUser,
     sponsors: [sponsor, ...base.sponsors.filter((s) => !NO_VAN.has(s.id))],
     points: [...puntos, ...puntosDeLaRed],
     projects: [producto, ...sinLosQueNoVan(base.projects)],
