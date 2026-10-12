@@ -8,7 +8,7 @@ import { useSessionStore } from '@/store/session'
 import { conAportesDeLaSesion } from '@/lib/aportesDeLaSesion'
 import { ultimosAportesDeLaHinchada } from '@/lib/ultimosAportes'
 import { useActivityStore } from '@/store/activity'
-import { posicionEnLaRed, textoDePosicion } from '@/lib/posicionEnLaRed'
+import { muestraPuestoEnLaRed, posicionEnLaRed, textoDePosicion } from '@/lib/posicionEnLaRed'
 import { vocabularioDelPanel } from '@/lib/vocabulario'
 import { downloadBlob, formatNumber } from '@/lib/utils'
 import { StatCard } from '@/components/features/StatCard'
@@ -90,9 +90,11 @@ export default function CommerceResumen() {
           </Button>
         </div>
         <Progress value={m.greenScore} className="mt-3" />
-        <p className="mt-2 text-xs font-semibold text-eco-700 dark:text-eco-300">
-          {red && textoDePosicion(posicionEnLaRed(commerce.id, m.greenScore, red))}
-        </p>
+        {red && muestraPuestoEnLaRed(commerce) && (
+          <p className="mt-2 text-xs font-semibold text-eco-700 dark:text-eco-300">
+            {textoDePosicion(posicionEnLaRed(commerce.id, m.greenScore, red))}
+          </p>
+        )}
         <p className="mt-2 text-xs text-muted-foreground">
           Cómo subirla: sumá puntos de reciclaje, publicá beneficios y mantené tus puntos activos.
           Descargá la placa para {v.dondeVaLaPlaca}.

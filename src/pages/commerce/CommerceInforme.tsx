@@ -16,7 +16,7 @@ import { estadoDelRecorrido } from '@/lib/recorridoDeLaTapita'
 import { esDelPanel, kilosDeLaMeta, puntosDelProducto, textoDelApoyo } from '@/lib/productosDelClub'
 import { ETAPAS_DEL_PILOTO, SIN_PESAJES, topDeLaHinchada } from '@/lib/informe'
 import { conPesajeEnLaTraza, pesajesDelInforme } from '@/lib/pesajes'
-import { posicionEnLaRed, textoDePosicion } from '@/lib/posicionEnLaRed'
+import { muestraPuestoEnLaRed, posicionEnLaRed, textoDePosicion } from '@/lib/posicionEnLaRed'
 import { AVISO_DE_EJEMPLO, csvDelReporte } from '@/lib/reporte'
 import {
   NOTA_DEL_REPORTE,
@@ -119,7 +119,7 @@ export default function CommerceInforme() {
 
   // Con el mes completo: es un documento para la comisión, no una fila de una lista.
   const emitido = new Date().toLocaleDateString('es-AR', { day: 'numeric', month: 'long', year: 'numeric' })
-  const posicion = red ? textoDePosicion(posicionEnLaRed(commerce.id, m.greenScore, red)) : undefined
+  const posicion = red && muestraPuestoEnLaRed(commerce) ? textoDePosicion(posicionEnLaRed(commerce.id, m.greenScore, red)) : undefined
   const maxMes = Math.max(1, ...m.monthlySeries.map((s) => s.value))
   const maxPunto = Math.max(1, ...m.byPoint.map((p) => p.contributions))
   const top = topDeLaHinchada(productos, 5, nombreDelHincha ? nombreCorto(nombreDelHincha) : undefined)

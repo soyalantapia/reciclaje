@@ -29,11 +29,16 @@ const bancoDelClub = {
   milestones: [], topContributors: [{ name: 'Camila R.', units: 640, avatarColor: '#16a34a' }],
 } as ImpactProject
 
+// Una red donde el club tiene la Huella Verde más baja: un comercio con 90.
+const redDeEjemplo: Sponsor[] = [
+  { id: 's_cafe', name: 'Café de Ejemplo', slug: 's_cafe', category: 'comercio', brandColor: '#000', tagline: '', greenScore: 90, kgRecovered: 10 },
+]
+
 vi.mock('@/services/api', async (original) => ({
   ...(await original<typeof import('@/services/api')>()),
   api: {
     getPoints: () => Promise.resolve([]),
-    getSponsors: () => Promise.resolve([]),
+    getSponsors: () => Promise.resolve(redDeEjemplo),
     getProjects: () => Promise.resolve([bancoDelClub]),
   },
 }))
@@ -110,5 +115,16 @@ describe('resumen del panel del club', () => {
     expect(await screen.findByRole('heading', { name: 'Resumen' })).toBeInTheDocument()
     expect(screen.queryByText('El banco de tu hinchada')).not.toBeInTheDocument()
     expect(screen.queryByText('Banco de suplentes con el plástico de la hinchada')).not.toBeInTheDocument()
+  })
+
+  it('una institución no ve su puesto en la red: su Huella Verde no compite con la de un comercio', async () => {
+    verElResumenDe(sponsor('s_club', 'Talleres'))
+    await screen.findByText(/Banco de suplentes/)
+    expect(screen.queryByText(/puesto/i)).toBeNull()
+  })
+
+  it('un comercio sí ve su puesto en la red', async () => {
+    verElResumenDe({ ...sponsor('s_lumen', 'Café Lúmen'), category: 'comercio' })
+    expect(await screen.findByText(/Puesto 2 de 2 en la red/)).toBeInTheDocument()
   })
 })

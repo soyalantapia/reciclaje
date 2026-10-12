@@ -9,6 +9,7 @@ import { ErrorState } from '@/components/features/ErrorState'
 import { Skeleton } from '@/components/ui/skeleton'
 import { CardGrid } from '@/components/ui/card-grid'
 import { LogoDeMarca } from '@/components/features/LogoDeMarca'
+import { muestraPuestoEnLaRed } from '@/lib/posicionEnLaRed'
 
 const CATEGORY_LABEL: Record<SponsorCategory, string> = {
   estacion: 'Estación',
@@ -23,8 +24,15 @@ const CATEGORY_LABEL: Record<SponsorCategory, string> = {
 export default function Marcas() {
   const { data: sponsors, loading, error, reload } = useApi(() => api.getSponsors(), [])
 
+  // El club va primero, como institución de la red; las empresas, por Huella Verde. Ordenado todo junto,
+  // Talleres quedaba último frente a su propia comisión (decidido por Alan el 12/10/2026).
   const sorted = useMemo(
-    () => (sponsors ? [...sponsors].sort((a, b) => b.greenScore - a.greenScore) : []),
+    () =>
+      sponsors
+        ? [...sponsors].sort(
+            (a, b) => Number(muestraPuestoEnLaRed(a)) - Number(muestraPuestoEnLaRed(b)) || b.greenScore - a.greenScore,
+          )
+        : [],
     [sponsors],
   )
 
