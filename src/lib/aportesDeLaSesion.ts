@@ -79,6 +79,15 @@ const fechaLocal = (iso: string) => {
  * La pantalla de éxito manda a «Trazabilidad» y ahí el hito seguía con el aporte de ejemplo
  * (640 tapitas, 04/10), no con el que la persona acababa de registrar.
  */
+/** Dónde y cuándo dejaste tu última tapita de esta sesión en este producto (y su material); si no aportaste, nada. */
+export function tuTapitaEnLaSesion(project: ImpactProject, actividad: ActivityItem[]): { puntoId: string; fecha: string } | undefined {
+  const ultimo = actividad
+    .filter(esAporte)
+    .filter((c) => c.projectId === project.id && c.material === project.material)
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))[0]
+  return ultimo && { puntoId: ultimo.pointId, fecha: fechaLocal(ultimo.createdAt) }
+}
+
 export function conAporteDeLaSesionEnLaTraza(
   traza: TraceEvent[],
   project: ImpactProject,

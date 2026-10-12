@@ -1,6 +1,6 @@
 import { api } from '@/services/api'
 import { useApi } from '@/hooks/useApi'
-import { conAporteDeLaSesionEnLaTraza } from '@/lib/aportesDeLaSesion'
+import { conAporteDeLaSesionEnLaTraza, tuTapitaEnLaSesion } from '@/lib/aportesDeLaSesion'
 import { conPesajeEnLaTraza } from '@/lib/pesajes'
 import { puntosDelProducto } from '@/lib/productosDelClub'
 import { useActivityStore } from '@/store/activity'
@@ -10,7 +10,7 @@ import type { ImpactProject, TraceEvent } from '@/types'
 
 /**
  * El recorrido de un producto como lo ve el hincha: con su último aporte de la sesión y, si el club ya
- * pesó en los Punto R del producto, con ese pesaje. Lo usan la trazabilidad y el inicio, para que los dos
+ * pesó en los Punto R del producto, con ese pesaje (el de tu punto y de ese día o después, si aportaste en la sesión). Lo usan la trazabilidad y el inicio, para que los dos
  * digan lo mismo: el inicio no mostraba nada y quien cargaba un pesaje no sabía dónde verlo.
  */
 export function useRecorridoDelProducto(project: ImpactProject | null | undefined, projectId: string) {
@@ -27,6 +27,7 @@ export function useRecorridoDelProducto(project: ImpactProject | null | undefine
           pesajes,
           puntosDelProducto(project, puntos ?? [], creados).map((p) => p.id),
           project.sponsorName,
+          tuTapitaEnLaSesion(project, actividad),
         )
       : trace
   return { ...trazaDeLaApi, eventos }

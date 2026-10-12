@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { RecyclePoint, TraceEvent } from '@/types'
 import { estadoDelRecorrido } from './recorridoDeLaTapita'
-import { conPesajeEnLaTraza, crearPesaje, kilosValidos, pesajesDelInforme, type Pesaje } from './pesajes'
+import { conPesajeEnLaTraza, crearPesaje, kilosValidos, leerKilos, pesajesDelInforme, type Pesaje } from './pesajes'
 
 const punto = (id: string, name: string): RecyclePoint => ({
   id, name, sponsorId: 's_club', type: 'deposito', address: '', city: 'Córdoba', lat: 0, lng: 0,
@@ -71,5 +71,36 @@ describe('conPesajeEnLaTraza', () => {
     )
     expect(eventos[1].detail).toContain('14 kg')
     expect(eventos[1].date).toBe('2026-10-12')
+  })
+
+  // La revisión del 12/10: el pesaje avanzaba «tu tapita» en un producto al que no aportaste, o en otro punto.
+  it('si tu tapita todavía no entró a este recorrido, un pesaje no la hace avanzar', () => {
+    const sinAporte = traza.map((e) => (e.stage === 'aporte' ? { ...e, done: false, date: null } : e))
+    expect(conPesajeEnLaTraza(sinAporte, [pesaje('e', '2026-10-12', estadio, 12.5)], ['p_club_estadio'], 'Talleres')).toBe(sinAporte)
+  })
+
+  it('con tu aporte de la sesión, sólo cuenta el pesaje de ese Punto R', () => {
+    const tuTapita = { puntoId: 'p_club_sede', fecha: '2026-10-12' }
+    const enOtroPunto = [pesaje('e', '2026-10-12', estadio, 12.5)]
+    expect(conPesajeEnLaTraza(traza, enOtroPunto, ['p_club_estadio', 'p_club_sede'], 'Talleres', tuTapita)).toBe(traza)
+    const enElTuyo = [pesaje('s', '2026-10-12', sede, 3)]
+    expect(conPesajeEnLaTraza(traza, enElTuyo, ['p_club_estadio', 'p_club_sede'], 'Talleres', tuTapita)[1].done).toBe(true)
+  })
+
+  it('con tu aporte de la sesión, un pesaje de antes de tu aporte no lo pesó', () => {
+    const tuTapita = { puntoId: 'p_club_estadio', fecha: '2026-10-12' }
+    expect(conPesajeEnLaTraza(traza, [pesaje('v', '2026-10-05', estadio, 10)], ['p_club_estadio'], 'Talleres', tuTapita)).toBe(traza)
+    expect(conPesajeEnLaTraza(traza, [pesaje('h', '2026-10-12', estadio, 10)], ['p_club_estadio'], 'Talleres', tuTapita)[1].done).toBe(true)
+  })
+})
+
+describe('leerKilos', () => {
+  it('acepta la coma decimal y el punto de miles, como se escribe acá', () => {
+    expect(leerKilos('12,5')).toBe(12.5)
+    expect(leerKilos('1.250')).toBe(1250)
+    expect(leerKilos('1.250,5')).toBe(1250.5)
+    expect(leerKilos('12.5')).toBe(12.5)
+    expect(leerKilos(' 30 ')).toBe(30)
+    expect(Number.isNaN(leerKilos('doce'))).toBe(true)
   })
 })

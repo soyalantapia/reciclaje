@@ -29,6 +29,16 @@ export interface NuevoPesaje {
   creadoEn: string
 }
 
+/**
+ * Los kilos como los escribe alguien de acá: coma decimal y punto de miles («12,5», «1.250», «1.250,5»).
+ * Un punto con uno o dos decimales («12.5») se toma como decimal. Lo que no es un número da NaN.
+ */
+export function leerKilos(texto: string): number {
+  const t = texto.trim()
+  if (/^\d{1,3}(\.\d{3})+(,\d+)?$/.test(t)) return Number(t.replace(/\./g, '').replace(',', '.'))
+  return t === '' ? NaN : Number(t.replace(',', '.'))
+}
+
 /** Más de 5 toneladas en un partido es un error de tipeo, no un pesaje. */
 const MAXIMO_KG = 5000
 
@@ -56,17 +66,33 @@ export function pesajesDelInforme(pesajes: Pesaje[]): Pesaje[] {
 
 const kilosEnTexto = (kilos: number) => kilos.toLocaleString('es-AR', { maximumFractionDigits: 1 })
 
+/** Dónde y cuándo dejaste tu tapita en esta sesión: el pesaje que la pesó es de ese punto y de ese día o después. */
+export interface TuTapita {
+  puntoId: string
+  /** `AAAA-MM-DD`, en hora local. */
+  fecha: string
+}
+
 /**
  * El recorrido con el pesaje del club: si hay uno en los Punto R del producto, «Pesaje del lote»
  * queda hecho con el más nuevo, y lo que sigue pasa a ser el lote. Sin pesaje, devuelve el mismo.
+ *
+ * Sólo si tu tapita ya entró al recorrido («Tu aporte» hecho). Con tu aporte de la sesión (`tuTapita`),
+ * sólo cuenta un pesaje de ese Punto R y de ese día o después: antes, un pesaje en otro punto, o en un
+ * producto al que no aportaste, mostraba «Tu tapita va por: pesaje del lote».
  */
 export function conPesajeEnLaTraza(
   traza: TraceEvent[],
   pesajes: Pesaje[],
   puntoIds: string[],
   club: string,
+  tuTapita?: TuTapita,
 ): TraceEvent[] {
-  const ultimo = pesajesDelInforme(pesajes.filter((p) => puntoIds.includes(p.puntoId)))[0]
+  if (!traza.some((e) => e.stage === 'aporte' && e.done)) return traza
+  const candidatos = pesajes.filter(
+    (p) => puntoIds.includes(p.puntoId) && (!tuTapita || (p.puntoId === tuTapita.puntoId && p.fecha >= tuTapita.fecha)),
+  )
+  const ultimo = pesajesDelInforme(candidatos)[0]
   if (!ultimo) return traza
   return traza.map((e) =>
     e.stage === 'validacion'
