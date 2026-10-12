@@ -252,7 +252,8 @@ WhatsApp del proyecto y de la reunión del 03/08 (acta en `docs/producto/reunion
 
 ### Las causas pasan a Córdoba (rama `fix/causas-en-cordoba`)
 - Las tres causas de ejemplo estaban en CABA, La Matanza y Cañuelas, y el hospital llevaba el nombre de uno real.
-- Ahora las tres son de Córdoba y con nombres inventados, como las marcas de la demo del club: «Hospital Infantil del Parque», «Comedor Los Girasoles» y «Escuela Los Algarrobos».
+- Ahora las tres son de Córdoba y con nombres inventados, como las marcas de la demo del club: «Hospital Pediátrico Los Aromos», «Comedor Los Girasoles» y «Escuela Los Algarrobos».
+- El hospital se llamó primero «Hospital Infantil del Parque», pero se parecía al Hospital Infantil Municipal de Córdoba, que organiza la «Maratón de Tapitas»: en la reunión podía leerse como una alianza. La prueba ahora rechaza «Hospital Infantil».
 - Los ids no cambian, así que las donaciones guardadas en el navegador siguen valiendo y no hace falta subir la versión de los datos.
 - Una prueba fija la regla en las dos demos.
 

@@ -521,8 +521,8 @@ export const sponsorMetrics: Record<string, SponsorMetrics> = {
 export const causes: Cause[] = [
   {
     id: 'cause_hospital',
-    name: 'Hospital Infantil del Parque',
-    slug: 'hospital-infantil-del-parque',
+    name: 'Hospital Pediátrico Los Aromos',
+    slug: 'hospital-pediatrico-los-aromos',
     type: 'hospital',
     brandColor: '#0ea5e9',
     city: 'Córdoba',
