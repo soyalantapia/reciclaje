@@ -15,7 +15,7 @@ export function IconoDeBeneficio({ benefit }: { benefit: Pick<Benefit, 'emoji' |
 }
 
 function CamisetaARayas({ color }: { color: string }) {
-  const recorte = `camiseta-${useId().replace(/[^a-zA-Z0-9]/g, "")}`
+  const recorte = `camiseta-${useId().replace(/[^a-zA-Z0-9]/g, '')}`
   const contorno = 'M9 4 L15 2 Q20 6 25 2 L31 4 L38 11 L33 16 L30 13 L30 37 L10 37 L10 13 L7 16 L2 11 Z'
   return (
     <svg viewBox="0 0 40 40" className="h-8 w-8" role="img" aria-label="Camiseta del club">

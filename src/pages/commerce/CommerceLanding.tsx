@@ -32,7 +32,7 @@ import { useApi } from '@/hooks/useApi'
 import { Button } from '@/components/ui/button'
 import { Container } from '@/components/ui/container'
 import { LandingHeader } from '@/components/landing/LandingHeader'
-import { precioVisible } from '@/lib/escenario'
+import { muestraPrecios, precioVisible } from '@/lib/escenario'
 
 // TODO: reemplazá por tus datos reales antes de publicar.
 const CONTACT = {
@@ -115,7 +115,7 @@ const FAQS = [
   },
   {
     q: '¿Cómo se cobra y puedo cambiar de plan?',
-    a: 'Es una suscripción mensual. Empezás con un punto y escalás, cambiás o pausás tu plan cuando quieras desde el panel.',
+    a: 'Es una suscripción mensual. Empezás con un punto y, cuando tu local lo necesita, pasás a un plan con más puntos.',
   },
   {
     q: '¿Cuánto tardo en arrancar?',
@@ -364,8 +364,8 @@ export default function CommerceLanding() {
                 </h2>
                 <p className="mt-3 text-muted-foreground">
                   Lo que reciclan tus clientes queda trazado y suma a causas concretas, como el
-                  reciclado de tapitas para hospitales. Comunicás impacto que se puede verificar —
-                  no promesas — y lo respaldás con tus reportes y tu Huella Verde.
+                  reciclado de tapitas para hospitales. Lo comunicás con los datos de tu punto: tus
+                  reportes y tu Huella Verde.
                 </p>
                 <Link to="/comercio/onboarding" className="mt-5 inline-block">
                   <Button size="lg">
@@ -474,7 +474,7 @@ export default function CommerceLanding() {
             ))}
           </div>
           <p className="mt-4 text-center text-xs text-muted-foreground">
-            Precios + IVA. Coordinamos la instalación de tu punto.{' '}
+            {muestraPrecios() ? 'Precios + IVA. ' : ''}Coordinamos la instalación de tu punto.{' '}
             <a href={waLink} target="_blank" rel="noreferrer" className="font-semibold text-eco-700 dark:text-eco-300">
               ¿Dudas con el plan? Escribinos
             </a>

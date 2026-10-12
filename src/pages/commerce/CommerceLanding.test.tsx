@@ -21,9 +21,10 @@ beforeAll(() => {
  * Lo que la landing de comercios no puede prometer hasta el piloto
  * (docs/producto/prometido-vs-demo.md, fila «RSE verificable…» y multiplicador).
  * Hoy los datos son de ejemplo, no hay panel en tiempo real ni constancia verificable,
- * y el multiplicador de XP no cambia los XP de nadie.
+ * y el multiplicador de XP no cambia los XP de nadie. «Verific…» atrapa también «impacto que se puede
+ * verificar», que se escapaba del candado. Y no hay cobro: el plan no se cambia ni se pausa desde el panel.
  */
-const PROMESAS_DEL_PILOTO = [/verificable/i, /\ben vivo\b/i, /tiempo real/i, /auditor[ií]a/i, /multiplicador/i]
+const PROMESAS_DEL_PILOTO = [/verific/i, /plan cuando quieras desde el panel/i, /\ben vivo\b/i, /tiempo real/i, /auditor[ií]a/i, /multiplicador/i]
 
 describe('landing de comercios', () => {
   it('no promete lo que todavía no existe', () => {

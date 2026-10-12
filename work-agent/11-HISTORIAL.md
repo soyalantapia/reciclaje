@@ -306,6 +306,12 @@ Tres funciones para la reunión con Talleres del 13/10, pensadas para las pregun
 - `IconoDeBeneficio` dibuja una camiseta a rayas con el azul del club cuando el beneficio es una camiseta de un club con marca oficial (hoy sólo Talleres, en las dos demos). La remera de una marca y los demás beneficios siguen con su emoji.
 - Va en la tarjeta de Beneficios, la confirmación del canje y los beneficios del panel. Una prueba la fija y da rojo sin el arreglo.
 
+### La landing sin «impacto que se puede verificar» (rama `fix/landing-sin-impacto-verificable`)
+- La landing de comercios decía «Comunicás impacto que se puede verificar — no promesas». Es la promesa que la lista de lo prometido contra la demo mandó dejar hasta el piloto, y el candado buscaba sólo «verificable». Ahora dice que el impacto se comunica con los datos del punto, y el candado de la landing busca «verific».
+- La pregunta del cobro decía que el plan se cambia o se pausa «desde el panel»: no hay cobro, y el panel del club no tiene «Plan». Ahora sólo dice que se pasa a un plan con más puntos.
+- En la demo del club, «Precios + IVA» ya no aparece al lado de «A convenir» (`muestraPrecios`).
+- Queda abierto: el WhatsApp de «Hablar con un asesor» sigue siendo el número de prueba de `CONTACT` (pendiente bloqueante 1 de [10](10-ESTADO-Y-PENDIENTES.md)).
+
 ---
 
 ## Trabajo hecho que NO quedó en commits
