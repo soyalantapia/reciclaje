@@ -30,6 +30,7 @@ const CommerceOnboarding = lazyWithRetry(() => import('@/pages/commerce/Commerce
 const CommerceResumen = lazyWithRetry(() => import('@/pages/commerce/CommerceResumen'))
 const CommerceProducts = lazyWithRetry(() => import('@/pages/commerce/CommerceProducts'))
 const CommercePesajes = lazyWithRetry(() => import('@/pages/commerce/CommercePesajes'))
+const CommercePantalla = lazyWithRetry(() => import('@/pages/commerce/CommercePantalla'))
 const CommerceBenefits = lazyWithRetry(() => import('@/pages/commerce/CommerceBenefits'))
 const CommerceCampaigns = lazyWithRetry(() => import('@/pages/commerce/CommerceCampaigns'))
 const CommercePoints = lazyWithRetry(() => import('@/pages/commerce/CommercePoints'))
@@ -86,6 +87,8 @@ export const router = createBrowserRouter(
       path: '/comercio',
       element: <RequireCommerce />,
       children: [
+        // La pantalla del estadio ocupa toda la pantalla: va sin el menú del panel.
+        { path: '/comercio/pantalla', element: withSuspense(<CommercePantalla />) },
         {
           path: '/comercio',
           element: <CommerceLayout />,

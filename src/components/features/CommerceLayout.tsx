@@ -1,11 +1,10 @@
-import { useLayoutEffect } from 'react'
 import { NavLink, Outlet, useMatch, useNavigate } from 'react-router-dom'
 import { LogOut } from 'lucide-react'
 import { useSessionStore } from '@/store/session'
 import { useMarcaDelPanel } from '@/hooks/useMarcaDelPanel'
+import { usePaletaDelClub } from '@/hooks/usePaletaDelClub'
 import { cn } from '@/lib/utils'
 import { ESCENARIO } from '@/lib/escenario'
-import { esColorPropio, estiloDeMarca } from '@/lib/marca'
 import { esInstitucion } from '@/lib/vocabulario'
 import { CommerceSideNav, etiquetaDelPanel, navDelPanel } from './CommerceSideNav'
 import { AvisoDemo } from './AvisoDemo'
@@ -20,20 +19,7 @@ export function CommerceLayout() {
   const enReportes = useMatch('/comercio/reportes')
   const marca = useMarcaDelPanel()
 
-  // Los Modal se montan en document.body, fuera de este contenedor: mientras el panel está abierto,
-  // la paleta de la marca va también en <html>, y se saca al salir. Es un efecto de layout para que
-  // se saque en el mismo cuadro en que se sale: el login no pinta ni un cuadro con los colores del club.
-  // Sin un color propio (el verde de ReciclaXP) no hay nada que poner: la paleta de siempre ya es esa.
-  const colorDeLaMarca = marca && esColorPropio(marca.color) ? marca.color : undefined
-  useLayoutEffect(() => {
-    if (!colorDeLaMarca) return
-    const raiz = document.documentElement
-    const variables = Object.entries(estiloDeMarca(colorDeLaMarca))
-    for (const [nombre, valor] of variables) raiz.style.setProperty(nombre, valor)
-    return () => {
-      for (const [nombre] of variables) raiz.style.removeProperty(nombre)
-    }
-  }, [colorDeLaMarca])
+  usePaletaDelClub()
 
   if (!commerce) return null
 

@@ -7,6 +7,7 @@ import {
   LayoutDashboard,
   LogOut,
   Megaphone,
+  MonitorPlay,
   Palette,
   QrCode,
   Scale,
@@ -24,13 +25,14 @@ export const COMMERCE_NAV = [
   { to: '/comercio/beneficios', label: 'Beneficios', icon: Gift },
   { to: '/comercio/campanias', label: 'Campañas', icon: Megaphone },
   { to: '/comercio/puntos', label: 'Puntos / QR', icon: QrCode },
+  { to: '/comercio/pantalla', label: 'Pantalla del estadio', icon: MonitorPlay },
   { to: '/comercio/reportes', label: 'Reportes', icon: FileText },
   { to: '/comercio/marca', label: 'Marca', icon: Palette },
   { to: '/comercio/plan', label: 'Plan', icon: CreditCard },
 ]
 
-/** Lo que es sólo de un club o un estadio: lo que construye la hinchada, sus pesajes y la marca del club. */
-const SOLO_INSTITUCIONES = new Set(['/comercio/productos', '/comercio/pesajes', '/comercio/marca'])
+/** Lo que es sólo de un club o un estadio: lo que construye la hinchada, sus pesajes, la pantalla del estadio y la marca del club. */
+const SOLO_INSTITUCIONES = new Set(['/comercio/productos', '/comercio/pesajes', '/comercio/pantalla', '/comercio/marca'])
 
 /**
  * El menú del panel: el del escritorio y el del celular salen de acá, para que no difieran.
