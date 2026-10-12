@@ -71,4 +71,17 @@ describe('lazyWithRetry', () => {
     expect(await screen.findByText('Se cayó: Failed to fetch dynamically imported module')).toBeInTheDocument()
     expect(recargar).not.toHaveBeenCalled()
   })
+
+  it('si después de recargar el pedazo llega, borra la marca: el próximo deploy también se recupera', async () => {
+    sessionStorage.setItem(MARCA, '1')
+    verLaPantalla(() => Promise.resolve({ default: () => <p>La pantalla</p> }))
+    expect(await screen.findByText('La pantalla')).toBeInTheDocument()
+    expect(sessionStorage.getItem(MARCA)).toBeNull()
+  })
+
+  it('arrancar la app no borra la marca: si no, un pedazo que falla siempre recarga en bucle', async () => {
+    sessionStorage.setItem(MARCA, '1')
+    await import('@/routes')
+    expect(sessionStorage.getItem(MARCA)).toBe('1')
+  })
 })

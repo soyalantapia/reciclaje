@@ -5,12 +5,8 @@ import { RequireAuth } from '@/components/features/RequireAuth'
 import { RequireCommerce } from '@/components/features/RequireCommerce'
 import { CommerceLayout } from '@/components/features/CommerceLayout'
 import { Skeleton } from '@/components/ui/skeleton'
-import { claveDeAlmacenamiento, muestraPrecios } from '@/lib/escenario'
+import { muestraPrecios } from '@/lib/escenario'
 import { lazyWithRetry } from '@/lib/lazyWithRetry'
-
-if (typeof window !== 'undefined') {
-  window.sessionStorage.removeItem(claveDeAlmacenamiento('chunk-reload'))
-}
 
 const Login = lazyWithRetry(() => import('@/pages/Login'))
 const Home = lazyWithRetry(() => import('@/pages/Home'))
