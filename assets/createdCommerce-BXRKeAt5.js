@@ -1,1 +1,0 @@
-import{Ct as e,St as t,vt as n}from"./index-CqRGdLIN.js";var r=e()(t(e=>({commerce:null,point:null,plan:`Pro`,set:(t,n,r)=>e({commerce:t,point:n,plan:r}),clear:()=>e({commerce:null,point:null,plan:`Pro`})}),{name:n(`created-commerce`),version:1}));export{r as t};

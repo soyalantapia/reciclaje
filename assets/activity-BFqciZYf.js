@@ -1,0 +1,1 @@
+import{Tt as e,bt as t,mt as n,wt as r}from"./index-3i7CukhV.js";var i=e()(r(e=>({sessionContributions:[],add:t=>e(e=>({sessionContributions:[t,...e.sessionContributions]})),clear:()=>e({sessionContributions:[]})}),{name:t(`activity`),...n()}));export{i as t};
