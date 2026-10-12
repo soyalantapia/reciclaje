@@ -57,7 +57,7 @@ src/
 ├── hooks/                     ← useApi.ts · useThemeEffect.ts
 ├── lib/                       ← utils.ts · metrics.ts · qr.ts · copy.ts (+ tests)
 ├── types/index.ts             ← TODO el modelo de dominio
-├── routes.tsx                 ← árbol de rutas + lazyWithRetry
+├── routes.tsx                 ← árbol de rutas (lazyWithRetry vive en lib/lazyWithRetry.ts)
 ├── index.css                  ← tokens Tailwind 4 (@theme inline) + utilidades
 └── main.tsx                   ← bootstrap (arranca MSW antes de montar React)
 ```

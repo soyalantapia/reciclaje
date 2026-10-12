@@ -225,7 +225,10 @@ WhatsApp del proyecto y de la reunión del 03/08 (acta en `docs/producto/reunion
   - **El mapa de verdad:**
     - Leaflet con teselas de OpenStreetMap; CARTO sin clave pinta «API KEY REQUIRED».
     - Abre en el Centro y Nueva Córdoba.
-    - Tiene chips («Abiertos ahora» y por material) y una tarjeta del punto con «Cómo llegar» (Google Maps) y «Reciclar acá» (Escanear con el punto elegido).
+    - Tiene chips («Abiertos» y por material) y una tarjeta del punto con «Cómo llegar» (Google Maps) y «Reciclar acá» (Escanear con el punto elegido).
+    - La bajada dice que son «puntos de ejemplo». El dato de abierto es fijo, así que se dice «Abierto», no «ahora».
+    - La sede de Talleres va «frente a la Plaza San Martín», sin número de calle (una sola fuente pública).
+    - `react-leaflet` y `@react-leaflet/core` tienen licencia Hippocratic-2.1, no MIT: revisarla antes del piloto.
     - «Cerca mío» ordena por distancia y la escribe; «Ver todos» encuadra todo.
     - La lista va junto al mapa.
     - Se precarga en un momento libre y el `index.html` abre antes la conexión a las teselas. La lógica es pura, en `src/lib/mapa.ts`.

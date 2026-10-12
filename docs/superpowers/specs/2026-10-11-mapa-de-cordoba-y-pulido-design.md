@@ -40,8 +40,8 @@ En `BottomNav`, con `framer-motion`, que ya está en el proyecto:
 - **La librería:** Leaflet (`leaflet` 1.9 y `react-leaflet` 5), con las teselas del estilo claro de CARTO sobre OpenStreetMap. La atribución es obligatoria: «© OpenStreetMap © CARTO».
   - **Cambio en la implementación:** CARTO sin clave pinta «API KEY REQUIRED» sobre el mapa. Se usan las teselas de OpenStreetMap (`tile.openstreetmap.org`), con su atribución. Sirven para la demo; para el piloto hace falta un proveedor con plan comercial.
 - **La vista inicial:** el Centro y Nueva Córdoba. «Ver todos» encuadra todos los puntos, también el del estadio.
-- **Los pines:** un círculo del color de la marca, con un ícono según el tipo de punto. El elegido se agranda.
-- **El costo:** unos 45 kB comprimidos. Sólo se bajan con la pantalla del mapa.
+- **Los pines:** un círculo del color de la marca con un punto blanco. El elegido se agranda y lleva un halo.
+- **El costo:** unos 52 kB comprimidos, entre el JS y el CSS de Leaflet. Se bajan con la pantalla del mapa, o en un momento libre por la precarga.
 - **Para el piloto:** con tráfico real hace falta un proveedor de teselas con plan comercial (MapTiler, Mapbox o CARTO pago). Para la demo alcanza con el gratuito.
 
 ### Todos los puntos en Córdoba capital
@@ -60,9 +60,11 @@ En `BottomNav`, con `framer-motion`, que ya está en el proyecto:
 | `p_starbucks_recoleta` | Starbucks Nueva Córdoba | Café Andino Nueva Córdoba | San Lorenzo 25, Nueva Córdoba | -31.423175, -64.186960 |
 | `p_grido_lanus` | Grido Bv. San Juan | Helados del Parque Bv. San Juan | Bv. San Juan 125, Nueva Córdoba | -31.420568, -64.187765 |
 | `p_club_estadio` | Punto R · Estadio | Punto R · Estadio | Estadio Mario Alberto Kempes, ingreso principal en días de partido | -31.368847, -64.246145 |
-| `p_club_sede` | Punto R · Sede social | Punto R · Sede social | Rosario de Santa Fe 15, frente a la Plaza San Martín | -31.415995, -64.183657 |
+| `p_club_sede` | Punto R · Sede social | Punto R · Sede social | Frente a la Plaza San Martín, Centro | -31.415995, -64.183657 |
 
 - **Los ids no cambian:** los QR impresos y los enlaces siguen andando.
+- **Los ids de Talleres:** en la demo general, los dos puntos del club se llaman `p_talleres_estadio` y `p_talleres_sede`; en la del club, `p_club_*`. Las ubicaciones son las mismas.
+- **La dirección de la sede:** queda «Frente a la Plaza San Martín, Centro», sin número. El número salía de una sola fuente pública, débil.
 - **El tipo:** `RecyclePoint` cambia `x`/`y` (el mapa esquemático) por `lat`/`lng`. `city` pasa a ser `'Córdoba'` en todos.
 - **La sede de Talleres:** la dirección sale de fuentes públicas (Guía Senior e Infonegocios: frente a la Plaza San Martín). Hay que confirmarla con el club.
 - **El estadio:** es el Kempes, donde el club juega de local.
@@ -79,7 +81,7 @@ En `BottomNav`, con `framer-motion`, que ya está en el proyecto:
 
 - **Sin esperar a los datos:** el mapa se dibuja enseguida y los pines aparecen cuando llegan los puntos. No queda el esqueleto gris tapando el mapa.
 - **La pantalla, precargada:** mientras el hincha está en la app, en un momento libre (`requestIdleCallback`, o `setTimeout` si no está), se baja el código del mapa.
-- **Las teselas:** `index.html` hace `preconnect` a los servidores de CARTO.
+- **Las teselas:** `index.html` hace `preconnect` a `tile.openstreetmap.org`, el servidor que se usa.
 - **Sin internet:** se ven los pines sobre un fondo liso. La lista sigue andando.
 
 ### La versión de los datos
@@ -92,13 +94,13 @@ En `BottomNav`, con `framer-motion`, que ya está en el proyecto:
 - **Moverse:** arrastrar y hacer zoom con los dedos o la rueda.
 - **Tocar un pin** abre una tarjeta sobre el mapa con:
   - el nombre, la dirección y de quién es;
-  - qué materiales recibe, y si está abierto ahora;
+  - qué materiales recibe, y si está abierto (dato fijo de la demo);
   - la distancia, si se sabe dónde estás;
   - «Cómo llegar»: abre Google Maps con el destino (`https://www.google.com/maps/dir/?api=1&destination=<lat>,<lng>`) en otra pestaña;
   - «Reciclar acá»: como el inicio, deja el punto pendiente (`sessionStorage`, clave `claveDeAlmacenamiento('scan-point')`) y va a Escanear, con el punto ya elegido;
   - una cruz para cerrarla.
 - **Filtros, como chips arriba del mapa:**
-  - «Abiertos ahora»;
+  - «Abiertos» (el dato es fijo en la demo: no se dice «ahora»);
   - uno por cada material que aparece en la red.
 
   Filtran el mapa y la lista juntos. Si no queda ningún punto, lo dice y ofrece «Ver todos».
