@@ -116,14 +116,14 @@ export default function CommercePantalla() {
             initial={reducir ? false : { opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="mt-6 grid flex-1 grid-cols-1 items-center gap-8 lg:grid-cols-[1.5fr_1fr] lg:gap-12"
+            className="mt-4 grid flex-1 grid-cols-1 items-center gap-8 lg:grid-cols-[1.5fr_1fr] lg:gap-12"
           >
             <section aria-label={producto.title}>
               <p className="text-lg font-bold uppercase tracking-wide text-eco-300">La hinchada construye</p>
               <h1 className="text-3xl font-extrabold leading-tight sm:text-5xl">{producto.title}</h1>
               {apoyo && <p className="mt-2 text-lg font-semibold text-eco-200">{apoyo}</p>}
               <div className="mt-6 flex flex-wrap items-end gap-x-8 gap-y-2">
-                <p className="font-marcador text-7xl font-bold leading-none tabular-nums sm:text-[8.5rem]">
+                <p className="font-marcador text-7xl font-bold leading-none tabular-nums sm:text-[clamp(4.5rem,13vh,9rem)]">
                   {formatNumber(producto.collectedUnits)}
                 </p>
                 <p className="pb-2 text-2xl font-bold text-eco-200 sm:text-3xl">
@@ -131,8 +131,10 @@ export default function CommercePantalla() {
                 </p>
               </div>
               <p className="mt-1 text-lg text-eco-300">de {formatNumber(producto.goalUnits)} para completarlo</p>
-              <div className="mt-6 rounded-3xl bg-cancha p-5 sm:p-7">
+              {/* Alto atado a la pantalla: en un televisor todo entra sin scroll. */}
+              <div className="mt-5 rounded-3xl bg-cancha p-4 sm:p-6">
                 <BancoDeTapitas
+                  className="mx-auto h-[30vh] max-h-[30rem] w-auto max-w-full"
                   forma={producto.forma}
                   progreso={producto.goalUnits > 0 ? producto.collectedUnits / producto.goalUnits : 0}
                   propias={0}
@@ -141,6 +143,11 @@ export default function CommercePantalla() {
             </section>
 
             <aside className="space-y-6">
+              {top.length === 0 && (
+                <p className="rounded-3xl bg-white/10 p-6 text-2xl font-bold leading-snug">
+                  Todavía nadie sumó tapitas. ¡La primera puede ser la tuya!
+                </p>
+              )}
               {top.length > 0 && (
                 <section aria-labelledby="pantalla-top">
                   <h2 id="pantalla-top" className="text-lg font-bold uppercase tracking-wide text-eco-300">

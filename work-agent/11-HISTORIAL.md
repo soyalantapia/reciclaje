@@ -265,6 +265,24 @@ WhatsApp del proyecto y de la reunión del 03/08 (acta en `docs/producto/reunion
 ### La dirección de la sede (rama `fix/direccion-de-la-sede`)
 - El Punto R de la sede decía «Frente a la Plaza San Martín, Centro», sin número, porque el número salía de una sola fuente pública poco confiable.
 - La web oficial del club lo confirma: «La Sede Social funciona en Rosario de Santa Fe 15, primer piso» (clubtalleres.com.ar, página «Hacete socio», leída el 12/10/2026). Ahora dice «Rosario de Santa Fe 15, Centro». Las coordenadas ya eran las de esa dirección.
+
+### El club en el partido (rama `feat/el-club-en-el-partido`)
+Tres funciones para la reunión con Talleres del 13/10, pensadas para las preguntas de la Comisión Directiva: cuánto trabajo le da al club y cómo vuelve su aporte.
+- **Pesajes** (E1.4, `CommercePesajes`, `src/lib/pesajes.ts`, `src/store/pesajesDelClub.ts`):
+  - el panel carga partido, fecha, Punto R y kilos (acepta la coma), con las tapitas calculadas;
+  - al guardar, el recorrido del hincha marca «Pesaje del lote» hecho con la fecha y los kilos, y lo que sigue pasa al lote. El resumen dice «Tu tapita va por: pesaje del lote», no «está en el Punto R»;
+  - el informe llena «Partido por partido». Su columna «Hinchas» pasó a «Punto R»: un pesaje no sabe cuántos hinchas aportaron.
+- **Un patrocinador por producto** (`patrocinador` en `ImpactProject`, `ApoyoDelProducto`):
+  - «Nuevo producto» suma «Con el apoyo de»: una empresa o un comercio de la red, o «Sin patrocinador»;
+  - el nombre, con el color de la empresa, va en el inicio del hincha, la página del producto, el panel, el informe y la pantalla del estadio;
+  - en la demo del club se propone la primera empresa (son nombres de ejemplo); en la general, ninguna, porque son marcas reales.
+- **La pantalla del estadio** (`/comercio/pantalla`, `CommercePantalla`):
+  - a pantalla completa y sin el menú del panel: el marcador, el producto que se llena, los que más aportan (o la invitación si nadie aportó), el patrocinador y el QR del Punto R;
+  - si hay más de un producto, rota cada 12 segundos;
+  - el alto está atado a la pantalla: entra sin scroll en 1280×800 y en 1920×1080;
+  - la paleta del club pasó a `usePaletaDelClub`, que comparten el panel y esta pantalla.
+- La prueba de la rotación fallaba sólo con toda la suite corriendo: React registraba el temporizador después de que la prueba adelantaba el reloj. Ahora la prueba deja que React termine sus efectos antes de adelantarlo.
+
 ---
 
 ## Trabajo hecho que NO quedó en commits

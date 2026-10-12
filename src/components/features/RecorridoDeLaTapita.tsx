@@ -39,6 +39,11 @@ export function RecorridoDeLaTapita({
           <span aria-hidden className="h-3 w-3 shrink-0 rounded-full bg-xp-400 ring-1 ring-xp-600" />
           {actual < 0 ? (
             <span>Tu tapita todavía no entró a este recorrido</span>
+          ) : actual > 0 ? (
+            // Pasó la primera etapa (el club ya la pesó, por ejemplo): ya no se la nombra por el punto.
+            <span>
+              Tu tapita va por: <b className="font-bold">{eventos[actual].title.toLowerCase()}</b>
+            </span>
           ) : punto ? (
             <span>
               Tu tapita está en el <b className="font-bold">{punto}</b>

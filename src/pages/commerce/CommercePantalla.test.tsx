@@ -96,6 +96,9 @@ describe('la pantalla del estadio', () => {
     })
     expect(await screen.findByRole('heading', { level: 1, name: 'Butacas para la platea' })).toBeInTheDocument()
     expect(screen.getByText('Con el apoyo de Norte Energía')).toBeInTheDocument()
+    // Recién publicado nadie aportó todavía: en lugar de una lista vacía, la invitación.
+    expect(screen.queryByRole('heading', { name: 'Los que más aportan' })).not.toBeInTheDocument()
+    expect(screen.getByText('Todavía nadie sumó tapitas. ¡La primera puede ser la tuya!')).toBeInTheDocument()
     expect(await screen.findByRole('img', { name: 'QR del Punto R · Sede social' })).toBeInTheDocument()
   })
 })
