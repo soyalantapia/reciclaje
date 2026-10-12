@@ -113,7 +113,7 @@ describe('informe para la Comisión Directiva', () => {
     expect(container.querySelector('footer')?.textContent).toContain('Datos de ejemplo de la demo')
   })
 
-  it('pone los números del panel: kilos, tapitas, aportes, hinchas y la Huella Verde con su puesto', async () => {
+  it('pone los números del panel: kilos, tapitas, aportes, hinchas y la Huella Verde, sin puesto en la red', async () => {
     verElInforme()
     const numeros = await seccion('En números')
     const t = numeros.textContent ?? ''
@@ -123,7 +123,8 @@ describe('informe para la Comisión Directiva', () => {
     expect(t).toContain('Hinchas que participaron este mes162')
     expect(t).toContain('Beneficios canjeados28')
     expect(t).toContain('Huella Verde64 de 100')
-    expect(await within(numeros).findByText(/Puesto 2 de 2 en la red/)).toBeInTheDocument()
+    // Una institución no compite en Huella Verde con los comercios: el informe no la pone «8 de 8».
+    expect(numeros.textContent).not.toMatch(/puesto/i)
   })
 
   it('suma lo que la hinchada hizo en esta sesión, con las mismas cuentas que el resumen', async () => {

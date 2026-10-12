@@ -327,6 +327,11 @@ Tres funciones para la reunión con Talleres del 13/10, pensadas para las pregun
 - **En el perfil** (`LogrosDelPerfil`): los seis, ganados a color con el anillo del club y los que faltan en gris con su progreso (690 / 1.000, 2 / 3).
 - Para volver a ver el desbloqueo en un ensayo: otra ventana de incógnito, o borrar los datos del sitio.
 
+### Sin «Puesto 8 de 8» para el club (rama `fix/sin-puesto-del-club`)
+- Alan decidió el 12/10/2026 sacarlo: el resumen y el informe para la Comisión Directiva ponían a Talleres «Puesto 8 de 8 en la red», con una Huella Verde de ejemplo comparada contra comercios.
+- Una institución (categoría `club`) ya no ve su puesto (`muestraPuestoEnLaRed`); un comercio sí, como antes.
+- En «Marcas de la red» de la app, el club va primero, como institución, y las empresas siguen por Huella Verde. Antes quedaba último.
+
 ---
 
 ## Trabajo hecho que NO quedó en commits

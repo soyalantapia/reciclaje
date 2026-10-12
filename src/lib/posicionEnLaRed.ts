@@ -29,3 +29,12 @@ export function textoDePosicion(p: Posicion): string {
   if (!p.siguiente) return 'Primer puesto de la red 🌎'
   return `Puesto ${p.puesto} de ${p.total} en la red · a ${p.siguiente.diferencia} puntos de ${p.siguiente.nombre}`
 }
+
+/**
+ * ¿Se muestra el puesto en la red? A una institución no: su Huella Verde no compite con la de un comercio,
+ * y en la demo dejaba a Talleres «Puesto 8 de 8» en el informe para su Comisión Directiva (decidido por
+ * Alan el 12/10/2026).
+ */
+export function muestraPuestoEnLaRed(sponsor: { category: string }): boolean {
+  return sponsor.category !== 'club'
+}
