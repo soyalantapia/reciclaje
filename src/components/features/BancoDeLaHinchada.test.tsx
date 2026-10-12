@@ -35,8 +35,14 @@ describe('BancoDeLaHinchada con un producto que publicó el club', () => {
     const { container, rerender } = render(<BancoDeLaHinchada proyecto={con} items={[]} propias={0} />)
     const apoyo = container.querySelector('[data-apoyo]')!
     expect(apoyo.textContent).toBe('Con el apoyo de Norte Energía')
-    expect((apoyo.querySelector('span[aria-hidden]') as HTMLElement).style.background).toBe('rgb(15, 61, 145)')
+    // El logo de la empresa, con su color.
+    expect((apoyo.querySelector('[data-logo="s_ypf"]') as HTMLElement).style.backgroundColor).toBe('rgb(15, 61, 145)')
     rerender(<BancoDeLaHinchada proyecto={butacas} items={[]} propias={0} />)
     expect(container.querySelector('[data-apoyo]')).toBeNull()
+  })
+
+  it('un producto de Talleres lleva su escudo al lado del nombre del club', () => {
+    const { container } = render(<BancoDeLaHinchada proyecto={{ ...butacas, sponsorId: 's_club' }} items={[]} propias={0} />)
+    expect(container.querySelector('img[data-escudo="s_club"]')?.getAttribute('src')).toMatch(/clubes\/talleres\/escudo\.svg$/)
   })
 })

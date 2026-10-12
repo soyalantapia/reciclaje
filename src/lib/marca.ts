@@ -1,8 +1,8 @@
 /**
- * La marca de una institución en su panel: un color y, si lo subió, su escudo. Nada de esto está en
- * el código: lo carga quien usa el panel y queda en su navegador (src/store/marcaDelClub.ts), porque
- * el repo y la demo son públicos. Acá está la lógica pura: la paleta que pisa los tokens eco-* y el
- * color que se toma del escudo.
+ * La marca de una institución en su panel: un color y, si lo subió, su escudo. La que se carga en
+ * «Marca» queda en el navegador (src/store/marcaDelClub.ts). Desde el 12/10/2026 la demo trae además
+ * la marca oficial de Talleres (src/lib/logos.ts), que vale mientras el club no cargue otra. Acá está
+ * la lógica pura: la paleta que pisa los tokens eco-* y el color que se toma del escudo.
  */
 
 export const TONOS = ['50', '100', '200', '300', '400', '500', '600', '700', '800', '900', '950'] as const

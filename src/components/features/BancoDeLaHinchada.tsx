@@ -10,6 +10,7 @@ import { BancoDeTapitas } from './BancoDeTapitas'
 import { Cancha } from './Cancha'
 import { Marcador } from './Marcador'
 import { UltimosAportes } from './UltimosAportes'
+import { EscudoOficial } from './LogoDeMarca'
 
 /**
  * El banco de la hinchada sobre césped: el marcador, el avance, el banco de tapitas y la
@@ -40,7 +41,10 @@ export function BancoDeLaHinchada({
     <Cancha conLinea className={cn('p-4 pt-6 sm:p-5 sm:pt-7', className)}>
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="text-xs font-bold text-eco-800 dark:text-eco-200">{antetitulo ?? proyecto.sponsorName}</p>
+          <p className="flex items-center gap-1.5 text-xs font-bold text-eco-800 dark:text-eco-200">
+            <EscudoOficial sponsorId={proyecto.sponsorId} nombre={proyecto.sponsorName} />
+            {antetitulo ?? proyecto.sponsorName}
+          </p>
           <h2 className="text-lg font-extrabold leading-tight text-eco-950 dark:text-eco-50">{proyecto.title}</h2>
           <ApoyoDelProducto proyecto={proyecto} className="mt-1.5" />
         </div>

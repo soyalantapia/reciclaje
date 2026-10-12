@@ -34,6 +34,8 @@ export default function Marketplace() {
   const spend = useWalletStore((s) => s.spend)
   const addCoupon = useCouponsStore((s) => s.add)
   const { data: delSimulador, error, reload } = useApi(() => api.getBenefits(), [])
+  // Las marcas de la red, para el logo de cada beneficio.
+  const { data: red } = useApi(() => api.getSponsors(), [])
   const creados = useCommerceBenefitsStore((s) => s.created)
   const pausados = useCommerceBenefitsStore((s) => s.pausedIds)
   // Lo que el comercio o el club publicó o pausó en su panel también se ve acá.
@@ -103,6 +105,7 @@ export default function Marketplace() {
                 isPremium={isPremium}
                 spendableXp={spendableXp}
                 onRedeem={setPending}
+                marca={red?.find((s) => s.id === b.sponsorId)}
               />
             ))}
             {benefits && visible.length === 0 && (

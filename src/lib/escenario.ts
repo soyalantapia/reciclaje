@@ -7,7 +7,8 @@
  *
  * El club es Talleres: Alan decidió el 10/10/2026 que las demos lo nombren. `VITE_CLUB_NOMBRE` lo
  * pisa para mostrarle la demo a otro club. El escudo y los colores del club NO se publican sin su
- * permiso escrito (es una de las preguntas de la reunión).
+ * permiso escrito (es una de las preguntas de la reunión). Alan decidió el 12/10/2026 mostrar el escudo y el azul de
+ * Talleres en la demo para la reunión (src/lib/logos.ts).
  */
 export type Escenario = 'general' | 'club'
 

@@ -1,6 +1,7 @@
 import type { ImpactProject } from '@/types'
 import { textoDelApoyo } from '@/lib/productosDelClub'
 import { cn } from '@/lib/utils'
+import { LogoDeMarca } from './LogoDeMarca'
 
 /** «Con el apoyo de …», con el color de la empresa: va junto a un producto que tiene patrocinador. */
 export function ApoyoDelProducto({ proyecto, className }: { proyecto: ImpactProject; className?: string }) {
@@ -14,7 +15,10 @@ export function ApoyoDelProducto({ proyecto, className }: { proyecto: ImpactProj
         className,
       )}
     >
-      <span aria-hidden className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: proyecto.patrocinador!.color }} />
+      <LogoDeMarca
+        marca={{ id: proyecto.patrocinador!.id, name: proyecto.patrocinador!.nombre, brandColor: proyecto.patrocinador!.color }}
+        tamano="xs"
+      />
       <span className="truncate">{texto}</span>
     </p>
   )

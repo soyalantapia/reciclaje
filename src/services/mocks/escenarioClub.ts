@@ -10,6 +10,7 @@ import type {
 } from '@/types'
 import { ESTACION_DE_EJEMPLO, type DatosDelClub } from '@/lib/escenario'
 import type { DatosDemo } from './datos'
+import { AZUL_DE_TALLERES, esTalleres } from '@/lib/logos'
 
 /** El club de ejemplo de la demo general: en este escenario no aparece. */
 const CLUB_DE_EJEMPLO = 's_talleres'
@@ -55,7 +56,8 @@ const DIAS_HASTA_SEPTIEMBRE = 133
 const ID_CLUB = 's_club'
 const ID_PRODUCTO = 'pr_banco_club'
 /** Verde de ReciclaXP: los colores y el escudo del club no se usan sin su permiso escrito. */
-const COLOR_CLUB = '#059669'
+/** El color del club en la red: el azul de Talleres; otro club (`VITE_CLUB_NOMBRE`) va con el verde neutro. */
+const colorDelClub = (nombre: string) => (esTalleres(nombre) ? AZUL_DE_TALLERES : '#059669')
 
 /** Los ids con que el caso del club entra en una demo. */
 export interface IdsDelCaso {
@@ -88,7 +90,7 @@ export function casoDelClub(base: DatosDemo, club: DatosDelClub, ids: IdsDelCaso
     name: club.nombre,
     slug: ids.slug,
     category: 'club',
-    brandColor: COLOR_CLUB,
+    brandColor: colorDelClub(club.nombre),
     tagline: 'Reciclá con tu club',
     greenScore: 64,
     kgRecovered: 180,

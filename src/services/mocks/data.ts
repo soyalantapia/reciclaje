@@ -48,7 +48,8 @@ export const sponsors: Sponsor[] = [
     name: 'Talleres',
     slug: 'talleres',
     category: 'estadio',
-    brandColor: '#059669',
+    // El azul de Talleres (AZUL_DE_TALLERES en src/lib/logos.ts).
+    brandColor: '#0b2d6b',
     tagline: 'Reciclá con la hinchada',
     greenScore: 64,
     kgRecovered: 180,

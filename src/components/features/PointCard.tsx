@@ -3,6 +3,7 @@ import type { PointType, RecyclePoint, Sponsor } from '@/types'
 import { cn, MATERIAL_LABEL } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { HuellaVerde } from './HuellaVerde'
+import { LogoDeMarca } from './LogoDeMarca'
 
 const TYPE_LABEL: Record<PointType, string> = {
   deposito: 'Depósito de tapitas',
@@ -30,12 +31,13 @@ export function PointCard({ point, sponsor, distancia, elegido, onClick }: Props
         elegido && 'ring-2 ring-eco-500',
       )}
     >
-      <span
-        className="grid h-11 w-11 shrink-0 place-items-center rounded-xl text-white"
-        style={{ backgroundColor: sponsor?.brandColor ?? '#059669' }}
-      >
-        <MapPin size={20} />
-      </span>
+      {sponsor ? (
+        <LogoDeMarca marca={sponsor} tamano="md" />
+      ) : (
+        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-eco-600 text-white">
+          <MapPin size={20} />
+        </span>
+      )}
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
           <p className="truncate font-bold leading-tight">{point.name}</p>

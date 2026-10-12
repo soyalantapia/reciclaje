@@ -8,6 +8,7 @@ import { HuellaVerde } from '@/components/features/HuellaVerde'
 import { ErrorState } from '@/components/features/ErrorState'
 import { Skeleton } from '@/components/ui/skeleton'
 import { CardGrid } from '@/components/ui/card-grid'
+import { LogoDeMarca } from '@/components/features/LogoDeMarca'
 
 const CATEGORY_LABEL: Record<SponsorCategory, string> = {
   estacion: 'Estación',
@@ -38,8 +39,11 @@ export default function Marcas() {
 
       <div className="flex items-start gap-2 rounded-xl border border-eco-200 bg-eco-50 p-3 text-sm text-eco-800 dark:border-eco-700/40 dark:bg-eco-900/20 dark:text-eco-200">
         <Leaf size={18} className="mt-0.5 shrink-0" />
-        La <strong className="font-bold">Huella Verde</strong> mide la reputación ambiental de cada
-        aliado: cuanto más recicla su comunidad, más sube.
+        {/* En un párrafo: sueltos, el texto y el <strong> eran tres columnas del flex. */}
+        <p>
+          La <strong className="font-bold">Huella Verde</strong> mide la reputación ambiental de cada
+          aliado: cuanto más recicla su comunidad, más sube.
+        </p>
       </div>
 
       {error && !sponsors ? (
@@ -50,12 +54,7 @@ export default function Marcas() {
           {sorted.map((s) => (
             <div key={s.id} className="rounded-2xl border border-border bg-card p-4 shadow-sm">
               <div className="flex items-start gap-3">
-                <span
-                  className="grid h-12 w-12 shrink-0 place-items-center rounded-xl text-lg font-extrabold text-white"
-                  style={{ backgroundColor: s.brandColor }}
-                >
-                  {s.name[0]}
-                </span>
+                <LogoDeMarca marca={s} tamano="lg" />
                 <div className="min-w-0 flex-1">
                   <p className="truncate font-bold leading-tight">{s.name}</p>
                   <p className="truncate text-xs font-semibold text-muted-foreground">

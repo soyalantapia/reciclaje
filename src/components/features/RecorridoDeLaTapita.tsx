@@ -6,6 +6,7 @@ import { cn, formatDate, formatNumber, pct } from '@/lib/utils'
 import { BancoDeTapitas } from './BancoDeTapitas'
 import { Cancha } from './Cancha'
 import { ICONO_DE_ETAPA } from './iconosDeEtapa'
+import { EscudoOficial } from './LogoDeMarca'
 
 /**
  * La trazabilidad de un banco contada como el recorrido de tu tapita: una línea de cal sobre
@@ -31,7 +32,10 @@ export function RecorridoDeLaTapita({
 
   return (
     <Cancha conLinea className="p-4 pt-6 sm:p-5 sm:pt-7">
-      <p className="text-xs font-bold text-eco-800 dark:text-eco-200">Trazabilidad · {proyecto.sponsorName}</p>
+      <p className="flex items-center gap-1.5 text-xs font-bold text-eco-800 dark:text-eco-200">
+        <EscudoOficial sponsorId={proyecto.sponsorId} nombre={proyecto.sponsorName} />
+        Trazabilidad · {proyecto.sponsorName}
+      </p>
       <h1 className="text-2xl font-extrabold leading-tight text-eco-950 dark:text-eco-50">El recorrido de tu tapita</h1>
 
       <div className="mt-3 space-y-1 rounded-xl bg-card/90 p-3 text-sm">

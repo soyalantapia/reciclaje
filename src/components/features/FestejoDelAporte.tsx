@@ -6,6 +6,7 @@ import { destinoDelProducto } from '@/lib/productosDelClub'
 import { BancoDeTapitas } from './BancoDeTapitas'
 import { Cancha } from './Cancha'
 import { Marcador } from './Marcador'
+import { EscudoOficial } from './LogoDeMarca'
 
 /** Tapitas que caen al banco: decorativas, no representan una cantidad. */
 function TapitasCayendo() {
@@ -41,7 +42,10 @@ export function FestejoDelAporte({ proyecto, unidades, xp }: { proyecto: ImpactP
   return (
     <div data-testid="festejo" onClick={() => setSaltado(true)} className="w-full cursor-pointer text-left">
       <Cancha conLinea className="p-4 pt-6">
-        <p className="text-xs font-bold text-eco-800 dark:text-eco-200">{proyecto.sponsorName} · {destino.rotulo}</p>
+        <p className="flex items-center gap-1.5 text-xs font-bold text-eco-800 dark:text-eco-200">
+          <EscudoOficial sponsorId={proyecto.sponsorId} nombre={proyecto.sponsorName} />
+          {proyecto.sponsorName} · {destino.rotulo}
+        </p>
         <div className="relative mt-2">
           {!quieto && <TapitasCayendo />}
           <BancoDeTapitas

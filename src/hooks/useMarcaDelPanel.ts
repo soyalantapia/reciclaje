@@ -3,6 +3,7 @@ import { useSessionStore } from '@/store/session'
 import { useMarcaDelClubStore } from '@/store/marcaDelClub'
 import { esInstitucion } from '@/lib/vocabulario'
 import { COLOR_DE_RECICLAXP, esColorPropio, estiloDeMarca } from '@/lib/marca'
+import { marcaOficial } from '@/lib/logos'
 
 /**
  * La marca de la institución que entró al panel, si la cargó en «Marca»: su escudo, su color y las
@@ -14,7 +15,9 @@ import { COLOR_DE_RECICLAXP, esColorPropio, estiloDeMarca } from '@/lib/marca'
  */
 export function useMarcaDelPanel(): { escudo?: string; color: string; estilo: CSSProperties } | null {
   const commerce = useSessionStore((s) => s.commerce)
-  const marca = useMarcaDelClubStore((s) => (commerce ? s.marcas?.[commerce.id] : undefined))
+  const guardada = useMarcaDelClubStore((s) => (commerce ? s.marcas?.[commerce.id] : undefined))
+  // Lo que cargó en «Marca» manda; si no cargó nada, la marca oficial que trae la demo (el escudo de Talleres).
+  const marca = guardada ?? (commerce ? marcaOficial(commerce) ?? undefined : undefined)
   if (!commerce || !esInstitucion(commerce.category) || !marca) return null
   const color = typeof marca.color === 'string' ? marca.color : COLOR_DE_RECICLAXP
   return { escudo: marca.escudo, color, estilo: esColorPropio(color) ? (estiloDeMarca(color) as CSSProperties) : {} }
