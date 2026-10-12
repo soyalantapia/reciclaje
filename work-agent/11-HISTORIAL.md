@@ -233,6 +233,19 @@ WhatsApp del proyecto y de la reunión del 03/08 (acta en `docs/producto/reunion
     - La lista va junto al mapa.
     - Se precarga en un momento libre y el `index.html` abre antes la conexión a las teselas. La lógica es pura, en `src/lib/mapa.ts`.
   - Se hizo en cuatro tareas con subagentes, dos de ellas en paralelo en worktrees aparte, cada una con su revisión.
+- Rama `feat/barra-y-encabezado-flotantes`: Alan pidió el encabezado «flotante, redondeado en todas las esquinas» y la barra de abajo «más innovadora».
+  - **El encabezado del celular** es una tarjeta de vidrio que flota: despegada 12 px de los costados y 8 px de arriba, redondeada en las cuatro esquinas, con sombra suave. Lo de atrás se ve borroso al pasar.
+  - **La barra de abajo** es un dock de vidrio flotante:
+    - despegado de los bordes y redondeado;
+    - la pestaña elegida lleva un fondo que se desliza con un resorte hasta la que tocás (`layoutId` de framer-motion);
+    - Escanear es un botón elevado con degradé, recortado sobre el dock por un aro del color de la página.
+    - Al deslizarse, el fondo pasa por debajo de los íconos, las etiquetas y el botón del medio (`z-10`).
+    - Con «reducir movimiento», el fondo sigue marcando la elegida pero no se desliza.
+  - **Entra en todos los anchos de celular, de 320 a 430 px:**
+    - debajo de 400 px la racha queda en la llama y el número («días» sigue para los lectores de pantalla);
+    - debajo de 375 px el logo queda en su ícono.
+
+    Antes, a 320 px se salía 21 px; con la tarjeta flotante y sin estos dos cambios, se salía también a 375 px.
 
 ---
 

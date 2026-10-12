@@ -260,6 +260,30 @@ describe('la barra de abajo', () => {
     expect(reboteDe('Mapa').style.transform).toBe('')
   })
 
+  it('el fondo de la pestaña elegida es uno solo y se va con ella; en Escanear no hay, porque el botón del medio ya se distingue', () => {
+    const { container } = verBarra('/')
+    const fondos = () => [...container.querySelectorAll<HTMLElement>('[data-pestana-activa]')]
+    expect(fondos()).toHaveLength(1)
+    expect(enlace('Inicio')).toContainElement(fondos()[0])
+    tocar(etiquetaDe('Beneficios'))
+    expect(fondos()).toHaveLength(1)
+    expect(enlace('Beneficios')).toContainElement(fondos()[0])
+    tocar(etiquetaDe('Escanear'))
+    expect(fondos()).toHaveLength(0)
+    // Y vuelve al salir del medio.
+    tocar(etiquetaDe('Perfil'))
+    expect(fondos()).toHaveLength(1)
+    expect(enlace('Perfil')).toContainElement(fondos()[0])
+  })
+
+  it('con «reducir movimiento» el fondo de la elegida sigue marcándola: sólo no se desliza', () => {
+    sistema.reducir = true
+    const { container } = verBarra('/mapa')
+    const fondos = [...container.querySelectorAll<HTMLElement>('[data-pestana-activa]')]
+    expect(fondos).toHaveLength(1)
+    expect(enlace('Mapa')).toContainElement(fondos[0])
+  })
+
   it('lo que se aprieta ocupa todo el enlace y no suma paradas al teclado', () => {
     const { container } = verBarra('/')
     expect(container.querySelectorAll('a')).toHaveLength(5)
