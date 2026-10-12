@@ -38,6 +38,7 @@ En `BottomNav`, con `framer-motion`, que ya está en el proyecto:
 ### Un mapa de verdad
 
 - **La librería:** Leaflet (`leaflet` 1.9 y `react-leaflet` 5), con las teselas del estilo claro de CARTO sobre OpenStreetMap. La atribución es obligatoria: «© OpenStreetMap © CARTO».
+  - **Cambio en la implementación:** CARTO sin clave pinta «API KEY REQUIRED» sobre el mapa. Se usan las teselas de OpenStreetMap (`tile.openstreetmap.org`), con su atribución. Sirven para la demo; para el piloto hace falta un proveedor con plan comercial.
 - **La vista inicial:** el Centro y Nueva Córdoba. «Ver todos» encuadra todos los puntos, también el del estadio.
 - **Los pines:** un círculo del color de la marca, con un ícono según el tipo de punto. El elegido se agranda.
 - **El costo:** unos 45 kB comprimidos. Sólo se bajan con la pantalla del mapa.

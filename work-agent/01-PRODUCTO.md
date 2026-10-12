@@ -79,6 +79,6 @@ La narrativa honesta que usa toda la comunicación es:
 > **"Por lanzarse · cupos fundadores — primeros 100 puntos en Córdoba Capital"**
 
 Las marcas que aparecen (Coca-Cola, McDonald's, YPF, River, Starbucks, Grido, Adidas,
-Municipio de Vicente López, Café Lúmen) son **datos de demo / aspiracionales** y en la
+Municipio de ejemplo, Café Lúmen) son **datos de demo / aspiracionales** y en la
 landing están etiquetadas como *"Marcas que queremos sumar"*. **Nunca** presentarlas
 como clientes actuales.

@@ -10,7 +10,7 @@ Sesión demo: **`camila@reciclaxp.app`** / **`demo123`** (viene precargada en el
 | `/login` | `pages/Login.tsx` | react-hook-form + zod. Credenciales demo precargadas. Al entrar hidrata la wallet desde el usuario |
 | `/` | `pages/Home.tsx` | Hub: saludo, `XpWallet`, CTA escanear, proyecto de impacto en vivo, causa destacada, accesos a Marcas y Ranking, actividad reciente |
 | `/escanear` | `pages/Scan.tsx` | **Lector QR real por cámara** (@zxing) + carga manual de material/unidades. Muestra el XP ganado y el proyecto al que sumó |
-| `/mapa` | `pages/MapPoints.tsx` | Mapa esquemático (pines posicionados por `x`/`y` en %) + lista de puntos (abiertos primero) |
+| `/mapa` | `pages/MapPoints.tsx` | Mapa de Córdoba (Leaflet, teselas de OpenStreetMap) con chips de filtro, tarjeta del punto («Cómo llegar», «Reciclar acá»), «Cerca mío», «Ver todos» y la lista al lado (abiertos primero; con ubicación, por distancia) |
 | `/beneficios` | `pages/Marketplace.tsx` | Catálogo de beneficios con filtro por categoría (`Tabs`). Canje → descuenta XP → genera **cupón con QR** |
 | `/ranking` | `pages/Ranking.tsx` | Ranking mensual con scopes (Global / River / YPF), premio del mes y "tu posición" siempre visible |
 | `/causas` | `pages/Causes.tsx` | Lista de causas (hospital, ONG, escuela, comedor) |
