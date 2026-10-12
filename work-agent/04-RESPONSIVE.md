@@ -18,16 +18,19 @@ experiencia mobile es la primaria (es una PWA). Tablet y desktop **agregan** cap
 ```
 < md  (mobile)        │  ≥ md (tablet + desktop)
 ──────────────────────┼───────────────────────────────
-Header sticky         │  Header oculto (md:hidden)
-(logo, racha, XP,     │
+Header flotante       │  Header oculto (md:hidden)
+(tarjeta de vidrio:   │
+ logo, racha, XP,     │
  ranking)             │
 Contenido 1 columna   │  SideNav FIJA a la izquierda (w-60, sticky, h-dvh)
-BottomNav fija        │  BottomNav oculto (md:hidden)
-(5 tabs + FAB)        │  Contenido: mx-auto max-w-5xl, px-8
+BottomNav: dock       │  BottomNav oculto (md:hidden)
+flotante (5 tabs +    │  Contenido: mx-auto max-w-5xl, px-8
+Escanear elevado)     │
 ```
 - `SideNav.tsx` (md+): marca, bloque **XP canjeable** + **racha**, y 8 ítems —
   Inicio · Escanear · Mapa · Beneficios · Ranking · Causas · Marcas · Perfil.
-- `BottomNav.tsx` (<md): 5 tabs con **FAB central de Escanear**. Lleva `md:hidden`.
+- `BottomNav.tsx` (<md): un **dock de vidrio flotante** con 5 tabs, un fondo que se desliza hasta la elegida y **Escanear elevado** en el medio. Lleva `md:hidden`.
+- El header del celular entra de 320 a 430 px: debajo de 400 px la racha queda sin «días», y debajo de 375 px el logo queda sin el nombre (`AppLayout.tsx`).
 
 ### Hub de comercio — `CommerceLayout.tsx`
 ```

@@ -140,6 +140,21 @@ Dirección visual de los momentos clave. Diseño: `docs/superpowers/specs/2026-1
 - En una lista de productos, cada dibujo va en un recuadro de la misma proporción (`aspect-[2/1]`), así los textos de las tarjetas quedan a la misma altura.
 - Al imprimir (el informe para la Comisión Directiva), `data-no-imprimir` oculta el menú, el aviso de la demo y los botones. El informe sale en claro aunque la app esté en oscuro y lleva su propio aviso de datos de ejemplo.
 
+## La navegación flotante del celular (11/10/2026)
+
+- **El encabezado** (`AppLayout.tsx`): una tarjeta de vidrio que flota.
+  - El `header` sticky es transparente y sólo deja el margen (`px-3`, y arriba `0.5rem` más el área segura).
+  - La tarjeta: `rounded-[22px]`, `bg-card/80` con `backdrop-blur-xl`, borde blanco al 70 % y sombra verde muy suave.
+- **La barra de abajo** (`BottomNav.tsx`): un dock de vidrio.
+  - Va despegado 12 px de los costados y de abajo, más el área segura.
+  - `rounded-[28px]`, `bg-card/80`.
+  - El `nav` deja pasar los toques (`pointer-events-none`) y el dock los toma: tocar el margen toca la página.
+  - **La pestaña elegida:** un fondo `eco-100` que se desliza con un resorte (`layoutId="pestana-activa"`).
+  - **Escanear:** un botón de 60 px con degradé `eco-500 → eco-700`, sombra del mismo verde y un aro del color de la página (`ring-background`) que lo recorta sobre el dock.
+  - **Regla de capas:** el fondo deslizante va sin z-index, y el ícono con la etiqueta de cada pestaña y el botón del medio en `z-10`. Si no, al deslizarse tapa las etiquetas por las que pasa.
+- **Lo que entra en cada ancho:** desde 400 px, todo; debajo de 400 px, la racha sin «días»; debajo de 375 px, el logo sin el nombre. Medido de 320 a 430 px, sin desbordes.
+- El contenido deja `pb-32` abajo, así el último bloque no queda detrás del dock.
+
 ## Movimiento de la navegación y el mapa (11/10/2026)
 
 - **La barra de abajo y el menú lateral** (`IconoQueSeMueve.tsx`):
