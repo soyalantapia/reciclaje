@@ -25,6 +25,8 @@ const TABS: TabItem<Filter>[] = [
   { value: 'combustible', label: 'Combustible' },
   { value: 'experiencia', label: 'Experiencias' },
   { value: 'producto', label: 'Productos' },
+  // Lo que el panel publica como «Merch» (la camiseta oficial del club) sólo se veía en «Todos».
+  { value: 'merch', label: 'Merch' },
   { value: 'descuento', label: 'Descuentos' },
   { value: 'entrada', label: 'Entradas' },
 ]

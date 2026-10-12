@@ -81,6 +81,24 @@ export const MATERIAL_UNIT: Record<MaterialType, string> = {
   aluminio: 'latas',
 }
 
+const MATERIAL_UNIT_SINGULAR: Record<MaterialType, string> = {
+  tapitas: 'tapita',
+  plastico: 'envase',
+  vidrio: 'botella',
+  papel: 'hoja',
+  aluminio: 'lata',
+}
+
+/** La unidad del material para una cantidad: con una sola, en singular («1 envase», no «1 envases»). */
+export function unidadDe(material: MaterialType, cantidad: number): string {
+  return cantidad === 1 ? MATERIAL_UNIT_SINGULAR[material] : MATERIAL_UNIT[material]
+}
+
+/** Kilos con coma decimal y punto de miles, como se escriben acá («1,4 kg»; antes salía «1.4 kg»). */
+export function formatKg(kg: number): string {
+  return `${kg.toLocaleString('es-AR', { maximumFractionDigits: 1 })} kg`
+}
+
 /**
  * Genera un SVG de QR placeholder determinístico a partir del payload.
  * No es un QR escaneable real — alcanza para la demo / handoff a backend.

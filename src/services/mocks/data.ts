@@ -529,9 +529,10 @@ export const causes: Cause[] = [
     city: 'Córdoba',
     summary: 'Las tapitas que reciclás se venden y lo recaudado se convierte en insumos para el hospital.',
     story:
-      'Cada tapita depositada en los puntos de la red suma a esta causa. El material se vende a recicladores, y con lo recaudado el hospital acumula puntos que canjea por los insumos que más necesita. Vos ves exactamente en qué se transforma tu aporte.',
+      'Las tapitas de los puntos de la red que no juntan para un producto propio suman a esta causa. El material se vende a recicladores, y con lo recaudado el hospital acumula puntos que canjea por los insumos que más necesita. Desde la app también podés donarle XP.',
     material: 'tapitas',
-    unitLabel: 'tapitas',
+    // En kilos, como dice su tarjeta: la lista decía «3.120 / 5.000 kg» y el detalle «3.120 / 5.000 tapitas».
+    unitLabel: 'kg de tapitas',
     kgGoal: 5000,
     kgCollected: 3120,
     pointsBalance: 18600,

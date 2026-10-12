@@ -13,7 +13,7 @@ import Scan from './Scan'
 vi.mock('@/lib/sonido', () => ({ prepararSonido: vi.fn(), sonarTapitas: vi.fn(), sonarLogro: vi.fn() }))
 
 const punto = (id: string, name: string) =>
-  ({ id, name, sponsorId: 's_club', type: 'deposito', address: '', city: 'Córdoba', lat: 0, lng: 0, acceptedMaterials: ['tapitas'], openNow: true }) as RecyclePoint
+  ({ id, name, sponsorId: 's_club', type: 'deposito', address: '', city: 'Córdoba', lat: 0, lng: 0, acceptedMaterials: ['tapitas', 'plastico'], openNow: true }) as RecyclePoint
 
 const banco = {
   id: 'pr_banco_club', title: 'Banco de suplentes', sponsorId: 's_club', sponsorName: 'Talleres', description: '',
@@ -36,12 +36,13 @@ vi.mock('@/services/api', async (original) => ({
     getPoints: () => Promise.resolve([punto('p_club_estadio', 'Punto R · Estadio'), punto('p_club_sede', 'Punto R · Sede social')]),
     getContributions: () => Promise.resolve(historial),
     getProjects: () => Promise.resolve([banco]),
-    scan: ({ pointId, units }: { pointId: string; units: number }) =>
+    scan: ({ pointId, units, material }: { pointId: string; units: number; material: string }) =>
       Promise.resolve({
         xpEarned: 100,
         project: banco,
         contribution: {
-          ...historial[0], id: `s_${pointId}`, pointId, pointName: pointId, units, xpEarned: 100, createdAt: new Date().toISOString(),
+          ...historial[0], id: `s_${pointId}_${material}`, pointId, pointName: pointId, material, units, xpEarned: 100,
+          createdAt: new Date().toISOString(),
         },
       }),
   },
@@ -64,14 +65,16 @@ beforeEach(() => {
   useSessionStore.setState({ user: { name: 'Camila Rodríguez' } as never, isAuthenticated: true })
 })
 
-async function aportarEn(pointId: string) {
+async function aportarEn(pointId: string, material?: RegExp) {
   sessionStorage.setItem(claveDeAlmacenamiento('scan-point'), pointId)
   render(
     <MemoryRouter>
       <Scan />
     </MemoryRouter>,
   )
-  fireEvent.click(await screen.findByRole('button', { name: /Registrar aporte/ }))
+  const registrar = await screen.findByRole('button', { name: /Registrar aporte/ })
+  if (material) fireEvent.click(screen.getByRole('button', { name: material }))
+  fireEvent.click(registrar)
   await screen.findByText('¡Aporte registrado!')
 }
 
@@ -86,5 +89,11 @@ describe('logros en el festejo', () => {
   it('aportar en la sede no desbloquea nada', async () => {
     await aportarEn('p_club_sede')
     expect(screen.queryByText('¡Logro desbloqueado!')).toBeNull()
+  })
+
+  it('con plástico en el Estadio también festeja el logro, y no dice que suma a un banco de tapitas', async () => {
+    await aportarEn('p_club_estadio', /Plástico/)
+    expect((await screen.findByRole('status')).textContent).toMatch(/¡Logro desbloqueado!.*Hincha de cancha/)
+    expect(screen.queryByText('Tu aporte suma a un proyecto')).toBeNull()
   })
 })

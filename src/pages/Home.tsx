@@ -6,7 +6,7 @@ import { useApi } from '@/hooks/useApi'
 import { useSessionStore } from '@/store/session'
 import { useActivityStore } from '@/store/activity'
 import { useCommerceProductsStore } from '@/store/commerceProducts'
-import { MATERIAL_EMOJI, MATERIAL_UNIT, cn, formatNumber, formatXp, timeAgo } from '@/lib/utils'
+import { MATERIAL_EMOJI, cn, formatKg, formatNumber, formatXp, timeAgo, unidadDe } from '@/lib/utils'
 import { claveDeAlmacenamiento } from '@/lib/escenario'
 import { XpWallet } from '@/components/features/XpWallet'
 import { ImpactProgress } from '@/components/features/ImpactProgress'
@@ -251,8 +251,8 @@ export default function Home() {
                   <p className="text-xs text-muted-foreground">
                     {isRecycle
                       ? item.units
-                        ? `${formatNumber(item.units)} ${MATERIAL_UNIT[item.material]}`
-                        : `${item.weightKg} kg`
+                        ? `${formatNumber(item.units)} ${unidadDe(item.material, item.units)}`
+                        : formatKg(item.weightKg ?? 0)
                       : `$${formatNumber(item.amountArs)}`}{' '}
                     · {timeAgo(item.createdAt)}
                   </p>

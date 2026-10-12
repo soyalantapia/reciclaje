@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { cn, formatDate, formatNumber, formatXp, parsePointFromQr, pct, shortCode } from './utils'
+import { cn, formatDate, formatKg, formatNumber, formatXp, parsePointFromQr, pct, shortCode, unidadDe } from './utils'
 
 describe('pct', () => {
   it('calcula porcentaje redondeado', () => {
@@ -57,5 +57,22 @@ describe('formatDate', () => {
       if (antes === undefined) delete process.env.TZ
       else process.env.TZ = antes
     }
+  })
+})
+
+describe('unidadDe', () => {
+  it('con una sola unidad va en singular: decía «1 envases»', () => {
+    expect(unidadDe('plastico', 1)).toBe('envase')
+    expect(unidadDe('tapitas', 1)).toBe('tapita')
+    expect(unidadDe('plastico', 2)).toBe('envases')
+    expect(unidadDe('tapitas', 50)).toBe('tapitas')
+  })
+})
+
+describe('formatKg', () => {
+  it('con coma decimal, como se escribe acá: decía «1.4 kg»', () => {
+    expect(formatKg(1.4)).toBe('1,4 kg')
+    expect(formatKg(12)).toBe('12 kg')
+    expect(formatKg(1250.5)).toBe('1.250,5 kg')
   })
 })
