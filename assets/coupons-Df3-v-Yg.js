@@ -1,1 +1,0 @@
-import{Tt as e,bt as t,mt as n,wt as r}from"./index-3i7CukhV.js";var i=e()(r(e=>({coupons:[],add:t=>e(e=>({coupons:[t,...e.coupons]})),clear:()=>e({coupons:[]})}),{name:t(`coupons`),...n()}));export{i as t};
