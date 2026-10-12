@@ -17,6 +17,7 @@ import { Button } from '@/components/ui/button'
 import { Modal } from '@/components/ui/modal'
 import { Skeleton } from '@/components/ui/skeleton'
 import { CardGrid } from '@/components/ui/card-grid'
+import { IconoDeBeneficio } from '@/components/features/IconoDeBeneficio'
 
 type Filter = 'todos' | BenefitCategory
 const TABS: TabItem<Filter>[] = [
@@ -123,7 +124,7 @@ export default function Marketplace() {
           <div className="space-y-4">
             <div className="flex items-center gap-3">
               <span className="grid h-12 w-12 place-items-center rounded-xl bg-muted text-2xl">
-                {pending.emoji}
+                <IconoDeBeneficio benefit={pending} />
               </span>
               <div>
                 <p className="font-bold">{pending.title}</p>

@@ -13,6 +13,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Modal } from '@/components/ui/modal'
 import { Skeleton } from '@/components/ui/skeleton'
+import { IconoDeBeneficio } from '@/components/features/IconoDeBeneficio'
 
 const CATEGORIES: { value: BenefitCategory; label: string }[] = [
   { value: 'descuento', label: 'Descuento' },
@@ -100,7 +101,7 @@ export default function CommerceBenefits() {
           >
             <div className="flex items-start gap-3">
               <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-muted text-2xl">
-                {b.emoji}
+                <IconoDeBeneficio benefit={b} />
               </span>
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
