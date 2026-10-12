@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import type { RecyclePoint } from '@/types'
 import {
   CENTRO_DE_CORDOBA, CENTRO_Y_NUEVA_CORDOBA, distanciaKm, enlaceComoLlegar, estaEnCordoba, filtrarPuntos, materialesDeLaRed, ordenarPuntos,
-  prefiereMenosMovimiento, recuadroDe, textoDeDistancia,
+  prefiereMenosMovimiento, recuadroDe, teselasDelMapa, textoDeDistancia,
 } from './mapa'
 
 const PLAZA_SAN_MARTIN = { lat: -31.416736, lng: -64.183581 }
@@ -121,5 +121,26 @@ describe('prefiereMenosMovimiento', () => {
     // La persona puede cambiarlo con la pantalla abierta: el próximo toque ya lo ve.
     reducir = false
     expect(prefiereMenosMovimiento()).toBe(false)
+  })
+})
+
+describe('teselasDelMapa', () => {
+  it('sin configurar, usa las de OpenStreetMap con su atribución obligatoria', () => {
+    const t = teselasDelMapa(undefined, undefined)
+    expect(t.url).toBe('https://tile.openstreetmap.org/{z}/{x}/{y}.png')
+    expect(t.atribucion).toContain('https://www.openstreetmap.org/copyright')
+  })
+
+  it('para el piloto, el proveedor se cambia con variables de entorno, sin tocar código', () => {
+    const t = teselasDelMapa(' https://tiles.ejemplo.com/{z}/{x}/{y}.png?key=abc ', '&copy; Ejemplo')
+    expect(t).toEqual({ url: 'https://tiles.ejemplo.com/{z}/{x}/{y}.png?key=abc', atribucion: '&copy; Ejemplo' })
+  })
+
+  it('una URL sin {z}, {x} e {y} no sirve: vuelve a OpenStreetMap', () => {
+    expect(teselasDelMapa('https://tiles.ejemplo.com/mapa.png', '&copy; Ejemplo').url).toBe('https://tile.openstreetmap.org/{z}/{x}/{y}.png')
+  })
+
+  it('un proveedor propio sin atribución igual cita a OpenStreetMap, que es de donde salen los datos', () => {
+    expect(teselasDelMapa('https://tiles.ejemplo.com/{z}/{x}/{y}.png', '').atribucion).toContain('OpenStreetMap')
   })
 })

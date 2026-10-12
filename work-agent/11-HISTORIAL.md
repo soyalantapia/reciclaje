@@ -255,6 +255,11 @@ WhatsApp del proyecto y de la reunión del 03/08 (acta en `docs/producto/reunion
 - Ahora las tres son de Córdoba y con nombres inventados, como las marcas de la demo del club: «Hospital Infantil del Parque», «Comedor Los Girasoles» y «Escuela Los Algarrobos».
 - Los ids no cambian, así que las donaciones guardadas en el navegador siguen valiendo y no hace falta subir la versión de los datos.
 - Una prueba fija la regla en las dos demos.
+
+### El mapa sin react-leaflet (rama `fix/mapa-sin-react-leaflet`)
+- `react-leaflet` y `@react-leaflet/core` tienen licencia Hippocratic-2.1, que no es de código abierto estándar y pone condiciones de uso. `MapaDeCordoba` ahora usa Leaflet directo (BSD-2) y la dependencia salió del `package.json`.
+- Se ve y se comporta igual: las pruebas del mapa ya usaban Leaflet de verdad y siguen en verde, más dos nuevas (el punto de «mi ubicación» y que el mapa se libere al salir de la pantalla).
+- Las teselas se eligen al compilar con `VITE_TESELAS_URL` y `VITE_TESELAS_ATRIBUCION` (`teselasDelMapa` en `src/lib/mapa.ts`). Sin configurar, siguen las de OpenStreetMap; para el piloto se configura un proveedor con plan comercial sin tocar código.
 ---
 
 ## Trabajo hecho que NO quedó en commits
