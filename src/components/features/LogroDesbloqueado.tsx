@@ -1,6 +1,8 @@
+import { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, useReducedMotion } from 'framer-motion'
 import type { Logro } from '@/lib/logros'
+import { sonarLogro } from '@/lib/sonido'
 import { Medalla } from './Medalla'
 
 /** Los destellos alrededor de la medalla: decorativos. */
@@ -31,6 +33,14 @@ function Destellos() {
  */
 export function LogroDesbloqueado({ logro }: { logro: Logro }) {
   const reduce = useReducedMotion()
+  // Las campanitas suenan cuando entra la medalla.
+  // La ref lo cuida del doble montaje del modo estricto de React.
+  const sono = useRef(false)
+  useEffect(() => {
+    if (sono.current) return
+    sono.current = true
+    sonarLogro(0.6)
+  }, [])
   return (
     <motion.div
       role="status"

@@ -11,6 +11,8 @@ import {
   Send,
   Sun,
   Ticket,
+  Volume2,
+  VolumeX,
 } from 'lucide-react'
 import { api } from '@/services/api'
 import { useApi } from '@/hooks/useApi'
@@ -18,6 +20,7 @@ import { useSessionStore } from '@/store/session'
 import { useWalletStore } from '@/store/wallet'
 import { useActivityStore } from '@/store/activity'
 import { useUiStore } from '@/store/ui'
+import { useSonidoStore } from '@/store/sonido'
 import { useCouponsStore } from '@/store/coupons'
 import type { Coupon } from '@/types'
 import { cn, formatDate, formatNumber } from '@/lib/utils'
@@ -57,6 +60,8 @@ export default function Profile() {
   const clearActivity = useActivityStore((s) => s.clear)
   const theme = useUiStore((s) => s.theme)
   const toggleTheme = useUiStore((s) => s.toggleTheme)
+  const sonido = useSonidoStore((s) => s.activo)
+  const alternarSonido = useSonidoStore((s) => s.alternar)
   const coupons = useCouponsStore((s) => s.coupons)
   const clearCoupons = useCouponsStore((s) => s.clear)
   const { data: history } = useApi(() => api.getContributions(), [])
@@ -254,6 +259,33 @@ export default function Profile() {
             className={cn(
               'absolute top-1 h-5 w-5 rounded-full bg-white shadow transition-transform',
               theme === 'dark' ? 'left-1 translate-x-5' : 'left-1',
+            )}
+          />
+        </button>
+      </div>
+
+      {/* Sonido del festejo */}
+      <div className="flex items-center justify-between rounded-2xl border border-border bg-card p-4">
+        <div className="flex items-center gap-3">
+          <span className="grid h-10 w-10 place-items-center rounded-xl bg-muted text-foreground">
+            {sonido ? <Volume2 size={18} /> : <VolumeX size={18} />}
+          </span>
+          <div>
+            <p className="font-bold">Sonidos {sonido ? 'activados' : 'apagados'}</p>
+            <p className="text-xs text-muted-foreground">Las tapitas y los logros suenan al festejar</p>
+          </div>
+        </div>
+        <button
+          onClick={alternarSonido}
+          role="switch"
+          aria-checked={sonido}
+          aria-label="Sonidos del festejo"
+          className={cn('relative h-7 w-12 rounded-full transition-colors', sonido ? 'bg-eco-600' : 'bg-muted')}
+        >
+          <span
+            className={cn(
+              'absolute top-1 h-5 w-5 rounded-full bg-white shadow transition-transform',
+              sonido ? 'left-1 translate-x-5' : 'left-1',
             )}
           />
         </button>

@@ -7,7 +7,10 @@ import { claveDeAlmacenamiento } from '@/lib/escenario'
 import { useActivityStore } from '@/store/activity'
 import { useSessionStore } from '@/store/session'
 import { useWalletStore } from '@/store/wallet'
+import { prepararSonido } from '@/lib/sonido'
 import Scan from './Scan'
+
+vi.mock('@/lib/sonido', () => ({ prepararSonido: vi.fn(), sonarTapitas: vi.fn(), sonarLogro: vi.fn() }))
 
 const punto = (id: string, name: string) =>
   ({ id, name, sponsorId: 's_club', type: 'deposito', address: '', city: 'Córdoba', lat: 0, lng: 0, acceptedMaterials: ['tapitas'], openNow: true }) as RecyclePoint
@@ -76,6 +79,8 @@ describe('logros en el festejo', () => {
   it('aportar en el Estadio hoy desbloquea «Hincha de cancha»', async () => {
     await aportarEn('p_club_estadio')
     expect((await screen.findByRole('status')).textContent).toMatch(/¡Logro desbloqueado!.*Hincha de cancha/)
+    // El toque de «Registrar aporte» habilita el audio: Chrome y Safari no dejan sonar sin un toque.
+    expect(prepararSonido).toHaveBeenCalled()
   })
 
   it('aportar en la sede no desbloquea nada', async () => {
