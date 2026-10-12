@@ -283,6 +283,24 @@ Tres funciones para la reunión con Talleres del 13/10, pensadas para las pregun
   - la paleta del club pasó a `usePaletaDelClub`, que comparten el panel y esta pantalla.
 - La prueba de la rotación fallaba sólo con toda la suite corriendo: React registraba el temporizador después de que la prueba adelantaba el reloj. Ahora la prueba deja que React termine sus efectos antes de adelantarlo.
 
+
+### Talleres con su escudo y sus colores; logos para las marcas (rama `feat/talleres-con-escudo-y-logos`)
+- **Alan decidió el 12/10/2026 mostrar el escudo y los colores de Talleres en la demo**, para la reunión con el club. Cambia la regla del 10/10, que los dejaba esperando el permiso escrito.
+- **El escudo:**
+  - es el oficial, de Wikimedia Commons («Escudo Talleres 2015.svg», dominio público y marca registrada del club);
+  - está en `public/clubes/talleres/escudo.svg`;
+  - es un SVG limpio, sin scripts ni enlaces externos.
+- **El azul de la paleta:** `#0b2d6b` (`AZUL_DE_TALLERES`). El del escudo, `#040D2D`, es casi negro y no da tonos claros.
+- **Dónde va (`src/lib/logos.ts`):**
+  - en la demo del club, la app del hincha y el ingreso toman el azul (`usePaletaDeLaAppDelHincha`);
+  - el escudo va al lado del logo de ReciclaXP y junto al nombre del club en el banco, el festejo, el recorrido y la página del producto;
+  - el panel, la pantalla del estadio y el informe lo traen sin subir nada: lo que se cargue en «Marca» manda sobre la oficial;
+  - si la demo se arma para otro club (`VITE_CLUB_NOMBRE`), no aparece nada de Talleres;
+  - en la demo general, la app sigue verde (es de toda la red), pero Talleres lleva su escudo como marca.
+- **Las empresas de la red llevan un logo hecho acá** (`LogoDeMarca`): su color y un ícono de su rubro (combustible, café, bebida, comida, helado, deporte, municipio). Nunca el logo real de una empresa que no es aliada. Va en Marcas, Beneficios, los puntos del mapa y «Con el apoyo de».
+- **El encabezado del celular** con el escudo: debajo de 440 px la palabra «ReciclaXP» se esconde y quedan el ícono y el escudo. Medido de 320 a 440 px, sin desbordes.
+- **De paso:** el recuadro de la Huella Verde en Marcas partía el texto en tres columnas (el texto suelto en un flex). Ahora va en un párrafo.
+
 ---
 
 ## Trabajo hecho que NO quedó en commits

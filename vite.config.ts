@@ -34,7 +34,7 @@ export default defineConfig(({ command }) => ({
       registerType: 'autoUpdate',
       injectRegister: null,
       selfDestroying: true,
-      includeAssets: ['favicon.svg', 'pwa-192.png', 'pwa-512.png'],
+      includeAssets: ['favicon.svg', 'pwa-192.png', 'pwa-512.png', 'clubes/talleres/escudo.svg'],
       manifest: {
         name: 'ReciclaXP · Reciclá, sumá XP, cambiá tu mundo',
         short_name: 'ReciclaXP',

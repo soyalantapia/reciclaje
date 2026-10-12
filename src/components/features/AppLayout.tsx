@@ -7,12 +7,16 @@ import { Logo } from './Logo'
 import { BottomNav } from './BottomNav'
 import { SideNav } from './SideNav'
 import { AvisoDemo } from './AvisoDemo'
-import { claveDeAlmacenamiento } from '@/lib/escenario'
+import { ESCENARIO, claveDeAlmacenamiento } from '@/lib/escenario'
+import { escudoDeLaAppDelHincha } from '@/lib/logos'
+import { usePaletaDeLaAppDelHincha } from '@/hooks/usePaletaDelClub'
 
 export function AppLayout() {
   const navigate = useNavigate()
   const spendableXp = useWalletStore((s) => s.spendableXp)
   const streakDays = useWalletStore((s) => s.streakDays)
+  // En la demo de Talleres, la app toma el azul del club.
+  usePaletaDeLaAppDelHincha()
 
   // Si llegamos por un QR (deep-link ?p=), el punto quedó pendiente: vamos al escáner.
   useEffect(() => {
@@ -50,7 +54,8 @@ export function AppLayout() {
             {/* Lo que entra en cada ancho: desde 400 px, todo; debajo, la racha queda en la llama y el número; y
                 debajo de 375 px, el logo queda en su ícono. Así no se sale de la tarjeta ni con un XP de seis cifras. */}
             <button onClick={() => navigate('/')} aria-label="Ir al inicio">
-              <Logo textoClassName="max-[374px]:hidden" />
+              {/* Con el escudo del club al lado (demo de Talleres) el nombre se va antes: debajo de 440 px. */}
+              <Logo textoClassName={escudoDeLaAppDelHincha(ESCENARIO) ? 'max-[439px]:hidden' : 'max-[374px]:hidden'} />
             </button>
             <div className="flex items-center gap-1.5">
               <span className="inline-flex items-center gap-1 rounded-full bg-xp-100 px-2.5 py-1 text-xs font-bold text-xp-700 dark:bg-xp-700/20 dark:text-xp-300">

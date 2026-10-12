@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { vocabularioDelEscenario } from '@/lib/vocabulario'
+import { usePaletaDeLaAppDelHincha } from '@/hooks/usePaletaDelClub'
 
 const schema = z.object({
   email: z.string().email('Ingresá un email válido'),
@@ -21,6 +22,8 @@ const schema = z.object({
 type FormValues = z.infer<typeof schema>
 
 export default function Login() {
+  // En la demo de Talleres, el ingreso ya tiene el azul del club.
+  usePaletaDeLaAppDelHincha()
   const navigate = useNavigate()
   const location = useLocation()
   const setSession = useSessionStore((s) => s.setSession)

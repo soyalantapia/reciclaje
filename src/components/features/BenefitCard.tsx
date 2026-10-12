@@ -1,14 +1,17 @@
 import { Coins, Lock } from 'lucide-react'
-import type { Benefit } from '@/types'
+import type { Benefit, Sponsor } from '@/types'
 import { cn, formatNumber } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { LogoDeMarca } from './LogoDeMarca'
 
 interface Props {
   benefit: Benefit
   isPremium: boolean
   spendableXp: number
   onRedeem: (benefit: Benefit) => void
+  /** La marca que da el beneficio, para su logo; sin ella va sólo el nombre. */
+  marca?: Sponsor
 }
 
 const CATEGORY_LABEL: Record<Benefit['category'], string> = {
@@ -20,7 +23,7 @@ const CATEGORY_LABEL: Record<Benefit['category'], string> = {
   entrada: 'Entrada',
 }
 
-export function BenefitCard({ benefit, isPremium, spendableXp, onRedeem }: Props) {
+export function BenefitCard({ benefit, isPremium, spendableXp, onRedeem, marca }: Props) {
   const hasPremiumPrice = isPremium && benefit.premiumCostXp != null
   const cost = hasPremiumPrice ? benefit.premiumCostXp! : benefit.costXp
   const canAfford = spendableXp >= cost
@@ -34,7 +37,10 @@ export function BenefitCard({ benefit, isPremium, spendableXp, onRedeem }: Props
         </span>
         <div className="min-w-0 flex-1">
           <p className="truncate font-bold leading-tight">{benefit.title}</p>
-          <p className="truncate text-xs text-muted-foreground">{benefit.sponsorName}</p>
+          <p className="flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground">
+            {marca && <LogoDeMarca marca={marca} tamano="xs" />}
+            <span className="truncate">{benefit.sponsorName}</span>
+          </p>
           <Badge variant="neutral" className="mt-1">
             {CATEGORY_LABEL[benefit.category]}
           </Badge>

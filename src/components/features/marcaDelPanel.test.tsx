@@ -19,8 +19,10 @@ vi.mock('@/services/api', async (original) => ({
   },
 }))
 
+// Un club con otro id que el de la demo: la marca oficial de Talleres (src/lib/logos.ts) no aplica, y se
+// prueba la marca que se carga en el panel. La oficial tiene su propia prueba.
 const club: Sponsor = {
-  id: 's_club', name: 'Talleres', slug: 'club', category: 'club', brandColor: '#059669', tagline: '',
+  id: 's_otro_club', name: 'Talleres', slug: 'club', category: 'club', brandColor: '#059669', tagline: '',
   greenScore: 64, kgRecovered: 180,
 }
 // Un escudo de mentira: no es el de ningún club.
@@ -60,7 +62,7 @@ const conMarca = (c: HTMLElement) => c.querySelector<HTMLElement>('[style*="--ec
 
 describe('la marca del club en su panel', () => {
   it('con marca, el panel toma su color y muestra el escudo en los dos menús y en el informe', async () => {
-    useMarcaDelClubStore.getState().guardar('s_club', { escudo: ESCUDO, color: '#0b2d6b' })
+    useMarcaDelClubStore.getState().guardar('s_otro_club', { escudo: ESCUDO, color: '#0b2d6b' })
     const c = await verElPanelEn('/comercio/reportes', 'Informe para la Comisión Directiva')
     expect(conMarca(c)?.style.getPropertyValue('--eco-600')).toBe('#0b2d6b')
     // La barra lateral, el encabezado del celular y el encabezado del informe.
@@ -68,7 +70,7 @@ describe('la marca del club en su panel', () => {
   })
 
   it('con color y sin escudo, toma el color y deja la inicial', async () => {
-    useMarcaDelClubStore.getState().guardar('s_club', { color: '#0b2d6b' })
+    useMarcaDelClubStore.getState().guardar('s_otro_club', { color: '#0b2d6b' })
     const c = await verElPanelEn('/comercio/reportes', 'Informe para la Comisión Directiva')
     expect(conMarca(c)).not.toBeNull()
     expect(screen.queryByRole('img', { name: 'Escudo de Talleres' })).not.toBeInTheDocument()
@@ -83,7 +85,7 @@ describe('la marca del club en su panel', () => {
   // Un escudo del que no sale ningún color (blanco y gris) se guarda con el verde de ReciclaXP, que es el
   // «todavía no eligió el suyo»: el panel no se oscurece como si el club hubiera elegido ese color.
   it('con el escudo y el verde de ReciclaXP, el escudo se ve y el panel no lleva ninguna variable', async () => {
-    useMarcaDelClubStore.getState().guardar('s_club', { escudo: ESCUDO, color: '#059669' })
+    useMarcaDelClubStore.getState().guardar('s_otro_club', { escudo: ESCUDO, color: '#059669' })
     const c = await verElPanelEn('/comercio/reportes', 'Informe para la Comisión Directiva')
     expect(conMarca(c)).toBeNull()
     expect(c.querySelectorAll('[style*="--eco-"]')).toHaveLength(0)
@@ -111,7 +113,7 @@ describe('la paleta de la marca en <html>, para lo que se monta fuera del panel'
   const variablesEnLaRaiz = () => PALETA.filter((nombre) => raiz.style.getPropertyValue(nombre) !== '')
 
   it('con marca, <html> lleva la paleta entera mientras el panel está abierto y queda limpio al salir', async () => {
-    useMarcaDelClubStore.getState().guardar('s_club', { color: '#0b2d6b' })
+    useMarcaDelClubStore.getState().guardar('s_otro_club', { color: '#0b2d6b' })
     const { unmount } = await abrirElPanelEn('/comercio/reportes', 'Informe para la Comisión Directiva')
     expect(raiz.style.getPropertyValue('--eco-600')).toBe('#0b2d6b')
     // Las 11 variables, con los mismos valores que lleva el contenedor.
@@ -136,45 +138,45 @@ describe('la paleta de la marca en <html>, para lo que se monta fuera del panel'
   })
 
   it('si el club cambia su color con el panel abierto, <html> toma el nuevo y no deja nada del anterior', async () => {
-    useMarcaDelClubStore.getState().guardar('s_club', { color: '#0b2d6b' })
+    useMarcaDelClubStore.getState().guardar('s_otro_club', { color: '#0b2d6b' })
     await abrirElPanelEn('/comercio/reportes', 'Informe para la Comisión Directiva')
 
-    act(() => useMarcaDelClubStore.getState().guardar('s_club', { color: '#aa0000' }))
+    act(() => useMarcaDelClubStore.getState().guardar('s_otro_club', { color: '#aa0000' }))
     for (const [nombre, valor] of Object.entries(estiloDeMarca('#aa0000'))) {
       expect(raiz.style.getPropertyValue(nombre)).toBe(valor)
     }
   })
 
   it('si el club vuelve a los colores de ReciclaXP con el panel abierto, <html> queda limpio', async () => {
-    useMarcaDelClubStore.getState().guardar('s_club', { color: '#0b2d6b' })
+    useMarcaDelClubStore.getState().guardar('s_otro_club', { color: '#0b2d6b' })
     const c = await verElPanelEn('/comercio/reportes', 'Informe para la Comisión Directiva')
     expect(variablesEnLaRaiz()).toHaveLength(PALETA.length)
 
-    act(() => useMarcaDelClubStore.getState().quitar('s_club'))
+    act(() => useMarcaDelClubStore.getState().quitar('s_otro_club'))
     expect(variablesEnLaRaiz()).toEqual([])
     expect(conMarca(c)).toBeNull()
   })
 
   it('con el escudo y el verde de ReciclaXP, <html> no lleva ninguna variable', async () => {
-    useMarcaDelClubStore.getState().guardar('s_club', { escudo: ESCUDO, color: '#059669' })
+    useMarcaDelClubStore.getState().guardar('s_otro_club', { escudo: ESCUDO, color: '#059669' })
     await abrirElPanelEn('/comercio/reportes', 'Informe para la Comisión Directiva')
     expect(variablesEnLaRaiz()).toEqual([])
   })
 
   it('si el club pasa de un color propio al verde de ReciclaXP con el panel abierto, <html> y el panel quedan sin paleta', async () => {
-    useMarcaDelClubStore.getState().guardar('s_club', { escudo: ESCUDO, color: '#0b2d6b' })
+    useMarcaDelClubStore.getState().guardar('s_otro_club', { escudo: ESCUDO, color: '#0b2d6b' })
     const c = await verElPanelEn('/comercio/reportes', 'Informe para la Comisión Directiva')
     expect(variablesEnLaRaiz()).toHaveLength(PALETA.length)
     expect(conMarca(c)).not.toBeNull()
 
-    act(() => useMarcaDelClubStore.getState().guardar('s_club', { escudo: ESCUDO, color: '#059669' }))
+    act(() => useMarcaDelClubStore.getState().guardar('s_otro_club', { escudo: ESCUDO, color: '#059669' }))
     expect(variablesEnLaRaiz()).toEqual([])
     expect(conMarca(c)).toBeNull()
     expect(screen.getAllByRole('img', { name: 'Escudo de Talleres' })).toHaveLength(3)
   })
 
   it('un Modal del panel, que cuelga de <body> y no del panel, también ve el color de la marca', async () => {
-    useMarcaDelClubStore.getState().guardar('s_club', { color: '#0b2d6b' })
+    useMarcaDelClubStore.getState().guardar('s_otro_club', { color: '#0b2d6b' })
     const c = await verElPanelEn('/comercio/productos', 'Productos')
     fireEvent.click(screen.getByRole('button', { name: /Nuevo producto/ }))
     const dialogo = await screen.findByRole('dialog', { name: 'Nuevo producto' })
@@ -198,7 +200,7 @@ describe('el escudo y la inicial del club en su panel', () => {
   }
 
   it('el escudo que subió el club es el que se ve en los tres lugares, y cabe sin deformarse', async () => {
-    useMarcaDelClubStore.getState().guardar('s_club', { escudo: ESCUDO, color: '#0b2d6b' })
+    useMarcaDelClubStore.getState().guardar('s_otro_club', { escudo: ESCUDO, color: '#0b2d6b' })
     await verElPanelEn('/comercio/reportes', 'Informe para la Comisión Directiva')
     const escudos = screen.getAllByRole('img', { name: 'Escudo de Talleres' })
     expect(escudos).toHaveLength(3)
@@ -210,14 +212,14 @@ describe('el escudo y la inicial del club en su panel', () => {
   })
 
   it('el escudo del informe va en su encabezado, que es lo que sale en el PDF', async () => {
-    useMarcaDelClubStore.getState().guardar('s_club', { escudo: ESCUDO, color: '#0b2d6b' })
+    useMarcaDelClubStore.getState().guardar('s_otro_club', { escudo: ESCUDO, color: '#0b2d6b' })
     await verElPanelEn('/comercio/reportes', 'Informe para la Comisión Directiva')
     const encabezado = screen.getByRole('heading', { level: 1, name: 'Informe para la Comisión Directiva' }).closest('header')!
     expect(within(encabezado).getByRole('img', { name: 'Escudo de Talleres' })).toHaveAttribute('src', ESCUDO)
   })
 
   it('con el escudo, la inicial no se muestra', async () => {
-    useMarcaDelClubStore.getState().guardar('s_club', { escudo: ESCUDO, color: '#0b2d6b' })
+    useMarcaDelClubStore.getState().guardar('s_otro_club', { escudo: ESCUDO, color: '#0b2d6b' })
     await verElPanelEn('/comercio/reportes', 'Informe para la Comisión Directiva')
     expect(screen.queryByText('T')).not.toBeInTheDocument()
   })
@@ -231,7 +233,7 @@ describe('el escudo y la inicial del club en su panel', () => {
   })
 
   it('con color y sin escudo, la inicial va en un cuadrado del color de la marca', async () => {
-    useMarcaDelClubStore.getState().guardar('s_club', { color: '#0b2d6b' })
+    useMarcaDelClubStore.getState().guardar('s_otro_club', { color: '#0b2d6b' })
     await verElPanelEn('/comercio/reportes', 'Informe para la Comisión Directiva', { ...club, brandColor: '#aa0000' })
     for (const inicial of iniciales()) {
       // El fondo es el 600 de la paleta de la marca; el color de antes no lo pisa.
@@ -271,7 +273,7 @@ describe('si lo guardado en el navegador viene roto, el panel abre igual', () =>
     ['sin color', { escudo: ESCUDO }],
     ['con el color en un número', { escudo: ESCUDO, color: 123 }],
   ])('una marca %s: el escudo se ve y el panel no lleva ninguna variable', async (_, marca) => {
-    guardadoRoto({ s_club: marca })
+    guardadoRoto({ s_otro_club: marca })
     const c = await verElPanelEn('/comercio/reportes', 'Informe para la Comisión Directiva')
     expect(conMarca(c)).toBeNull()
     expect(screen.getAllByRole('img', { name: 'Escudo de Talleres' })).toHaveLength(3)
