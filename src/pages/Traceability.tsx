@@ -8,6 +8,10 @@ import { RecorridoDeLaTapita } from '@/components/features/RecorridoDeLaTapita'
 import { Skeleton } from '@/components/ui/skeleton'
 import { conAporteDeLaSesionEnLaTraza, conAportesDeLaSesion } from '@/lib/aportesDeLaSesion'
 import { puntoDeTuTapita } from '@/lib/recorridoDeLaTapita'
+import { conPesajeEnLaTraza } from '@/lib/pesajes'
+import { puntosDelProducto } from '@/lib/productosDelClub'
+import { useCommerceProductsStore } from '@/store/commerceProducts'
+import { usePesajesStore } from '@/store/pesajesDelClub'
 import { useActivityStore } from '@/store/activity'
 import { useSessionStore } from '@/store/session'
 
@@ -20,7 +24,19 @@ export default function Traceability() {
   )
   const actividad = useActivityStore((s) => s.sessionContributions)
   // El hito «Tu aporte» muestra el último aporte de esta sesión a este proyecto, si lo hubo.
-  const eventos = trace && project ? conAporteDeLaSesionEnLaTraza(trace, project, actividad) : trace
+  const pesajes = usePesajesStore((s) => s.pesajes)
+  const creados = useCommerceProductsStore((s) => s.creados)
+  const { data: puntos } = useApi(() => api.getPoints(), [])
+  // Con el último aporte de la sesión y, si el club ya pesó en los puntos del producto, con su pesaje.
+  const eventos =
+    trace && project
+      ? conPesajeEnLaTraza(
+          conAporteDeLaSesionEnLaTraza(trace, project, actividad),
+          pesajes,
+          puntosDelProducto(project, puntos ?? [], creados).map((p) => p.id),
+          project.sponsorName,
+        )
+      : trace
   const nombre = useSessionStore((s) => s.user?.name)
   const { data: historial } = useApi(() => api.getContributions(), [])
   // El proyecto con los aportes de la sesión: el destino muestra los mismos números que el inicio.

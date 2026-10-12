@@ -5,6 +5,8 @@ import type { Contribution, Coupon, ImpactProject, RecyclePoint, Sponsor, TraceE
 import { useActivityStore } from '@/store/activity'
 import { useCommerceProductsStore } from '@/store/commerceProducts'
 import { useCouponsStore } from '@/store/coupons'
+import { usePesajesStore } from '@/store/pesajesDelClub'
+import { crearPesaje } from '@/lib/pesajes'
 import { useSessionStore } from '@/store/session'
 import { AVISO_DE_EJEMPLO } from '@/lib/reporte'
 import { SIN_PESAJES } from '@/lib/informe'
@@ -45,6 +47,7 @@ const traza: TraceEvent[] = [
     detail: 'Al cierre de cada partido, el personal del club pesa lo juntado y lo carga en el panel.',
     date: null, done: false, operator: 'Talleres',
   },
+  { stage: 'lote', title: 'Lote del partido', detail: 'Los aportes del partido quedan agrupados en un lote con su peso.', date: null, done: false },
 ]
 
 // La descarga del CSV se mira sin tocar el navegador: jsdom no tiene URL.createObjectURL.
@@ -92,6 +95,7 @@ beforeEach(() => {
   useActivityStore.setState({ sessionContributions: [] })
   useCouponsStore.setState({ coupons: [] })
   useCommerceProductsStore.setState({ creados: [] })
+  usePesajesStore.setState({ pesajes: [] })
   useSessionStore.setState({ user: null })
 })
 
@@ -176,11 +180,33 @@ describe('informe para la Comisión Directiva', () => {
     verElInforme()
     const partidos = await seccion('Partido por partido')
     expect([...partidos.querySelectorAll('th')].map((th) => th.textContent)).toEqual([
-      'Partido', 'Fecha', 'Kilos', 'Tapitas', 'Hinchas',
+      'Partido', 'Fecha', 'Punto R', 'Kilos', 'Tapitas',
     ])
     const celdas = partidos.querySelectorAll('tbody td')
     expect(celdas).toHaveLength(1)
     expect(celdas[0].textContent).toBe(SIN_PESAJES)
+  })
+
+  it('con los pesajes que cargó el club, «Partido por partido» los lista y lo que sigue pasa al lote', async () => {
+    const [estadio, , cafe] = puntos
+    usePesajesStore.setState({
+      pesajes: [
+        crearPesaje({ id: 'a', partido: 'Talleres vs. Belgrano', fecha: '2026-10-12', punto: estadio, kilos: 12.5, creadoEn: '2026-10-12T22:00:00Z' }),
+        crearPesaje({ id: 'b', partido: 'Talleres vs. Racing', fecha: '2026-10-05', punto: estadio, kilos: 9, creadoEn: '2026-10-05T22:00:00Z' }),
+        // De otra marca de la red: no es del club.
+        crearPesaje({ id: 'c', partido: 'Otro', fecha: '2026-10-11', punto: cafe, kilos: 1, creadoEn: '2026-10-11T22:00:00Z' }),
+      ],
+    })
+    verElInforme()
+    const partidos = await seccion('Partido por partido')
+    const filas = [...partidos.querySelectorAll('tbody tr')].map((tr) => [...tr.querySelectorAll('td')].map((td) => td.textContent))
+    expect(filas).toEqual([
+      ['Talleres vs. Belgrano', '12 oct', 'Punto R · Estadio', '12,5', '2.975'],
+      ['Talleres vs. Racing', '5 oct', 'Punto R · Estadio', '9', '2.142'],
+    ])
+    const sigue = await seccion('Lo que sigue')
+    expect(await within(sigue).findByText(/lote del partido/)).toBeInTheDocument()
+    expect(sigue.textContent).not.toContain('pesaje del lote')
   })
 
   it('pone a los que más aportan y lo que sigue: la próxima etapa y las cuatro del piloto', async () => {
