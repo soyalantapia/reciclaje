@@ -332,6 +332,14 @@ Tres funciones para la reunión con Talleres del 13/10, pensadas para las pregun
 - Una institución (categoría `club`) ya no ve su puesto (`muestraPuestoEnLaRed`); un comercio sí, como antes.
 - En «Marcas de la red» de la app, el club va primero, como institución, y las empresas siguen por Huella Verde. Antes quedaba último.
 
+### El festejo suena (rama `feat/sonido-del-festejo`)
+- Juanpi pidió el 12/10/2026 que las tapitas «hagan un sonido» al acreditarse. El banco más real en 3D queda para después de la reunión.
+- **Sin archivos de audio** (`src/lib/sonido.ts`): el sintetizador del navegador. Un tic de plástico por cada una de las 7 tapitas, justo cuando llega al banco, y cuatro campanitas (do, mi, sol, do) cuando entra la medalla del logro.
+- **Chrome y Safari sólo dejan sonar después de un toque**: `prepararSonido` se llama en el toque de «Registrar aporte». Sin Web Audio no suena y no rompe nada.
+- **Se apaga** con el botón del festejo (no salta la animación) o con «Sonidos» en el perfil (`src/store/sonido.ts`, guardado). Con movimiento reducido, las tapitas no suenan porque no caen.
+- Cada festejo suena una vez: una ref lo cuida del doble montaje del modo estricto de React (en desarrollo sonaba dos veces).
+- De paso, la prueba del menú del panel tiene 5 s para las rutas en diferido: fallaba 1 de cada 5 corridas y podía frenar un deploy.
+
 ---
 
 ## Trabajo hecho que NO quedó en commits

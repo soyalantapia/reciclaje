@@ -10,6 +10,10 @@ import { useCommerceProductsStore } from '@/store/commerceProducts'
 import { useSessionStore } from '@/store/session'
 import { navDelPanel } from './CommerceSideNav'
 
+// Las rutas del panel se cargan en diferido (lazyWithRetry): con toda la batería corriendo en paralelo,
+// el pedazo a veces tarda más que el segundo por defecto de findBy y la prueba fallaba sin que nada anduviera mal.
+const CARGA_DIFERIDA = 5000
+
 /** Los textos de los enlaces de un menú, en orden. «Plan» depende del escenario: se compara con `navDelPanel`. */
 const etiquetas = (menu: HTMLElement) => within(menu).getAllByRole('link').map((a) => a.textContent?.trim())
 
@@ -58,8 +62,8 @@ describe('humo del cableado de Productos', () => {
     const r = createMemoryRouter(router.routes, { initialEntries: ['/comercio/productos'] })
     render(<RouterProvider router={r} />)
 
-    expect(await screen.findByRole('heading', { name: 'Productos' })).toBeInTheDocument()
-    expect(await screen.findByText('Banco de suplentes con el plástico de la hinchada')).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: 'Productos' }, { timeout: CARGA_DIFERIDA })).toBeInTheDocument()
+    expect(await screen.findByText('Banco de suplentes con el plástico de la hinchada', undefined, { timeout: CARGA_DIFERIDA })).toBeInTheDocument()
     expect(r.state.location.pathname).toBe('/comercio/productos')
 
     // Los dos menús (escritorio y celular) salen del mismo `navDelPanel`: «Productos» va segundo en ambos.
@@ -104,7 +108,7 @@ describe('humo del cableado de Marca', () => {
     const r = createMemoryRouter(router.routes, { initialEntries: ['/comercio/marca'] })
     render(<RouterProvider router={r} />)
 
-    expect(await screen.findByRole('heading', { level: 1, name: 'La marca de Talleres' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { level: 1, name: 'La marca de Talleres' }, { timeout: CARGA_DIFERIDA })).toBeInTheDocument()
     expect(r.state.location.pathname).toBe('/comercio/marca')
 
     // Los dos menús salen del mismo `navDelPanel`: «Marca» va después de «Reportes» en ambos.

@@ -1,10 +1,13 @@
 // Los logros en pantalla: el perfil los lista con su progreso y el festejo muestra el que se ganó.
 import { render, screen, within } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
+import { sonarLogro } from '@/lib/sonido'
 import type { Logro } from '@/lib/logros'
 import { LogroDesbloqueado } from './LogroDesbloqueado'
 import { LogrosDelPerfil } from './LogrosDelPerfil'
+
+vi.mock('@/lib/sonido', () => ({ sonarLogro: vi.fn() }))
 
 const logros: Logro[] = [
   { id: 'primera', titulo: 'Primera tapita', detalle: 'Hiciste tu primer aporte.', ganado: true, actual: 1, meta: 1 },
@@ -32,5 +35,7 @@ describe('logros en pantalla', () => {
     const aviso = screen.getByRole('status')
     expect(aviso.textContent).toMatch(/¡Logro desbloqueado!.*Hincha de cancha.*día de partido/)
     expect(screen.getByRole('link', { name: 'Ver tus logros' }).getAttribute('href')).toBe('/perfil#logros')
+    // Suena cuando entra la medalla.
+    expect(sonarLogro).toHaveBeenCalledTimes(1)
   })
 })

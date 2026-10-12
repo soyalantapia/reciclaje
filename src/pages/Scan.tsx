@@ -22,6 +22,7 @@ import { FestejoDelAporte } from '@/components/features/FestejoDelAporte'
 import { LogroDesbloqueado } from '@/components/features/LogroDesbloqueado'
 import { useDatosDeLogros } from '@/hooks/useLogros'
 import { logrosNuevos } from '@/lib/logros'
+import { prepararSonido } from '@/lib/sonido'
 import { QrScanner } from '@/components/features/QrScanner'
 import { Button } from '@/components/ui/button'
 import { Tabs, type TabItem } from '@/components/ui/tabs'
@@ -90,6 +91,8 @@ export default function Scan() {
 
   async function submit() {
     if (!point) return
+    // Dentro del toque: Chrome y Safari sólo dejan sonar el festejo después de un toque de la persona.
+    prepararSonido()
     setLoading(true)
     try {
       const res = await api.scan({ pointId: point.id, material, units })

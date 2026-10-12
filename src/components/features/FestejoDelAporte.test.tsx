@@ -1,7 +1,16 @@
-import { fireEvent, render } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
+import { fireEvent, render, screen } from '@testing-library/react'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { sonarTapitas } from '@/lib/sonido'
+import { useSonidoStore } from '@/store/sonido'
 import type { ImpactProject } from '@/types'
 import { FestejoDelAporte } from './FestejoDelAporte'
+
+vi.mock('@/lib/sonido', () => ({ sonarTapitas: vi.fn(), sonarLogro: vi.fn(), prepararSonido: vi.fn() }))
+
+beforeEach(() => {
+  vi.mocked(sonarTapitas).mockClear()
+  useSonidoStore.setState({ activo: true })
+})
 
 const proyecto = {
   id: 'pr_banco_club', title: 'Banco', sponsorId: 's_club', sponsorName: 'Talleres', description: '',
@@ -36,5 +45,23 @@ describe('FestejoDelAporte', () => {
     expect(container.textContent).toContain('Tus 50 tapitas ya suman a «Butacas para la platea»')
     expect(container.textContent).not.toContain('banco de la hinchada')
     expect(container.querySelector('svg[data-forma="butacas"]')).not.toBeNull()
+  })
+
+  it('suena un tic por cada tapita que cae, cuando llega al banco', () => {
+    render(<FestejoDelAporte proyecto={proyecto} unidades={50} xp={100} />)
+    expect(sonarTapitas).toHaveBeenCalledTimes(1)
+    const golpes = vi.mocked(sonarTapitas).mock.calls[0][0]
+    expect(golpes).toHaveLength(7)
+    // La primera cae a los 0,1 s y tarda 0,9 s: suena al llegar, a 1 s.
+    expect(golpes[0]).toBeCloseTo(1)
+  })
+
+  it('el botón de sonido lo apaga sin saltar el festejo', () => {
+    const { container } = render(<FestejoDelAporte proyecto={proyecto} unidades={50} xp={100} />)
+    fireEvent.click(screen.getByRole('button', { name: 'Silenciar el festejo' }))
+    expect(useSonidoStore.getState().activo).toBe(false)
+    expect(screen.getByRole('button', { name: 'Activar el sonido del festejo' })).toBeInTheDocument()
+    // El marcador sigue arrancando del total anterior: el toque no saltó la animación.
+    expect(container.textContent).toContain('42.840')
   })
 })
