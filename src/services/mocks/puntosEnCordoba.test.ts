@@ -135,6 +135,13 @@ describe('los puntos de las dos demos, en Córdoba capital', () => {
     expect(club.sponsorMetrics.s_ypf.byPoint.map((p) => p.point)).toEqual(['Bv. Perón', 'San Luis', 'Humberto Primo'])
   })
 
+  it('las causas son de Córdoba y no nombran instituciones reales', () => {
+    for (const datos of [datosGenerales, club]) {
+      expect(datos.causes.map((c) => c.city)).toEqual(['Córdoba', 'Córdoba', 'Córdoba'])
+      expect(JSON.stringify(datos.causes)).not.toMatch(/CABA|La Matanza|Cañuelas|Gutiérrez/)
+    }
+  })
+
   it('la versión de los datos guardados sube a 3: cambiaron los nombres de los puntos', () => {
     expect(VERSION_DE_LOS_DATOS).toBe(3)
   })

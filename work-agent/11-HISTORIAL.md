@@ -249,6 +249,12 @@ WhatsApp del proyecto y de la reunión del 03/08 (acta en `docs/producto/reunion
 
     Antes, a 320 px se salía 21 px; con la tarjeta flotante y sin estos dos cambios, se salía también a 375 px.
 
+
+### Las causas pasan a Córdoba (rama `fix/causas-en-cordoba`)
+- Las tres causas de ejemplo estaban en CABA, La Matanza y Cañuelas, y el hospital llevaba el nombre de uno real.
+- Ahora las tres son de Córdoba y con nombres inventados, como las marcas de la demo del club: «Hospital Infantil del Parque», «Comedor Los Girasoles» y «Escuela Los Algarrobos».
+- Los ids no cambian, así que las donaciones guardadas en el navegador siguen valiendo y no hace falta subir la versión de los datos.
+- Una prueba fija la regla en las dos demos.
 ---
 
 ## Trabajo hecho que NO quedó en commits

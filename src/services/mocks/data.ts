@@ -521,11 +521,11 @@ export const sponsorMetrics: Record<string, SponsorMetrics> = {
 export const causes: Cause[] = [
   {
     id: 'cause_hospital',
-    name: 'Hospital de Niños Dr. Gutiérrez',
-    slug: 'hospital-gutierrez',
+    name: 'Hospital Infantil del Parque',
+    slug: 'hospital-infantil-del-parque',
     type: 'hospital',
     brandColor: '#0ea5e9',
-    city: 'CABA',
+    city: 'Córdoba',
     summary: 'Las tapitas que reciclás se venden y lo recaudado se convierte en insumos para el hospital.',
     story:
       'Cada tapita depositada en los puntos de la red suma a esta causa. El material se vende a recicladores, y con lo recaudado el hospital acumula puntos que canjea por los insumos que más necesita. Vos ves exactamente en qué se transforma tu aporte.',
@@ -547,7 +547,7 @@ export const causes: Cause[] = [
     slug: 'comedor-los-girasoles',
     type: 'comedor',
     brandColor: '#f59e0b',
-    city: 'La Matanza',
+    city: 'Córdoba',
     summary: 'Reciclá plástico y ayudá a equipar la cocina del comedor del barrio.',
     story:
       'El plástico recolectado financia equipamiento e insumos para el comedor, que da de comer a 180 chicos por día. Cada aporte se traduce en puntos que el comedor canjea por lo que necesita.',
@@ -564,14 +564,14 @@ export const causes: Cause[] = [
   },
   {
     id: 'cause_escuela',
-    name: 'Escuela Rural N° 12',
-    slug: 'escuela-rural-12',
+    name: 'Escuela Los Algarrobos',
+    slug: 'escuela-los-algarrobos',
     type: 'escuela',
     brandColor: '#7c3aed',
-    city: 'Cañuelas',
+    city: 'Córdoba',
     summary: 'Tu papel y cartón reciclados se vuelven útiles y mobiliario escolar.',
     story:
-      'El papel y cartón recuperado financia útiles, libros y mobiliario para la escuela rural. La comunidad educativa ve el progreso de cada meta.',
+      'El papel y cartón recuperado financia útiles, libros y mobiliario para la escuela. La comunidad educativa ve el progreso de cada meta.',
     material: 'papel',
     unitLabel: 'kg de papel',
     kgGoal: 2000,
