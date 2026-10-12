@@ -13,7 +13,7 @@ import { useCommerceProductsStore } from '@/store/commerceProducts'
 import { usePesajesStore } from '@/store/pesajesDelClub'
 import { conAporteDeLaSesionEnLaTraza, conAportesDeLaSesion, nombreCorto } from '@/lib/aportesDeLaSesion'
 import { estadoDelRecorrido } from '@/lib/recorridoDeLaTapita'
-import { esDelPanel, kilosDeLaMeta, puntosDelProducto } from '@/lib/productosDelClub'
+import { esDelPanel, kilosDeLaMeta, puntosDelProducto, textoDelApoyo } from '@/lib/productosDelClub'
 import { ETAPAS_DEL_PILOTO, SIN_PESAJES, topDeLaHinchada } from '@/lib/informe'
 import { conPesajeEnLaTraza, pesajesDelInforme } from '@/lib/pesajes'
 import { posicionEnLaRed, textoDePosicion } from '@/lib/posicionEnLaRed'
@@ -232,6 +232,7 @@ export default function CommerceInforme() {
                     />
                   </div>
                   <p className="mt-2 font-bold leading-tight">{p.title}</p>
+                  {textoDelApoyo(p) && <p className="text-sm font-semibold">{textoDelApoyo(p)}</p>}
                   <p className="text-sm text-muted-foreground">
                     {formatNumber(p.collectedUnits)} de {formatNumber(p.goalUnits)} tapitas ·{' '}
                     {pct(p.collectedUnits, p.goalUnits)}% · meta {formatNumber(kilosDeLaMeta(p))} kg

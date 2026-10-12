@@ -1,4 +1,4 @@
-import type { FormaDelProducto, ImpactProject, RecyclePoint, TraceEvent } from '@/types'
+import type { FormaDelProducto, ImpactProject, Patrocinador, RecyclePoint, Sponsor, TraceEvent } from '@/types'
 import { TAPITAS_POR_KILO } from './metrics'
 
 /**
@@ -27,6 +27,8 @@ export interface NuevoProducto {
   club: { id: string; nombre: string }
   /** ISO. */
   creadoEn: string
+  /** La empresa de la red que lo acompaña; sin ella, el producto es sólo del club. */
+  patrocinador?: Patrocinador
 }
 
 /**
@@ -55,6 +57,7 @@ export function crearProducto(n: NuevoProducto): ImpactProject {
     forma: n.forma,
     puntoId: n.punto.id,
     creadoEn: n.creadoEn,
+    ...(n.patrocinador && { patrocinador: n.patrocinador }),
   }
 }
 
@@ -149,4 +152,18 @@ export function destinoDelProducto(p: ImpactProject): { rotulo: string; frase: s
 /** El título de la lista del banco de la hinchada: sólo el banco tiene a la hinchada «en el banco». */
 export function tituloDeLaHinchada(p: ImpactProject): string {
   return esDelPanel(p) ? 'La hinchada que suma' : 'La hinchada en el banco'
+}
+
+/** Quiénes pueden acompañar un producto: las empresas y los comercios de la red, no el club ni el municipio. */
+const PUEDEN_PATROCINAR = new Set(['estacion', 'comercio', 'marca'])
+
+export function patrocinadoresPosibles(red: Sponsor[]): Patrocinador[] {
+  return red
+    .filter((s) => PUEDEN_PATROCINAR.has(s.category))
+    .map((s) => ({ id: s.id, nombre: s.name, color: s.brandColor }))
+}
+
+/** Cómo se nombra el apoyo junto al producto. */
+export function textoDelApoyo(p: ImpactProject): string | undefined {
+  return p.patrocinador ? `Con el apoyo de ${p.patrocinador.nombre}` : undefined
 }

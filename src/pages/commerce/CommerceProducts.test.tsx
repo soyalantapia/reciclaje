@@ -4,6 +4,7 @@ import { toast } from 'sonner'
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { ImpactProject, RecyclePoint, Sponsor } from '@/types'
 import { crearProducto } from '@/lib/productosDelClub'
+import { ESCENARIO } from '@/lib/escenario'
 import { useActivityStore } from '@/store/activity'
 import { useCommerceProductsStore } from '@/store/commerceProducts'
 import { useCreatedCommerceStore } from '@/store/createdCommerce'
@@ -29,6 +30,7 @@ vi.mock('@/services/api', async (original) => ({
     // Como el simulador: los del seed más los que publicó el club (handlers.ts, GET /projects).
     getProjects: () => Promise.resolve([banco, ...useCommerceProductsStore.getState().creados]),
     getPoints: () => Promise.resolve(puntos),
+    getSponsors: () => Promise.resolve(red),
   },
 }))
 
@@ -36,6 +38,13 @@ const club: Sponsor = {
   id: 's_club', name: 'Talleres', slug: 'club', category: 'club', brandColor: '#059669', tagline: '',
   greenScore: 64, kgRecovered: 180,
 }
+// La red: el club, el municipio y dos empresas. Sólo las empresas pueden acompañar un producto.
+const red: Sponsor[] = [
+  club,
+  { ...club, id: 's_muni', name: 'Municipio de ejemplo', category: 'municipio' },
+  { ...club, id: 's_ypf', name: 'Norte Energía', category: 'estacion', brandColor: '#0f3d91' },
+  { ...club, id: 's_coca', name: 'Bebidas Serranas', category: 'marca', brandColor: '#dc2626' },
+]
 
 function verProductos(sponsor: Sponsor = club) {
   useSessionStore.setState({ commerce: sponsor })
@@ -99,6 +108,35 @@ describe('Productos del panel del club', () => {
     })
     expect(await screen.findByText('Butacas para la platea')).toBeInTheDocument()
     expect(screen.getByText('Nuevo')).toBeInTheDocument()
+  })
+
+  it('se publica con una empresa de la red que lo acompaña, y la tarjeta lo dice', async () => {
+    verProductos()
+    const dialogo = await abrirNuevoProducto()
+    const apoyo = within(dialogo).getByLabelText('Con el apoyo de')
+    expect(await within(dialogo).findByRole('option', { name: 'Bebidas Serranas' })).toBeInTheDocument()
+    expect([...apoyo.querySelectorAll('option')].map((o) => o.textContent)).toEqual([
+      'Sin patrocinador', 'Norte Energía', 'Bebidas Serranas',
+    ])
+    // En la demo del club las empresas tienen nombres de ejemplo y se propone la primera; en la general son
+    // marcas reales y no se propone ninguna.
+    expect(apoyo).toHaveValue(ESCENARIO === 'club' ? 's_ypf' : '')
+    fireEvent.change(apoyo, { target: { value: 's_coca' } })
+    fireEvent.click(within(dialogo).getByRole('button', { name: 'Publicar para la hinchada' }))
+
+    expect(useCommerceProductsStore.getState().creados[0].patrocinador).toEqual({
+      id: 's_coca', nombre: 'Bebidas Serranas', color: '#dc2626',
+    })
+    expect(await screen.findByText('Con el apoyo de Bebidas Serranas')).toBeInTheDocument()
+  })
+
+  it('«Sin patrocinador» publica el producto sólo del club', async () => {
+    verProductos()
+    const dialogo = await abrirNuevoProducto()
+    await within(dialogo).findByRole('option', { name: 'Norte Energía' })
+    fireEvent.change(within(dialogo).getByLabelText('Con el apoyo de'), { target: { value: '' } })
+    fireEvent.click(within(dialogo).getByRole('button', { name: 'Publicar para la hinchada' }))
+    expect(useCommerceProductsStore.getState().creados[0]).not.toHaveProperty('patrocinador')
   })
 
   it('al elegir otra forma propone su nombre, y la meta cuenta las tapitas', async () => {

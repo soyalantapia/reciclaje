@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import type { ImpactProject, RecyclePoint } from '@/types'
+import type { ImpactProject, RecyclePoint, Sponsor } from '@/types'
 import { TAPITAS_POR_KILO } from './metrics'
 import {
   FORMAS,
@@ -8,6 +8,8 @@ import {
   esDelPanel,
   kilosDeLaMeta,
   nombreDelProducto,
+  patrocinadoresPosibles,
+  textoDelApoyo,
   proyectoDelPunto,
   puntosDelProducto,
   tituloDeLaHinchada,
@@ -149,5 +151,39 @@ describe('destinoDelProducto y tituloDeLaHinchada', () => {
     expect(esDelPanel(p)).toBe(true)
     expect(destinoDelProducto(p)).toEqual({ rotulo: 'Butacas para la platea', frase: 'a «Butacas para la platea»' })
     expect(tituloDeLaHinchada(p)).toBe('La hinchada que suma')
+  })
+})
+
+describe('el patrocinador de un producto', () => {
+  const sponsor = (id: string, name: string, category: Sponsor['category']): Sponsor => ({
+    id, name, slug: id, category, brandColor: '#123456', tagline: '', greenScore: 50, kgRecovered: 0,
+  })
+
+  it('pueden acompañar un producto las empresas y los comercios de la red, no el club ni el municipio', () => {
+    const red = [
+      sponsor('s_ypf', 'Norte Energía', 'estacion'),
+      sponsor('s_club', 'Talleres', 'estadio'),
+      sponsor('s_muni', 'Municipio de ejemplo', 'municipio'),
+      sponsor('s_cafe', 'Café Lúmen', 'comercio'),
+      sponsor('s_coca', 'Bebidas Serranas', 'marca'),
+    ]
+    expect(patrocinadoresPosibles(red)).toEqual([
+      { id: 's_ypf', nombre: 'Norte Energía', color: '#123456' },
+      { id: 's_cafe', nombre: 'Café Lúmen', color: '#123456' },
+      { id: 's_coca', nombre: 'Bebidas Serranas', color: '#123456' },
+    ])
+  })
+
+  it('el producto lo guarda y lo nombra; sin patrocinador, no dice nada', () => {
+    const base = {
+      id: 'pr_x', forma: 'butacas' as const, nombre: 'Butacas para la platea', metaKg: 500, punto: sede,
+      club: { id: 's_club', nombre: 'Talleres' }, creadoEn: '2026-10-12T00:00:00Z',
+    }
+    const con = crearProducto({ ...base, patrocinador: { id: 's_ypf', nombre: 'Norte Energía', color: '#0f3d91' } })
+    expect(con.patrocinador).toEqual({ id: 's_ypf', nombre: 'Norte Energía', color: '#0f3d91' })
+    expect(textoDelApoyo(con)).toBe('Con el apoyo de Norte Energía')
+    const sin = crearProducto(base)
+    expect(sin).not.toHaveProperty('patrocinador')
+    expect(textoDelApoyo(sin)).toBeUndefined()
   })
 })

@@ -10,6 +10,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { conAportesDeLaSesion, nombreCorto } from '@/lib/aportesDeLaSesion'
 import { useActivityStore } from '@/store/activity'
 import { useSessionStore } from '@/store/session'
+import { ApoyoDelProducto } from '@/components/features/ApoyoDelProducto'
 
 export default function ImpactProjectPage() {
   const { id = '' } = useParams()
@@ -57,6 +58,7 @@ export default function ImpactProjectPage() {
       <div>
         <Badge variant="eco">{project.sponsorName}</Badge>
         <h1 className="mt-2 text-2xl font-extrabold leading-tight">{project.title}</h1>
+        <ApoyoDelProducto proyecto={project} className="mt-1.5 bg-muted shadow-none" />
         <p className="mt-1 text-sm text-muted-foreground">{project.description}</p>
       </div>
 
