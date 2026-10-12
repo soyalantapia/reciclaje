@@ -1,0 +1,1 @@
+import{Ct as e,St as t,ft as n,vt as r}from"./index-DfZu4eai.js";var i=e()(t(e=>({coupons:[],add:t=>e(e=>({coupons:[t,...e.coupons]})),clear:()=>e({coupons:[]})}),{name:r(`coupons`),...n()}));export{i as t};
