@@ -53,7 +53,7 @@ describe('Pesajes del panel del club', () => {
     expect(screen.getByText(/El primero completa la etapa «Pesaje del lote»/)).toBeInTheDocument()
   })
 
-  it('guarda el pesaje con kilos con coma, lo lista con sus tapitas y avisa que la hinchada ya lo ve', async () => {
+  it('guarda el pesaje con kilos con coma, lo lista con sus tapitas y avisa dónde lo ve el hincha', async () => {
     const exito = vi.spyOn(toast, 'success')
     verPesajes()
     await screen.findAllByRole('option')
@@ -67,7 +67,11 @@ describe('Pesajes del panel del club', () => {
     expect(usePesajesStore.getState().pesajes).toEqual([
       expect.objectContaining({ partido: 'Talleres vs. Belgrano', fecha: '2026-10-12', puntoId: 'p_club_sede', kilos: 12.5, tapitas: 2975 }),
     ])
-    expect(exito).toHaveBeenCalledWith(expect.stringContaining('la hinchada ya ve el pesaje'))
+    // Juanpi cargó un pesaje y no supo dónde verlo: el aviso dice dónde y que, sin servidor, es en este navegador.
+    expect(exito).toHaveBeenCalledWith(
+      expect.stringContaining('Guardado'),
+      expect.objectContaining({ description: expect.stringMatching(/Inicio.*recorrido de tu tapita.*mismo navegador/) }),
+    )
     const lista = screen.getByRole('heading', { name: 'Pesajes cargados' }).closest('section')!
     expect(within(lista).getByText('Talleres vs. Belgrano')).toBeInTheDocument()
     expect(within(lista).getByText('12,5 kg')).toBeInTheDocument()

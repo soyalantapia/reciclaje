@@ -57,7 +57,10 @@ export default function CommercePesajes() {
       crearPesaje({ id: `ps_${shortCode(6)}`, partido, fecha, punto, kilos: kg, creadoEn: new Date().toISOString() }),
     )
     setKilos('')
-    toast.success('Guardado: la hinchada ya ve el pesaje en el recorrido de su tapita')
+    toast.success('Guardado: el recorrido de la tapita pasó al pesaje del lote', {
+      // Sin servidor, la app lo toma sólo en este navegador (ver src/store/pesajesDelClub.ts).
+      description: 'En la app, el Inicio lo muestra en «El recorrido de tu tapita». En la demo, abrila en este mismo navegador.',
+    })
   }
 
   return (

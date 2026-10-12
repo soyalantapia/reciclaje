@@ -312,6 +312,13 @@ Tres funciones para la reunión con Talleres del 13/10, pensadas para las pregun
 - En la demo del club, «Precios + IVA» ya no aparece al lado de «A convenir» (`muestraPrecios`).
 - Queda abierto: el WhatsApp de «Hablar con un asesor» sigue siendo el número de prueba de `CONTACT` (pendiente bloqueante 1 de [10](10-ESTADO-Y-PENDIENTES.md)).
 
+### El recorrido de tu tapita en el inicio (rama `feat/recorrido-en-el-inicio`)
+- Juanpi recorrió la demo el 12/10/2026 y no vio avanzar el recorrido después de cargar un pesaje. En un solo navegador anda, pero el inicio no mostraba nada del recorrido (había que entrar a «Ver proyecto → Trazabilidad») y el aviso del panel no decía dónde mirarlo ni que, sin servidor, es en el mismo navegador.
+- **El inicio**, debajo del banco, muestra «El recorrido de tu tapita» (`TuTapitaEnElInicio`): dónde va, qué sigue y la etapa, con «Ver» al recorrido. Aparece cuando tu tapita ya entró al recorrido y avanza solo cuando el club carga un pesaje, aunque sea en otra pestaña.
+- **El cálculo es uno** (`useRecorridoDelProducto`): el aporte de la sesión y el pesaje del club. Lo usan la trazabilidad y el inicio; el resumen también es uno (`EstadoDeTuTapita`).
+- **El aviso del panel** al guardar un pesaje dice dónde se ve en la app y que en la demo es en el mismo navegador.
+- Las pruebas nuevas dan rojo si el inicio ignora los pesajes o si el aviso no dice dónde mirar.
+
 ---
 
 ## Trabajo hecho que NO quedó en commits

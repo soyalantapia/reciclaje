@@ -14,6 +14,8 @@ import { conAportesDeLaSesion } from '@/lib/aportesDeLaSesion'
 import { esDelPanel, nombreDelProducto } from '@/lib/productosDelClub'
 import { ultimosAportesDeLaHinchada } from '@/lib/ultimosAportes'
 import { BancoDeLaHinchada } from '@/components/features/BancoDeLaHinchada'
+import { TuTapitaEnElInicio } from '@/components/features/TuTapitaEnElInicio'
+import { puntoDeTuTapita } from '@/lib/recorridoDeLaTapita'
 import { CauseCard } from '@/components/features/CauseCard'
 import { ErrorState } from '@/components/features/ErrorState'
 import { Badge } from '@/components/ui/badge'
@@ -130,6 +132,11 @@ export default function Home() {
                     </Button>
                   </Link>
                 }
+              />
+              <TuTapitaEnElInicio
+                key={`recorrido-${featured.id}`}
+                proyecto={featured}
+                punto={puntoDeTuTapita(featured, sessionContributions, history ?? [])}
               />
             </div>
           ) : featured ? (
