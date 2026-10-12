@@ -1,0 +1,1 @@
+import{At as e,Tt as t,kt as n,yt as r}from"./index-KS5iZOQc.js";var i=e()(n(e=>({sessionContributions:[],add:t=>e(e=>({sessionContributions:[t,...e.sessionContributions]})),clear:()=>e({sessionContributions:[]})}),{name:t(`activity`),...r()}));export{i as t};
