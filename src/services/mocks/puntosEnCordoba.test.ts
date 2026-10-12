@@ -33,7 +33,7 @@ const NOMBRE_Y_DIRECCION: Record<string, [string, string]> = {
   p_grido_lanus: ['Grido Bv. San Juan', 'Bv. San Juan 125, Nueva Córdoba'],
   p_club_estadio: ['Punto R · Estadio', 'Estadio Mario Alberto Kempes, ingreso principal en días de partido'],
   // Sin número de calle: el de la sede sale de una sola fuente pública, débil. Se agrega cuando el club lo confirme.
-  p_club_sede: ['Punto R · Sede social', 'Frente a la Plaza San Martín, Centro'],
+  p_club_sede: ['Punto R · Sede social', 'Rosario de Santa Fe 15, Centro'],
 }
 
 // En la demo general el club es Talleres y sus dos Punto R conservan los ids de los QR impresos

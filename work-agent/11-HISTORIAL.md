@@ -260,6 +260,10 @@ WhatsApp del proyecto y de la reunión del 03/08 (acta en `docs/producto/reunion
 - `react-leaflet` y `@react-leaflet/core` tienen licencia Hippocratic-2.1, que no es de código abierto estándar y pone condiciones de uso. `MapaDeCordoba` ahora usa Leaflet directo (BSD-2) y la dependencia salió del `package.json`.
 - Se ve y se comporta igual: las pruebas del mapa ya usaban Leaflet de verdad y siguen en verde, más dos nuevas (el punto de «mi ubicación» y que el mapa se libere al salir de la pantalla).
 - Las teselas se eligen al compilar con `VITE_TESELAS_URL` y `VITE_TESELAS_ATRIBUCION` (`teselasDelMapa` en `src/lib/mapa.ts`). Sin configurar, siguen las de OpenStreetMap; para el piloto se configura un proveedor con plan comercial sin tocar código.
+
+### La dirección de la sede (rama `fix/direccion-de-la-sede`)
+- El Punto R de la sede decía «Frente a la Plaza San Martín, Centro», sin número, porque el número salía de una sola fuente pública poco confiable.
+- La web oficial del club lo confirma: «La Sede Social funciona en Rosario de Santa Fe 15, primer piso» (clubtalleres.com.ar, página «Hacete socio», leída el 12/10/2026). Ahora dice «Rosario de Santa Fe 15, Centro». Las coordenadas ya eran las de esa dirección.
 ---
 
 ## Trabajo hecho que NO quedó en commits
