@@ -1,0 +1,1 @@
+import{Ct as e,St as t,ft as n,vt as r}from"./index-CqRGdLIN.js";var i=e()(t(e=>({sessionContributions:[],add:t=>e(e=>({sessionContributions:[t,...e.sessionContributions]})),clear:()=>e({sessionContributions:[]})}),{name:r(`activity`),...n()}));export{i as t};
