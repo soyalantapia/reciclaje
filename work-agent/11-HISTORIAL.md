@@ -301,6 +301,11 @@ Tres funciones para la reunión con Talleres del 13/10, pensadas para las pregun
 - **El encabezado del celular** con el escudo: debajo de 440 px la palabra «ReciclaXP» se esconde y quedan el ícono y el escudo. Medido de 320 a 440 px, sin desbordes.
 - **De paso:** el recuadro de la Huella Verde en Marcas partía el texto en tres columnas (el texto suelto en un flex). Ahora va en un párrafo.
 
+### La camiseta de Talleres, albiazul (rama `fix/camiseta-albiazul`)
+- La «Camiseta oficial» de los beneficios usaba el emoji 👕, que en iPhone y en Mac se ve celeste: en Córdoba, el color de Belgrano. Se vio recorriendo la demo publicada el 12/10/2026, antes de la reunión con Talleres.
+- `IconoDeBeneficio` dibuja una camiseta a rayas con el azul del club cuando el beneficio es una camiseta de un club con marca oficial (hoy sólo Talleres, en las dos demos). La remera de una marca y los demás beneficios siguen con su emoji.
+- Va en la tarjeta de Beneficios, la confirmación del canje y los beneficios del panel. Una prueba la fija y da rojo sin el arreglo.
+
 ---
 
 ## Trabajo hecho que NO quedó en commits

@@ -3,6 +3,7 @@ import type { Benefit, Sponsor } from '@/types'
 import { cn, formatNumber } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { IconoDeBeneficio } from './IconoDeBeneficio'
 import { LogoDeMarca } from './LogoDeMarca'
 
 interface Props {
@@ -33,7 +34,7 @@ export function BenefitCard({ benefit, isPremium, spendableXp, onRedeem, marca }
     <div className="flex flex-col rounded-2xl border border-border bg-card p-4 shadow-sm">
       <div className="flex items-start gap-3">
         <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-muted text-2xl">
-          {benefit.emoji}
+          <IconoDeBeneficio benefit={benefit} />
         </span>
         <div className="min-w-0 flex-1">
           <p className="truncate font-bold leading-tight">{benefit.title}</p>
