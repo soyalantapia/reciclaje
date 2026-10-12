@@ -1,9 +1,10 @@
 import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
-import type { ImpactProject } from '@/types'
+import type { ImpactProject, RecyclePoint, TraceEvent } from '@/types'
 import { claveDeAlmacenamiento } from '@/lib/escenario'
 import { useCommerceProductsStore } from '@/store/commerceProducts'
+import { usePesajesStore } from '@/store/pesajesDelClub'
 import Home from './Home'
 
 const banco = {
@@ -19,6 +20,14 @@ const butacas = {
   creadoEn: '2026-10-10T12:00:00.000Z',
 } as ImpactProject
 
+const recorrido: TraceEvent[] = [
+  { stage: 'aporte', title: 'Tu aporte', detail: '640 tapitas en el Punto R · Estadio.', date: '2026-10-04', done: true },
+  { stage: 'validacion', title: 'Pesaje del lote', detail: 'Al cierre de cada partido, el club pesa lo juntado.', date: null, done: false, operator: 'Club' },
+  { stage: 'producto', title: 'Instalación', detail: 'El banco se instala en el Estadio.', date: null, done: false },
+]
+
+const estadio = { id: 'p_club_estadio', name: 'Punto R · Estadio', sponsorId: 's_club' } as RecyclePoint
+
 // Los proyectos que devuelve la API en cada caso: arranca siendo sólo el banco.
 let proyectosDelCaso: ImpactProject[] = [banco]
 
@@ -28,6 +37,8 @@ vi.mock('@/services/api', async (original) => ({
     getProjects: () => Promise.resolve(proyectosDelCaso),
     getContributions: () => Promise.resolve([]),
     getCauses: () => Promise.resolve([]),
+    getProjectTrace: () => Promise.resolve(recorrido),
+    getPoints: () => Promise.resolve([estadio]),
   },
 }))
 
@@ -128,5 +139,31 @@ describe('inicio del hincha', () => {
     fireEvent.click(within(pestanas).getByRole('button', { name: /Butacas para la platea/ }))
     fireEvent.click(screen.getByRole('link', { name: /Sumá tus tapitas/ }))
     expect(sessionStorage.getItem(claveDeAlmacenamiento('scan-point'))).toBe('p_club_sede')
+  })
+})
+
+describe('tu tapita en el inicio', () => {
+  beforeEach(() => {
+    proyectosDelCaso = [banco]
+    usePesajesStore.setState({ pesajes: [] })
+  })
+
+  it('debajo del banco dice dónde va tu tapita y lleva al recorrido', async () => {
+    verElInicio()
+    const tarjeta = await screen.findByRole('link', { name: /el recorrido de tu tapita/i })
+    expect(tarjeta.getAttribute('href')).toBe('/trazabilidad/pr_banco_club')
+    expect(screen.getByText(/lo que sigue/i).textContent).toMatch(/pesaje del lote/i)
+  })
+
+  it('cuando el club carga el pesaje, el inicio muestra que tu tapita avanzó', async () => {
+    verElInicio()
+    await screen.findByRole('link', { name: /el recorrido de tu tapita/i })
+    act(() => {
+      usePesajesStore.getState().agregar({
+        id: 'ps1', partido: 'Talleres vs. Instituto', fecha: '2026-10-12', puntoId: 'p_club_estadio',
+        puntoNombre: 'Punto R · Estadio', kilos: 12.5, tapitas: 2975, creadoEn: '2026-10-12T15:00:00.000Z',
+      })
+    })
+    expect((await screen.findByText(/tu tapita va por/i)).textContent).toMatch(/pesaje del lote/i)
   })
 })

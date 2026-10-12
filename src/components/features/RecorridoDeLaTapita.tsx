@@ -26,8 +26,7 @@ export function RecorridoDeLaTapita({
   propias: number
 }) {
   const reduce = useReducedMotion()
-  const { actual, siguiente, total } = estadoDelRecorrido(eventos)
-  const proximo = siguiente === null ? undefined : eventos[siguiente]
+  const { actual, siguiente } = estadoDelRecorrido(eventos)
   const avance = proyecto.goalUnits > 0 ? proyecto.collectedUnits / proyecto.goalUnits : 0
 
   return (
@@ -38,36 +37,7 @@ export function RecorridoDeLaTapita({
       </p>
       <h1 className="text-2xl font-extrabold leading-tight text-eco-950 dark:text-eco-50">El recorrido de tu tapita</h1>
 
-      <div className="mt-3 space-y-1 rounded-xl bg-card/90 p-3 text-sm">
-        <p className="flex items-center gap-2">
-          <span aria-hidden className="h-3 w-3 shrink-0 rounded-full bg-xp-400 ring-1 ring-xp-600" />
-          {actual < 0 ? (
-            <span>Tu tapita todavía no entró a este recorrido</span>
-          ) : actual > 0 ? (
-            // Pasó la primera etapa (el club ya la pesó, por ejemplo): ya no se la nombra por el punto.
-            <span>
-              Tu tapita va por: <b className="font-bold">{eventos[actual].title.toLowerCase()}</b>
-            </span>
-          ) : punto ? (
-            <span>
-              Tu tapita está en el <b className="font-bold">{punto}</b>
-            </span>
-          ) : (
-            <span>Tu tapita ya está en el recorrido</span>
-          )}
-        </p>
-        {proximo && (
-          <p>
-            Lo que sigue: <b className="font-bold">{proximo.title.toLowerCase()}</b>
-            {proximo.operator ? `, a cargo de ${proximo.operator}` : ''}
-          </p>
-        )}
-        {actual >= 0 && (
-          <p className="text-xs text-muted-foreground">
-            Etapa {actual + 1} de {total}
-          </p>
-        )}
-      </div>
+      <EstadoDeTuTapita eventos={eventos} punto={punto} className="mt-3 rounded-xl bg-card/90 p-3" />
 
       {/* La línea de cal va en el contenedor, no dentro de la lista */}
       <div className="relative mt-5">
@@ -136,5 +106,54 @@ export function RecorridoDeLaTapita({
         </p>
       </div>
     </Cancha>
+  )
+}
+
+/**
+ * Dónde está tu tapita, qué sigue y en qué etapa va. Lo comparten el recorrido y el inicio, para que
+ * digan lo mismo.
+ */
+export function EstadoDeTuTapita({
+  eventos,
+  punto,
+  className,
+}: {
+  eventos: TraceEvent[]
+  punto?: string
+  className?: string
+}) {
+  const { actual, siguiente, total } = estadoDelRecorrido(eventos)
+  const proximo = siguiente === null ? undefined : eventos[siguiente]
+  return (
+    <div className={cn('space-y-1 text-sm', className)}>
+      <p className="flex items-center gap-2">
+        <span aria-hidden className="h-3 w-3 shrink-0 rounded-full bg-xp-400 ring-1 ring-xp-600" />
+        {actual < 0 ? (
+          <span>Tu tapita todavía no entró a este recorrido</span>
+        ) : actual > 0 ? (
+          // Pasó la primera etapa (el club ya la pesó, por ejemplo): ya no se la nombra por el punto.
+          <span>
+            Tu tapita va por: <b className="font-bold">{eventos[actual].title.toLowerCase()}</b>
+          </span>
+        ) : punto ? (
+          <span>
+            Tu tapita está en el <b className="font-bold">{punto}</b>
+          </span>
+        ) : (
+          <span>Tu tapita ya está en el recorrido</span>
+        )}
+      </p>
+      {proximo && (
+        <p>
+          Lo que sigue: <b className="font-bold">{proximo.title.toLowerCase()}</b>
+          {proximo.operator ? `, a cargo de ${proximo.operator}` : ''}
+        </p>
+      )}
+      {actual >= 0 && (
+        <p className="text-xs text-muted-foreground">
+          Etapa {actual + 1} de {total}
+        </p>
+      )}
+    </div>
   )
 }
