@@ -19,6 +19,9 @@ import {
 } from '@/lib/utils'
 import { BuyFlow } from '@/components/features/BuyFlow'
 import { FestejoDelAporte } from '@/components/features/FestejoDelAporte'
+import { LogroDesbloqueado } from '@/components/features/LogroDesbloqueado'
+import { useDatosDeLogros } from '@/hooks/useLogros'
+import { logrosNuevos } from '@/lib/logros'
 import { QrScanner } from '@/components/features/QrScanner'
 import { Button } from '@/components/ui/button'
 import { Tabs, type TabItem } from '@/components/ui/tabs'
@@ -44,6 +47,7 @@ export default function Scan() {
   const addActivity = useActivityStore((s) => s.add)
   const actividad = useActivityStore((s) => s.sessionContributions)
   const nombre = useSessionStore((s) => s.user?.name)
+  const datosDeLogros = useDatosDeLogros()
 
   const [mode, setMode] = useState<Mode>('reciclar')
   const [step, setStep] = useState<Step>('scan')
@@ -112,6 +116,20 @@ export default function Scan() {
   if (mode === 'reciclar' && step === 'done' && result) {
     // El festejo, sólo si el aporte suma a un banco: mismo proyecto y mismo material.
     const proyectoConAporte = result.project && conAportesDeLaSesion(result.project, actividad, nombre)
+    // El logro que ganó este aporte: los logros sin él, contra los logros con él.
+    const sinEste = actividad.filter((c) => c.id !== result.contribution.id)
+    const ganados =
+      datosDeLogros && result.project
+        ? logrosNuevos(
+            {
+              ...datosDeLogros,
+              historial: datosDeLogros.historial.filter((c) => c.id !== result.contribution.id),
+              sesion: sinEste,
+              banco: conAportesDeLaSesion(result.project, sinEste, nombre),
+            },
+            { ...datosDeLogros, banco: proyectoConAporte },
+          )
+        : []
 
     return (
       <div className="flex flex-col items-center pt-6 text-center">
@@ -120,6 +138,9 @@ export default function Scan() {
             <h1 className="text-2xl font-extrabold">¡Aporte registrado!</h1>
             <p className="mb-4 text-muted-foreground">{result.contribution.pointName}</p>
             <FestejoDelAporte proyecto={proyectoConAporte} unidades={result.contribution.units ?? 0} xp={result.xpEarned} />
+            {ganados.map((l) => (
+              <LogroDesbloqueado key={l.id} logro={l} />
+            ))}
           </>
         ) : (
           <>

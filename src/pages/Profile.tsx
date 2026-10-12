@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import {
   BarChart3,
@@ -29,6 +29,8 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Modal } from '@/components/ui/modal'
 import { QrCoupon } from '@/components/features/QrCoupon'
+import { LogrosDelPerfil } from '@/components/features/LogrosDelPerfil'
+import { useLogros } from '@/hooks/useLogros'
 
 const PREMIUM_PERKS = [
   'Mejores canjes por la misma cantidad de XP',
@@ -41,6 +43,13 @@ export default function Profile() {
   const navigate = useNavigate()
   const user = useSessionStore((s) => s.user)
   const setPremium = useSessionStore((s) => s.setPremium)
+  const logros = useLogros()
+  const { hash } = useLocation()
+  // Desde el festejo se llega con #logros: la sección aparece cuando cargan los datos.
+  const logrosListos = logros !== null
+  useEffect(() => {
+    if (hash === '#logros' && logrosListos) document.getElementById('logros')?.scrollIntoView({ block: 'start' })
+  }, [hash, logrosListos])
   const logout = useSessionStore((s) => s.logout)
   const { reputationXp, spendableXp } = useWalletStore()
   const resetWallet = useWalletStore((s) => s.reset)
@@ -122,6 +131,8 @@ export default function Profile() {
           <p className="text-[11px] text-muted-foreground">aportes</p>
         </div>
       </div>
+
+      {logros && <LogrosDelPerfil logros={logros} />}
 
       {/* Premium */}
       {user.isPremium ? (
