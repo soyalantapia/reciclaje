@@ -319,6 +319,14 @@ Tres funciones para la reunión con Talleres del 13/10, pensadas para las pregun
 - **El aviso del panel** al guardar un pesaje dice dónde se ve en la app y que en la demo es en el mismo navegador.
 - Las pruebas nuevas dan rojo si el inicio ignora los pesajes o si el aviso no dice dónde mirar.
 
+### Los logros de la hincha (rama `feat/logros-de-la-hincha`)
+- Juanpi pidió el 12/10/2026 «más gamificación, más biri biri»; Alan aprobó hacerlo antes de la reunión con Talleres.
+- **Seis logros** (`src/lib/logros.ts`), calculados con lo que ya hay (historial, aportes de la sesión, racha y el banco), sin guardar nada nuevo: Primera tapita, Racha de 7 días, Titular de la hinchada (top 5 del banco), Hincha de cancha, 1.000 tapitas y Tres partidos.
+- **«Hincha de cancha» pide aportar en el Estadio hoy** («en día de partido»): Camila ya aportó ahí el 04/10, y así se desbloquea en vivo en la demo. Un aporte en la sede no lo da.
+- **En el festejo** (`LogroDesbloqueado`): «¡Logro desbloqueado!» con la medalla que entra girando y suelta destellos; con movimiento reducido, quieta. Lleva a «Tus logros».
+- **En el perfil** (`LogrosDelPerfil`): los seis, ganados a color con el anillo del club y los que faltan en gris con su progreso (690 / 1.000, 2 / 3).
+- Para volver a ver el desbloqueo en un ensayo: otra ventana de incógnito, o borrar los datos del sitio.
+
 ---
 
 ## Trabajo hecho que NO quedó en commits
