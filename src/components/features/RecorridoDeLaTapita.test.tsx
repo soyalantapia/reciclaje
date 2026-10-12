@@ -28,6 +28,16 @@ describe('RecorridoDeLaTapita', () => {
     expect(container.querySelector('li[data-siguiente="true"]')?.textContent).toContain('lo que sigue')
   })
 
+  it('con el pesaje hecho, dice que tu tapita va por el pesaje (no que sigue en el punto) y lo que sigue es el lote', () => {
+    const pesado = eventos.map((e) => (e.stage === 'validacion' ? { ...e, done: true, date: '2026-10-12' } : e))
+    const { container } = render(<RecorridoDeLaTapita eventos={pesado} proyecto={proyecto} punto="Punto R · Estadio" propias={0} />)
+    const t = container.textContent ?? ''
+    expect(t).toContain('Tu tapita va por: pesaje del lote')
+    expect(t).not.toContain('Tu tapita está en el')
+    expect(t).toContain('Lo que sigue: lote del partido')
+    expect(t).toContain('Etapa 2 de 4')
+  })
+
   it('las etapas pendientes no tienen fecha inventada, y el destino muestra el mismo avance', () => {
     const { container } = render(<RecorridoDeLaTapita eventos={eventos} proyecto={proyecto} propias={0} />)
     const t = container.textContent ?? ''

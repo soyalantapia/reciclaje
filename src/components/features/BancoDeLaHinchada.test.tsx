@@ -29,4 +29,14 @@ describe('BancoDeLaHinchada con un producto que publicó el club', () => {
     expect(container.textContent).not.toContain(invitacion)
     expect(container.textContent).toContain('La hinchada que suma')
   })
+
+  it('con una empresa que lo acompaña, lo dice debajo del título con su color; sin ella, no dice nada', () => {
+    const con = { ...butacas, patrocinador: { id: 's_ypf', nombre: 'Norte Energía', color: '#0f3d91' } }
+    const { container, rerender } = render(<BancoDeLaHinchada proyecto={con} items={[]} propias={0} />)
+    const apoyo = container.querySelector('[data-apoyo]')!
+    expect(apoyo.textContent).toBe('Con el apoyo de Norte Energía')
+    expect((apoyo.querySelector('span[aria-hidden]') as HTMLElement).style.background).toBe('rgb(15, 61, 145)')
+    rerender(<BancoDeLaHinchada proyecto={butacas} items={[]} propias={0} />)
+    expect(container.querySelector('[data-apoyo]')).toBeNull()
+  })
 })

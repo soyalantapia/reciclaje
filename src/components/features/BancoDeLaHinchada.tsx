@@ -5,6 +5,7 @@ import type { ImpactProject } from '@/types'
 import type { AporteDeLaHinchada } from '@/lib/ultimosAportes'
 import { tituloDeLaHinchada } from '@/lib/productosDelClub'
 import { cn, formatNumber, pct } from '@/lib/utils'
+import { ApoyoDelProducto } from './ApoyoDelProducto'
 import { BancoDeTapitas } from './BancoDeTapitas'
 import { Cancha } from './Cancha'
 import { Marcador } from './Marcador'
@@ -41,6 +42,7 @@ export function BancoDeLaHinchada({
         <div className="min-w-0">
           <p className="text-xs font-bold text-eco-800 dark:text-eco-200">{antetitulo ?? proyecto.sponsorName}</p>
           <h2 className="text-lg font-extrabold leading-tight text-eco-950 dark:text-eco-50">{proyecto.title}</h2>
+          <ApoyoDelProducto proyecto={proyecto} className="mt-1.5" />
         </div>
         {enlace && (
           <Link to={enlace} className="inline-flex shrink-0 items-center text-sm font-semibold text-eco-800 dark:text-eco-200">

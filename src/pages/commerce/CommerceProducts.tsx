@@ -3,6 +3,7 @@ import { Navigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import { MapPin, Plus, Trash2 } from 'lucide-react'
 import type { FormaDelProducto } from '@/types'
+import { ESCENARIO } from '@/lib/escenario'
 import { api } from '@/services/api'
 import { useApi } from '@/hooks/useApi'
 import { usePuntosDelPanel } from '@/hooks/usePuntosDelPanel'
@@ -11,9 +12,10 @@ import { useActivityStore } from '@/store/activity'
 import { useCommerceProductsStore } from '@/store/commerceProducts'
 import { conAportesDeLaSesion } from '@/lib/aportesDeLaSesion'
 import { TAPITAS_POR_KILO } from '@/lib/metrics'
-import { FORMAS, crearProducto, esDelPanel, kilosDeLaMeta, puntosDelProducto } from '@/lib/productosDelClub'
+import { FORMAS, crearProducto, esDelPanel, kilosDeLaMeta, patrocinadoresPosibles, puntosDelProducto } from '@/lib/productosDelClub'
 import { esInstitucion } from '@/lib/vocabulario'
 import { cn, formatNumber, pct, shortCode } from '@/lib/utils'
+import { ApoyoDelProducto } from '@/components/features/ApoyoDelProducto'
 import { BancoDeTapitas } from '@/components/features/BancoDeTapitas'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -40,6 +42,7 @@ export default function CommerceProducts() {
   const agregar = useCommerceProductsStore((s) => s.agregar)
   const quitar = useCommerceProductsStore((s) => s.quitar)
   const { data: proyectos, loading } = useApi(() => api.getProjects(), [])
+  const { data: red } = useApi(() => api.getSponsors(), [])
   // Los del simulador más el del alta: un club dado de alta en vivo también publica.
   const { points: puntos } = usePuntosDelPanel()
   // Un doble clic llega al formulario que se está cerrando, con su `publicar` de antes: la marca vive en un ref.
@@ -50,6 +53,8 @@ export default function CommerceProducts() {
   const [nombre, setNombre] = useState(nombrePropuesto(FORMA_INICIAL))
   const [metaKg, setMetaKg] = useState(META_INICIAL)
   const [puntoId, setPuntoId] = useState('')
+  // `undefined`: todavía no se eligió, y vale la propuesta; `''`: «Sin patrocinador».
+  const [patrocinadorId, setPatrocinadorId] = useState<string | undefined>(undefined)
 
   if (!commerce) return null
   if (!esInstitucion(commerce.category)) return <Navigate to="/comercio" replace />
@@ -68,6 +73,11 @@ export default function CommerceProducts() {
   const libres = puntosDelClub.filter((p) => !mios.some((m) => m.puntoId === p.id))
   const punto = puntosDelClub.find((p) => p.id === puntoId) ?? libres.at(-1) ?? puntosDelClub.at(-1)
   const kilos = Math.round(Number(metaKg) || 0)
+  const posibles = patrocinadoresPosibles(red ?? [])
+  // En la demo del club las empresas de la red tienen nombres de ejemplo y se propone la primera. En la
+  // general son marcas reales: no se propone ninguna, para no mostrar a una como patrocinadora del club.
+  const elegidoId = patrocinadorId ?? (ESCENARIO === 'club' ? (posibles[0]?.id ?? '') : '')
+  const patrocinador = posibles.find((p) => p.id === elegidoId)
 
   function elegirForma(f: FormaDelProducto) {
     setForma(f)
@@ -96,6 +106,7 @@ export default function CommerceProducts() {
         punto,
         club: { id: commerce!.id, nombre: commerce!.name },
         creadoEn: new Date().toISOString(),
+        patrocinador,
       }),
     )
     yaPublicado.current = true
@@ -104,6 +115,7 @@ export default function CommerceProducts() {
     setNombre(nombrePropuesto(FORMA_INICIAL))
     setMetaKg(META_INICIAL)
     setPuntoId('')
+    setPatrocinadorId(undefined)
     toast.success('Publicado: la hinchada ya lo ve en su inicio')
   }
 
@@ -146,6 +158,7 @@ export default function CommerceProducts() {
                 <p className="min-w-0 break-words font-bold leading-tight">{p.title}</p>
                 {delPanel && <Badge variant="xp">Nuevo</Badge>}
               </div>
+              <ApoyoDelProducto proyecto={p} className="mt-1 bg-muted shadow-none" />
               <p className="mt-1 text-sm text-muted-foreground">
                 Meta: {formatNumber(kilosDeLaMeta(p))} kg · {formatNumber(p.goalUnits)} tapitas
               </p>
@@ -248,6 +261,26 @@ export default function CommerceProducts() {
             </select>
             <p className="mt-1 text-xs text-muted-foreground">
               Desde que lo publiques, lo que la hinchada deje en este Punto R suma a este producto.
+            </p>
+          </div>
+          <div>
+            <Label htmlFor="producto-apoyo">Con el apoyo de</Label>
+            <select
+              id="producto-apoyo"
+              value={elegidoId}
+              onChange={(e) => setPatrocinadorId(e.target.value)}
+              className="h-12 w-full rounded-xl border border-input bg-card px-4 text-sm text-foreground"
+            >
+              <option value="">Sin patrocinador</option>
+              {posibles.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.nombre}
+                </option>
+              ))}
+            </select>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Una empresa de la red puede acompañar el producto: su nombre aparece junto a él en la app de la
+              hinchada, en el panel y en el informe.
             </p>
           </div>
           <Button block size="lg" onClick={publicar}>

@@ -10,10 +10,12 @@ import { useMetricasDelPanel } from '@/hooks/useMetricasDelPanel'
 import { useSessionStore } from '@/store/session'
 import { useActivityStore } from '@/store/activity'
 import { useCommerceProductsStore } from '@/store/commerceProducts'
+import { usePesajesStore } from '@/store/pesajesDelClub'
 import { conAporteDeLaSesionEnLaTraza, conAportesDeLaSesion, nombreCorto } from '@/lib/aportesDeLaSesion'
 import { estadoDelRecorrido } from '@/lib/recorridoDeLaTapita'
-import { esDelPanel, kilosDeLaMeta, puntosDelProducto } from '@/lib/productosDelClub'
+import { esDelPanel, kilosDeLaMeta, puntosDelProducto, textoDelApoyo } from '@/lib/productosDelClub'
 import { ETAPAS_DEL_PILOTO, SIN_PESAJES, topDeLaHinchada } from '@/lib/informe'
+import { conPesajeEnLaTraza, pesajesDelInforme } from '@/lib/pesajes'
 import { posicionEnLaRed, textoDePosicion } from '@/lib/posicionEnLaRed'
 import { AVISO_DE_EJEMPLO, csvDelReporte } from '@/lib/reporte'
 import {
@@ -76,6 +78,7 @@ export default function CommerceInforme() {
   const nombreDelHincha = useSessionStore((s) => s.user?.name)
   const actividad = useActivityStore((s) => s.sessionContributions)
   const creados = useCommerceProductsStore((s) => s.creados)
+  const pesajes = usePesajesStore((s) => s.pesajes)
   const marca = useMarcaDelPanel()
   // Las mismas métricas que el resumen y los reportes, con lo que la hinchada hizo en esta sesión.
   const { m, points, loading, error, reload } = useMetricasDelPanel()
@@ -96,7 +99,16 @@ export default function CommerceInforme() {
     () => (principal ? api.getProjectTrace(principal.id) : Promise.resolve<TraceEvent[]>([])),
     [principal?.id],
   )
-  const eventos = traza && principal ? conAporteDeLaSesionEnLaTraza(traza, principal, actividad) : []
+  // Con el aporte de la sesión y con el último pesaje que el club cargó en los puntos del banco.
+  const eventos =
+    traza && principal && commerce
+      ? conPesajeEnLaTraza(
+          conAporteDeLaSesionEnLaTraza(traza, principal, actividad),
+          pesajes,
+          puntosDelProducto(principal, points ?? [], creados).map((p) => p.id),
+          commerce.name,
+        )
+      : []
   const { siguiente } = estadoDelRecorrido(eventos)
   const proxima = siguiente === null ? undefined : eventos[siguiente]
 
@@ -127,6 +139,10 @@ export default function CommerceInforme() {
     puntosR: (points ?? []).filter((p) => p.sponsorId === commerce.id).length,
   })
   const dimensiones = [...new Set(indicadores.map((f) => f.dimension))]
+  // «Partido por partido»: los pesajes que el club cargó en sus Punto R, del más nuevo al más viejo.
+  const delClub = pesajesDelInforme(
+    pesajes.filter((p) => (points ?? []).some((pt) => pt.id === p.puntoId && pt.sponsorId === commerce.id)),
+  )
 
   function descargarCsv() {
     downloadBlob(`informe-${commerce!.slug}.csv`, csvDelReporte(m!), 'text/csv;charset=utf-8')
@@ -216,6 +232,7 @@ export default function CommerceInforme() {
                     />
                   </div>
                   <p className="mt-2 font-bold leading-tight">{p.title}</p>
+                  {textoDelApoyo(p) && <p className="text-sm font-semibold">{textoDelApoyo(p)}</p>}
                   <p className="text-sm text-muted-foreground">
                     {formatNumber(p.collectedUnits)} de {formatNumber(p.goalUnits)} tapitas ·{' '}
                     {pct(p.collectedUnits, p.goalUnits)}% · meta {formatNumber(kilosDeLaMeta(p))} kg
@@ -245,17 +262,33 @@ export default function CommerceInforme() {
                 <tr className="border-b-2 border-border text-xs uppercase tracking-wide text-muted-foreground">
                   <th scope="col" className="py-2 pr-2 font-bold">Partido</th>
                   <th scope="col" className="py-2 pr-2 font-bold">Fecha</th>
+                  <th scope="col" className="py-2 pr-2 font-bold">Punto R</th>
                   <th scope="col" className="py-2 pr-2 text-right font-bold">Kilos</th>
-                  <th scope="col" className="py-2 pr-2 text-right font-bold">Tapitas</th>
-                  <th scope="col" className="py-2 text-right font-bold">Hinchas</th>
+                  <th scope="col" className="py-2 text-right font-bold">Tapitas</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td colSpan={5} className="py-4 text-center text-sm italic text-muted-foreground">
-                    {SIN_PESAJES}
-                  </td>
-                </tr>
+                {delClub.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} className="py-4 text-center text-sm italic text-muted-foreground">
+                      {SIN_PESAJES}
+                    </td>
+                  </tr>
+                ) : (
+                  delClub.map((p) => (
+                    <tr key={p.id} className="border-b border-border last:border-0">
+                      <td className="py-2 pr-2 font-semibold">{p.partido}</td>
+                      <td className="py-2 pr-2 tabular-nums">
+                        {new Date(`${p.fecha}T12:00:00`).toLocaleDateString('es-AR', { day: 'numeric', month: 'short' })}
+                      </td>
+                      <td className="py-2 pr-2">{p.puntoNombre}</td>
+                      <td className="py-2 pr-2 text-right font-bold tabular-nums">
+                        {p.kilos.toLocaleString('es-AR', { maximumFractionDigits: 1 })}
+                      </td>
+                      <td className="py-2 text-right tabular-nums">{formatNumber(p.tapitas)}</td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>

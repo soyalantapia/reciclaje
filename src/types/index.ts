@@ -145,6 +145,14 @@ export interface ImpactProject {
   puntoId?: string
   /** Cuándo se publicó desde el panel (ISO). */
   creadoEn?: string
+  /** La empresa de la red que acompaña el producto, si la hay: su nombre va junto al producto. */
+  patrocinador?: Patrocinador
+}
+
+export interface Patrocinador {
+  id: string
+  nombre: string
+  color: string
 }
 
 export type BenefitCategory =

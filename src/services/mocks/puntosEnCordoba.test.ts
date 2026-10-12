@@ -138,7 +138,7 @@ describe('los puntos de las dos demos, en Córdoba capital', () => {
   it('las causas son de Córdoba y no nombran instituciones reales', () => {
     for (const datos of [datosGenerales, club]) {
       expect(datos.causes.map((c) => c.city)).toEqual(['Córdoba', 'Córdoba', 'Córdoba'])
-      expect(JSON.stringify(datos.causes)).not.toMatch(/CABA|La Matanza|Cañuelas|Gutiérrez/)
+      expect(JSON.stringify(datos.causes)).not.toMatch(/CABA|La Matanza|Cañuelas|Gutiérrez|Hospital Infantil/)
     }
   })
 
