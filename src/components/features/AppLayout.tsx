@@ -21,9 +21,10 @@ export function AppLayout() {
 
   // El mapa se precarga en un momento libre: al tocar «Mapa», ya está bajado.
   useEffect(() => {
+    // Sin red la precarga falla en silencio: no hay nada que avisar, la pantalla se baja igual cuando se abre.
     const precargar = () => {
-      void import('@/pages/MapPoints')
-      void import('@/components/features/MapaDeCordoba')
+      void import('@/pages/MapPoints').catch(() => {})
+      void import('@/components/features/MapaDeCordoba').catch(() => {})
     }
     // `typeof` y no `in`: con `'requestIdleCallback' in window` TypeScript deja `window` en `never` en el resto.
     if (typeof window.requestIdleCallback === 'function') {

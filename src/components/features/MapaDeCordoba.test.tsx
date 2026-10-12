@@ -20,19 +20,20 @@ const punto = (id: string, name: string, lat: number, lng: number): RecyclePoint
 const SEDE = punto('p_sede', 'Sede', -31.415995, -64.183657)
 const ESPANA = punto('p_espana', 'Plaza España', -31.428564, -64.184875)
 
-function verElMapa(props: Partial<ComponentProps<typeof MapaDeCordoba>> = {}) {
-  return render(
-    <MapaDeCordoba
-      puntos={[SEDE, ESPANA]}
-      marcas={new Map([[marca.id, marca]])}
-      elegido={null}
-      onElegir={() => {}}
-      miUbicacion={null}
-      vista={{ tipo: 'centro', n: 0 }}
-      {...props}
-    />,
-  )
-}
+/** El mapa como lo arma la pantalla al abrirse; cada prueba cambia lo que le interesa. */
+const elMapa = (props: Partial<ComponentProps<typeof MapaDeCordoba>> = {}) => (
+  <MapaDeCordoba
+    puntos={[SEDE, ESPANA]}
+    marcas={new Map([[marca.id, marca]])}
+    elegido={null}
+    onElegir={() => {}}
+    miUbicacion={null}
+    vista={{ tipo: 'centro', n: 0 }}
+    vuelo={0}
+    {...props}
+  />
+)
+const verElMapa = (props: Partial<ComponentProps<typeof MapaDeCordoba>> = {}) => render(elMapa(props))
 
 describe('el mapa de Leaflet', () => {
   it('pone un pin por punto, con su nombre, y tocarlo lo elige', () => {
@@ -52,13 +53,28 @@ describe('el mapa de Leaflet', () => {
     expect(pin().style.width).toBe('30px')
     expect(flyTo).not.toHaveBeenCalled()
 
-    rerender(
-      <MapaDeCordoba puntos={[SEDE, ESPANA]} marcas={new Map([[marca.id, marca]])} elegido="p_sede" onElegir={() => {}} miUbicacion={null} vista={{ tipo: 'centro', n: 0 }} />,
-    )
+    rerender(elMapa({ elegido: 'p_sede' }))
     expect(pin().style.width).toBe('40px')
     expect(flyTo).toHaveBeenCalledTimes(1)
     expect(flyTo).toHaveBeenCalledWith([SEDE.lat, SEDE.lng], expect.any(Number), expect.anything())
     expect(flyTo.mock.calls[0][1]).toBeGreaterThanOrEqual(15)
+  })
+
+  it('volver a tocar el punto ya elegido vuelve a llevar el mapa hasta él, aunque se lo haya movido', () => {
+    const flyTo = vi.spyOn(L.Map.prototype, 'flyTo')
+    const { rerender } = verElMapa()
+    rerender(elMapa({ elegido: 'p_sede', vuelo: 1 }))
+    expect(flyTo).toHaveBeenCalledTimes(1)
+
+    // El mismo punto, otro toque (la pantalla sube `vuelo`): el hincha pudo haber movido el mapa y quiere volver a él.
+    rerender(elMapa({ elegido: 'p_sede', vuelo: 2 }))
+    expect(flyTo).toHaveBeenCalledTimes(2)
+    expect(flyTo).toHaveBeenLastCalledWith([SEDE.lat, SEDE.lng], expect.any(Number), expect.anything())
+
+    // Sin un toque nuevo no vuela: ni al volver a dibujarse ni al filtrar.
+    rerender(elMapa({ elegido: 'p_sede', vuelo: 2 }))
+    rerender(elMapa({ puntos: [SEDE], elegido: 'p_sede', vuelo: 2 }))
+    expect(flyTo).toHaveBeenCalledTimes(2)
   })
 
   it('«Ver todos» con un solo punto no se acerca hasta el máximo', () => {
@@ -74,9 +90,7 @@ describe('el mapa de Leaflet', () => {
     const fitBounds = vi.spyOn(L.Map.prototype, 'fitBounds')
     const { rerender } = verElMapa()
     const encuadresAlAbrir = fitBounds.mock.calls.length
-    rerender(
-      <MapaDeCordoba puntos={[SEDE]} marcas={new Map([[marca.id, marca]])} elegido={null} onElegir={() => {}} miUbicacion={null} vista={{ tipo: 'centro', n: 0 }} />,
-    )
+    rerender(elMapa({ puntos: [SEDE] }))
     expect(screen.queryByRole('button', { name: 'Plaza España' })).not.toBeInTheDocument()
     expect(fitBounds).toHaveBeenCalledTimes(encuadresAlAbrir)
   })

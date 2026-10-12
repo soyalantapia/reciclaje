@@ -15,6 +15,8 @@ interface Props {
   onElegir: (id: string) => void
   miUbicacion: Lugar | null
   vista: Vista
+  /** Sube cada vez que se elige un punto, también si es el mismo: así el mapa vuelve a volar hasta él. */
+  vuelo: number
 }
 
 // Las teselas estándar de OpenStreetMap. La atribución es obligatoria. Las claras de CARTO piden clave desde fines
@@ -37,7 +39,7 @@ function iconoDelPunto(color: string, elegido: boolean): L.DivIcon {
 }
 
 /** Encuadra, vuela al elegido y a tu ubicación. Vive adentro del mapa para tener `useMap`. */
-function ControlDeLaVista({ puntos, elegido, miUbicacion, vista }: Pick<Props, 'puntos' | 'elegido' | 'miUbicacion' | 'vista'>) {
+function ControlDeLaVista({ puntos, elegido, miUbicacion, vista, vuelo }: Pick<Props, 'puntos' | 'elegido' | 'miUbicacion' | 'vista' | 'vuelo'>) {
   const mapa = useMap()
 
   useEffect(() => {
@@ -51,8 +53,10 @@ function ControlDeLaVista({ puntos, elegido, miUbicacion, vista }: Pick<Props, '
   useEffect(() => {
     const p = puntos.find((x) => x.id === elegido)
     if (p) mapa.flyTo([p.lat, p.lng], Math.max(mapa.getZoom(), 15), { duration: 0.6 })
+    // Con cada toque (`vuelo`), también sobre el punto que ya está elegido: si el hincha movió el mapa, vuelve a él.
+    // Filtrar, en cambio, no lo mueve: por eso no depende de `puntos`.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [elegido])
+  }, [elegido, vuelo])
 
   useEffect(() => {
     if (miUbicacion) mapa.flyTo([miUbicacion.lat, miUbicacion.lng], 15, { duration: 0.6 })
@@ -65,7 +69,7 @@ function ControlDeLaVista({ puntos, elegido, miUbicacion, vista }: Pick<Props, '
  * El mapa de Córdoba con los puntos de la red (Leaflet). Arranca en el Centro y Nueva Córdoba. Tocar un
  * pin lo elige; la pantalla muestra su tarjeta.
  */
-export default function MapaDeCordoba({ puntos, marcas, elegido, onElegir, miUbicacion, vista }: Props) {
+export default function MapaDeCordoba({ puntos, marcas, elegido, onElegir, miUbicacion, vista, vuelo }: Props) {
   const iconos = useMemo(() => {
     const m = new Map<string, L.DivIcon>()
     for (const p of puntos) m.set(p.id, iconoDelPunto(marcas.get(p.sponsorId)?.brandColor ?? '#059669', p.id === elegido))
@@ -95,7 +99,7 @@ export default function MapaDeCordoba({ puntos, marcas, elegido, onElegir, miUbi
           pathOptions={{ color: '#ffffff', weight: 3, fillColor: '#2563eb', fillOpacity: 1 }}
         />
       )}
-      <ControlDeLaVista puntos={puntos} elegido={elegido} miUbicacion={miUbicacion} vista={vista} />
+      <ControlDeLaVista puntos={puntos} elegido={elegido} miUbicacion={miUbicacion} vista={vista} vuelo={vuelo} />
     </MapContainer>
   )
 }
