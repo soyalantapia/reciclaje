@@ -1,8 +1,8 @@
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import type { RecyclePoint } from '@/types'
 import {
   CENTRO_DE_CORDOBA, CENTRO_Y_NUEVA_CORDOBA, distanciaKm, enlaceComoLlegar, estaEnCordoba, filtrarPuntos, materialesDeLaRed, ordenarPuntos,
-  recuadroDe, textoDeDistancia,
+  prefiereMenosMovimiento, recuadroDe, textoDeDistancia,
 } from './mapa'
 
 const PLAZA_SAN_MARTIN = { lat: -31.416736, lng: -64.183581 }
@@ -40,7 +40,7 @@ describe('textoDeDistancia', () => {
 })
 
 describe('filtrarPuntos y materialesDeLaRed', () => {
-  it('«Abiertos ahora» deja los abiertos; un material deja los que lo reciben; juntos, los dos', () => {
+  it('«Abiertos» deja los abiertos; un material deja los que lo reciben; juntos, los dos', () => {
     const todos = [cerca, centro, lejos]
     expect(filtrarPuntos(todos, { abiertos: false, material: null })).toEqual(todos)
     expect(filtrarPuntos(todos, { abiertos: true, material: null }).map((p) => p.id)).toEqual(['centro', 'lejos'])
@@ -98,5 +98,28 @@ describe('enlaceComoLlegar, estaEnCordoba y recuadroDe', () => {
   it('el recuadro encierra todos los lugares; sin lugares no hay recuadro', () => {
     expect(recuadroDe([PLAZA_ESPANA, KEMPES, PLAZA_SAN_MARTIN])).toEqual([[-31.428564, -64.246145], [-31.368847, -64.183581]])
     expect(recuadroDe([])).toBeNull()
+  })
+})
+
+describe('prefiereMenosMovimiento', () => {
+  afterEach(() => {
+    delete (window as { matchMedia?: unknown }).matchMedia
+  })
+
+  it('en un navegador sin matchMedia (jsdom no lo trae) no supone nada: el movimiento sigue', () => {
+    expect(window.matchMedia).toBeUndefined()
+    expect(prefiereMenosMovimiento()).toBe(false)
+  })
+
+  it('lee «prefers-reduced-motion: reduce» del sistema cada vez que se le pregunta, no una sola', () => {
+    let reducir = true
+    const matchMedia = vi.fn((consulta: string) => ({ matches: reducir, media: consulta }))
+    Object.defineProperty(window, 'matchMedia', { configurable: true, writable: true, value: matchMedia })
+
+    expect(prefiereMenosMovimiento()).toBe(true)
+    expect(matchMedia).toHaveBeenCalledWith('(prefers-reduced-motion: reduce)')
+    // La persona puede cambiarlo con la pantalla abierta: el próximo toque ya lo ve.
+    reducir = false
+    expect(prefiereMenosMovimiento()).toBe(false)
   })
 })

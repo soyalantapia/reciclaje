@@ -49,7 +49,7 @@ export function PointCard({ point, sponsor, distancia, elegido, onClick }: Props
           <p className="text-xs font-semibold text-muted-foreground">{TYPE_LABEL[point.type]}</p>
           {sponsor && <HuellaVerde score={sponsor.greenScore} compact />}
         </div>
-        <p className="truncate text-xs text-muted-foreground">
+        <p className="line-clamp-2 text-xs text-muted-foreground">
           {point.address} · {point.city}
         </p>
         {distancia && <p className="text-xs font-semibold text-eco-700 dark:text-eco-300">{distancia}</p>}

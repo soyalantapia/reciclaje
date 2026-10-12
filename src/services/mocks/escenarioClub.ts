@@ -95,6 +95,7 @@ export function casoDelClub(base: DatosDemo, club: DatosDelClub, ids: IdsDelCaso
   }
 
   // Lugares de Talleres (el Kempes, donde juega de local, y su sede), de fuentes públicas: a confirmar con el club. Con otro club (VITE_CLUB_NOMBRE) cambia el nombre, no los pines.
+  // La sede va sin número de calle: el número sale de una sola fuente pública, débil. Se agrega cuando el club lo confirme.
   const puntos: RecyclePoint[] = [
     {
       id: `p_${ids.prefijo}_estadio`,
@@ -113,7 +114,7 @@ export function casoDelClub(base: DatosDemo, club: DatosDelClub, ids: IdsDelCaso
       name: `Punto R · ${club.sede}`,
       sponsorId: ids.sponsor,
       type: 'deposito',
-      address: 'Rosario de Santa Fe 15, frente a la Plaza San Martín',
+      address: 'Frente a la Plaza San Martín, Centro',
       city: 'Córdoba',
       lat: -31.415995,
       lng: -64.183657,

@@ -78,6 +78,15 @@ export function estaEnCordoba(lugar: Lugar): boolean {
   return distanciaKm(lugar, CENTRO_DE_CORDOBA) <= RADIO_DE_CORDOBA_KM
 }
 
+/**
+ * ¿La persona pidió «reducir movimiento» en su sistema? Se lee cuando hace falta (al subir hasta el mapa, al volar a un
+ * punto) y no al abrir la pantalla: puede cambiarlo con la pantalla abierta. `?.` porque jsdom no trae `matchMedia`; sin
+ * él no se supone nada y el movimiento sigue.
+ */
+export function prefiereMenosMovimiento(): boolean {
+  return window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false
+}
+
 /** El recuadro que encierra todos los lugares («Ver todos»); sin lugares, null. */
 export function recuadroDe(lugares: Lugar[]): Recuadro | null {
   if (!lugares.length) return null

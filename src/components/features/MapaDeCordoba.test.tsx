@@ -11,7 +11,19 @@ beforeAll(() => {
   Object.defineProperty(HTMLElement.prototype, 'clientWidth', { configurable: true, value: 360 })
   Object.defineProperty(HTMLElement.prototype, 'clientHeight', { configurable: true, value: 480 })
 })
-afterEach(() => vi.restoreAllMocks())
+afterEach(() => {
+  vi.restoreAllMocks()
+  delete (window as { matchMedia?: unknown }).matchMedia
+})
+
+/** jsdom no trae `matchMedia`: se lo simula para que «reducir movimiento» del sistema diga lo que pide la prueba (el `afterEach` lo saca). */
+function conReducirMovimiento(activado: boolean) {
+  Object.defineProperty(window, 'matchMedia', {
+    configurable: true,
+    writable: true,
+    value: (consulta: string) => ({ matches: activado && consulta === '(prefers-reduced-motion: reduce)', media: consulta }),
+  })
+}
 
 const marca: Sponsor = { id: 's_cafe', name: 'Café Andino', slug: 'cafe', category: 'comercio', brandColor: '#7c3aed', tagline: '', greenScore: 70, kgRecovered: 100 }
 const punto = (id: string, name: string, lat: number, lng: number): RecyclePoint => ({
@@ -93,6 +105,51 @@ describe('el mapa de Leaflet', () => {
     rerender(elMapa({ puntos: [SEDE] }))
     expect(screen.queryByRole('button', { name: 'Plaza España' })).not.toBeInTheDocument()
     expect(fitBounds).toHaveBeenCalledTimes(encuadresAlAbrir)
+  })
+
+  // Quien pide «reducir movimiento» en su sistema no quiere un vuelo de 0,6 s ni un zoom que se desliza: el mapa salta.
+  describe('con «reducir movimiento» en el sistema', () => {
+    const MI_UBICACION = { lat: -31.4286, lng: -64.1849 }
+
+    it('va hasta el punto elegido y hasta tu ubicación de un salto, sin volar', () => {
+      conReducirMovimiento(true)
+      const flyTo = vi.spyOn(L.Map.prototype, 'flyTo')
+      const { rerender } = verElMapa()
+      rerender(elMapa({ elegido: 'p_sede', vuelo: 1 }))
+      rerender(elMapa({ elegido: 'p_sede', vuelo: 1, miUbicacion: MI_UBICACION }))
+
+      // Los dos viajes salieron (el punto y la ubicación), y los dos sin animación. `objectContaining`: Leaflet escribe sobre
+      // las opciones que recibe (`setView` les suma `zoom` y `pan`), así que el objeto grabado ya no es `{ animate: false }` a secas.
+      expect(flyTo).toHaveBeenCalledTimes(2)
+      expect(flyTo).toHaveBeenNthCalledWith(1, [SEDE.lat, SEDE.lng], expect.any(Number), expect.objectContaining({ animate: false }))
+      expect(flyTo).toHaveBeenNthCalledWith(2, [MI_UBICACION.lat, MI_UBICACION.lng], 15, expect.objectContaining({ animate: false }))
+    })
+
+    it('«Ver todos» encuadra sin animar el acercamiento', () => {
+      conReducirMovimiento(true)
+      const fitBounds = vi.spyOn(L.Map.prototype, 'fitBounds')
+      verElMapa({ puntos: [SEDE, ESPANA], vista: { tipo: 'todos', n: 1 } })
+      expect(fitBounds).toHaveBeenLastCalledWith(expect.anything(), expect.objectContaining({ animate: false, maxZoom: 16 }))
+    })
+
+    it('sin pedirlo (o en un navegador que no sabe de qué se trata), todo sigue animado', () => {
+      const flyTo = vi.spyOn(L.Map.prototype, 'flyTo')
+      const fitBounds = vi.spyOn(L.Map.prototype, 'fitBounds')
+      // Primero sin `matchMedia` (jsdom), después con uno que dice que no.
+      for (const sistema of [() => {}, () => conReducirMovimiento(false)]) {
+        sistema()
+        flyTo.mockClear()
+        fitBounds.mockClear()
+        const { unmount } = verElMapa({ elegido: 'p_sede', vuelo: 1, miUbicacion: MI_UBICACION, vista: { tipo: 'todos', n: 1 } })
+        expect(flyTo).toHaveBeenCalledTimes(2)
+        for (const [, , opciones] of flyTo.mock.calls) {
+          expect(opciones).toEqual(expect.objectContaining({ duration: 0.6 }))
+          expect(opciones).not.toHaveProperty('animate')
+        }
+        expect(fitBounds.mock.lastCall?.[1]).not.toHaveProperty('animate')
+        unmount()
+      }
+    })
   })
 
   it('cita a OpenStreetMap, que es obligatorio, y tiene los botones de zoom en español', () => {

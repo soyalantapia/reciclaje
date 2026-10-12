@@ -95,15 +95,23 @@ function espiarElScroll() {
   Object.defineProperty(Element.prototype, 'scrollIntoView', { configurable: true, writable: true, value: espia })
   return espia
 }
+/** jsdom no trae `matchMedia`: se lo simula para que «reducir movimiento» del sistema diga lo que pide la prueba (el `afterEach` lo saca). */
+function conReducirMovimiento(activado: boolean) {
+  const matchMedia = vi.fn((consulta: string) => ({ matches: activado && consulta === '(prefers-reduced-motion: reduce)', media: consulta }))
+  Object.defineProperty(window, 'matchMedia', { configurable: true, writable: true, value: matchMedia })
+  return matchMedia
+}
 
 beforeEach(() => {
   sessionStorage.clear()
   red = PUNTOS
 })
 afterEach(() => {
+  vi.useRealTimers()
   vi.restoreAllMocks()
   delete (window.navigator as { geolocation?: Geolocation }).geolocation
   delete (Element.prototype as { scrollIntoView?: unknown }).scrollIntoView
+  delete (window as { matchMedia?: unknown }).matchMedia
 })
 
 describe('el mapa de Córdoba', () => {
@@ -111,6 +119,38 @@ describe('el mapa de Córdoba', () => {
     verMapa()
     expect(await screen.findByRole('button', { name: 'pin Sede' })).toBeInTheDocument()
     expect(nombresDeLaLista()).toEqual(['Sede', 'Kempes', 'Plaza España'])
+  })
+
+  // Los puntos de la demo son de ejemplo (algunos, a confirmar con el club): la pantalla no puede prometer que existen.
+  it('la bajada avisa que son puntos de ejemplo, y el título sigue siendo «Puntos adheridos»', async () => {
+    verMapa()
+    await screen.findByRole('button', { name: 'pin Sede' })
+    expect(screen.getByRole('heading', { level: 1, name: 'Puntos adheridos' })).toBeInTheDocument()
+    expect(screen.getByText('Puntos de ejemplo en Córdoba: tocá uno para ver cómo llegar.')).toBeInTheDocument()
+  })
+
+  // `openNow` es un dato fijo de la demo, no la hora de cada local: decir «ahora» prometería algo que no se sabe.
+  it('un punto abierto dice «Abierto» y el chip «Abiertos», sin «ahora»', async () => {
+    verMapa()
+    fireEvent.click(await screen.findByRole('button', { name: 'pin Sede' }))
+    expect(within(screen.getByRole('region', { name: 'Sede' })).getByText('Abierto')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Abiertos' })).toBeInTheDocument()
+    expect(screen.queryByText(/ahora/i)).not.toBeInTheDocument()
+  })
+
+  // Una dirección como «…ingreso principal en días de partido» se perdía detrás de los puntos suspensivos.
+  it('las direcciones largas se leen en dos renglones, en la lista y en la tarjeta del mapa, en vez de cortarse', async () => {
+    verMapa()
+    fireEvent.click(await within(await screen.findByRole('list', { name: 'Puntos de la red' })).findByRole('button', { name: /Plaza España/ }))
+    // En la lista va «dirección · ciudad»; en el mapa, «dirección · marca».
+    const lineas = [
+      within(lista()).getByText('Plaza España 123 · Córdoba'),
+      within(screen.getByRole('region', { name: 'Plaza España' })).getByText('Plaza España 123 · Café Andino'),
+    ]
+    for (const linea of lineas) {
+      expect(linea).toHaveClass('line-clamp-2')
+      expect(linea).not.toHaveClass('truncate')
+    }
   })
 
   it('tocar un punto de la lista lo elige en el mapa y abre su tarjeta, con «Cómo llegar» a Google Maps', async () => {
@@ -135,14 +175,14 @@ describe('el mapa de Córdoba', () => {
   it('los chips filtran el mapa y la lista; sin resultados lo dice y «Ver todos» los vuelve a mostrar', async () => {
     verMapa()
     await screen.findByRole('button', { name: 'pin Sede' })
-    fireEvent.click(screen.getByRole('button', { name: 'Abiertos ahora' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Abiertos' }))
     expect(screen.queryByRole('button', { name: 'pin Plaza España' })).not.toBeInTheDocument()
     expect(nombresDeLaLista()).toEqual(['Sede', 'Kempes'])
     fireEvent.click(screen.getByRole('button', { name: 'Vidrio' }))
     expect(nombresDeLaLista()).toEqual(['Sede'])
     fireEvent.click(screen.getByRole('button', { name: 'Plástico' }))
     expect(nombresDeLaLista()).toEqual(['Kempes'])
-    fireEvent.click(screen.getByRole('button', { name: 'Abiertos ahora' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Abiertos' }))
     fireEvent.click(screen.getByRole('button', { name: 'Plástico' }))
     expect(nombresDeLaLista()).toEqual(['Sede', 'Kempes', 'Plaza España'])
   })
@@ -191,7 +231,7 @@ describe('el mapa de Córdoba', () => {
   it('sin ningún punto que cumpla los filtros lo dice, y «Ver todos» vacía los filtros y vuelve a mostrarlos', async () => {
     verMapa()
     await screen.findByRole('button', { name: 'pin Sede' })
-    fireEvent.click(screen.getByRole('button', { name: 'Abiertos ahora' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Abiertos' }))
     fireEvent.click(screen.getByRole('button', { name: 'Papel' }))
     // El único punto con papel (la Plaza España) está cerrado.
     const aviso = screen.getByText('Ningún punto cumple esos filtros.')
@@ -200,7 +240,7 @@ describe('el mapa de Córdoba', () => {
     fireEvent.click(within(aviso).getByRole('button', { name: 'Ver todos' }))
     expect(screen.queryByText('Ningún punto cumple esos filtros.')).not.toBeInTheDocument()
     expect(nombresDeLaLista()).toEqual(['Sede', 'Kempes', 'Plaza España'])
-    expect(screen.getByRole('button', { name: 'Abiertos ahora' })).toHaveAttribute('aria-pressed', 'false')
+    expect(screen.getByRole('button', { name: 'Abiertos' })).toHaveAttribute('aria-pressed', 'false')
     expect(screen.getByRole('button', { name: 'Papel' })).toHaveAttribute('aria-pressed', 'false')
   })
 
@@ -278,14 +318,32 @@ describe('el mapa de Córdoba', () => {
     }
   })
 
+  // Quien pide «reducir movimiento» en su sistema no quiere que la página se deslice sola: sube de un salto.
+  it.each([
+    ['pide reducir el movimiento', 'auto', true],
+    ['no pide nada', 'smooth', false],
+  ])('si el sistema %s, subir hasta el mapa desde la lista usa behavior «%s»', async (_, behavior, reducir) => {
+    const matchMedia = conReducirMovimiento(reducir)
+    const scrollIntoView = espiarElScroll()
+    verMapa()
+    await screen.findByRole('button', { name: 'pin Sede' })
+
+    fireEvent.click(within(lista()).getByRole('button', { name: /Plaza España/ }))
+    expect(matchMedia).toHaveBeenCalledWith('(prefers-reduced-motion: reduce)')
+    expect(scrollIntoView).toHaveBeenCalledTimes(1)
+    expect(scrollIntoView).toHaveBeenCalledWith({ block: 'nearest', behavior })
+  })
+
   it('el mapa mide menos en el celular, para dejar lugar donde deslizar la página, y deja sitio al encabezado fijo', async () => {
     verMapa()
     const mapa = await screen.findByRole('region', { name: 'Mapa de Córdoba' })
     // 48vh y no 58vh: Leaflet se queda con el deslizar sobre el mapa, así que alrededor tiene que quedar página.
     expect(mapa).toHaveClass('h-[48vh]', 'min-h-80', 'lg:h-[70vh]')
     expect(mapa).not.toHaveClass('h-[58vh]')
-    // Al subir hasta él, el encabezado fijo (arriba, sólo en el celular) no tiene que taparlo...
-    expect(mapa).toHaveClass('scroll-mt-20')
+    // Al subir hasta él, el encabezado fijo (arriba, sólo en el celular) no tiene que taparlo. El encabezado suma el área
+    // segura de arriba (`pt-safe`: la muesca del iPhone en una PWA), así que el margen también: 80 px a secas lo dejaban tapado.
+    expect(mapa).toHaveClass('scroll-mt-[calc(5rem+env(safe-area-inset-top))]')
+    expect(mapa).not.toHaveClass('scroll-mt-20')
     // ...pero en la compu no hay encabezado y el mapa queda fijo a 24 px del borde: con ese margen de 80 px parece cortado
     // y cada toque en la lista empuja la página 56 px (medido en Chrome, a 1280×800).
     expect(mapa).toHaveClass('lg:scroll-mt-0')
@@ -371,6 +429,79 @@ describe('el mapa de Córdoba', () => {
     expect(screen.getByRole('button', { name: /Cerca mío/ })).toBeEnabled()
   })
 
+  // Un cartel de permiso que nadie responde no dispara ni el éxito ni el error (el plazo de 10 s del navegador empieza
+  // recién cuando se responde): sin un tope propio, el botón quedaría en «Buscando…», deshabilitado, para siempre.
+  // Los temporizadores falsos se prenden después de que la pantalla cargó: `findBy*` espera con temporizadores reales.
+  it('si el navegador no contesta, a los 15 s «Buscando…» se apaga, avisa y el botón vuelve a poder tocarse', async () => {
+    const error = vi.spyOn(toast, 'error')
+    const { getCurrentPosition } = ubicacionQueTarda()
+    verMapa()
+    await screen.findByRole('button', { name: 'pin Sede' })
+    vi.useFakeTimers()
+
+    fireEvent.click(screen.getByRole('button', { name: /Cerca mío/ }))
+    expect(getCurrentPosition).toHaveBeenCalledTimes(1)
+    expect(screen.getByRole('button', { name: /Buscando…/ })).toBeDisabled()
+
+    // Todavía espera: el tope es de 15 s, no menos.
+    act(() => {
+      vi.advanceTimersByTime(14999)
+    })
+    expect(screen.getByRole('button', { name: /Buscando…/ })).toBeDisabled()
+    expect(error).not.toHaveBeenCalled()
+
+    act(() => {
+      vi.advanceTimersByTime(1)
+    })
+    expect(error).toHaveBeenCalledTimes(1)
+    expect(error).toHaveBeenCalledWith('No pudimos ubicarte ahora. Probá de nuevo en un momento.')
+    expect(screen.getByRole('button', { name: /Cerca mío/ })).toBeEnabled()
+    expect(screen.queryByRole('button', { name: /Buscando…/ })).not.toBeInTheDocument()
+    expect(elMapa()).toHaveAttribute('data-ubicacion', '')
+  })
+
+  it('si el navegador contesta antes de los 15 s, el tope se cancela: no hay un segundo aviso', async () => {
+    const error = vi.spyOn(toast, 'error')
+    const { responder, fallar } = ubicacionQueTarda()
+    verMapa()
+    await screen.findByRole('button', { name: 'pin Sede' })
+    vi.useFakeTimers()
+
+    // Contesta con la ubicación...
+    fireEvent.click(screen.getByRole('button', { name: /Cerca mío/ }))
+    responder(-31.4286, -64.1849)
+    expect(elMapa()).toHaveAttribute('data-ubicacion', '-31.4286,-64.1849')
+    // ...o con un error, que tiene su propio aviso: uno solo.
+    fireEvent.click(screen.getByRole('button', { name: /Cerca mío/ }))
+    fallar(2)
+    expect(error).toHaveBeenCalledTimes(1)
+
+    act(() => {
+      vi.advanceTimersByTime(60000)
+    })
+    expect(error).toHaveBeenCalledTimes(1)
+    expect(screen.getByRole('button', { name: /Cerca mío/ })).toBeEnabled()
+    expect(vi.getTimerCount()).toBe(0)
+  })
+
+  it('si la pantalla se cierra mientras espera, el tope no avisa después ni deja un temporizador vivo', async () => {
+    const error = vi.spyOn(toast, 'error')
+    ubicacionQueTarda()
+    const { unmount } = verMapa()
+    await screen.findByRole('button', { name: 'pin Sede' })
+    vi.useFakeTimers()
+
+    fireEvent.click(screen.getByRole('button', { name: /Cerca mío/ }))
+    expect(vi.getTimerCount()).toBe(1)
+    unmount()
+    expect(vi.getTimerCount()).toBe(0)
+
+    act(() => {
+      vi.advanceTimersByTime(60000)
+    })
+    expect(error).not.toHaveBeenCalled()
+  })
+
   it('en un navegador que no comparte la ubicación, «Cerca mío» lo dice y no se queda buscando', async () => {
     const error = vi.spyOn(toast, 'error')
     verMapa()
@@ -395,7 +526,7 @@ describe('el mapa de Córdoba', () => {
     expect(screen.queryByRole('list', { name: 'Puntos de la red' })).not.toBeInTheDocument()
 
     // Aunque se prenda un filtro, la red sigue vacía: no es que los filtros no dejen nada.
-    fireEvent.click(screen.getByRole('button', { name: 'Abiertos ahora' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Abiertos' }))
     expect(screen.getByText('Todavía no hay puntos en la red.')).toBeInTheDocument()
     expect(screen.queryByText('Ningún punto cumple esos filtros.')).not.toBeInTheDocument()
   })

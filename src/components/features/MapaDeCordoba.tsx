@@ -3,7 +3,7 @@ import { useEffect, useMemo } from 'react'
 import L from 'leaflet'
 import { CircleMarker, MapContainer, Marker, TileLayer, useMap, ZoomControl } from 'react-leaflet'
 import type { RecyclePoint, Sponsor } from '@/types'
-import { CENTRO_Y_NUEVA_CORDOBA, recuadroDe, type Lugar } from '@/lib/mapa'
+import { CENTRO_Y_NUEVA_CORDOBA, prefiereMenosMovimiento, recuadroDe, type Lugar } from '@/lib/mapa'
 
 /** Qué encuadrar: el Centro y Nueva Córdoba, o todos los puntos. `n` sube para repetir el mismo encuadre. */
 export type Vista = { tipo: 'centro' | 'todos'; n: number }
@@ -38,6 +38,15 @@ function iconoDelPunto(color: string, elegido: boolean): L.DivIcon {
   })
 }
 
+/**
+ * Cómo se mueve el mapa en este momento: con las opciones que se le dan (un vuelo de 0,6 s, por ejemplo) o, si la persona
+ * pidió «reducir movimiento» en su sistema, de un salto. Cada llamada arma un objeto nuevo: Leaflet escribe sobre el que
+ * recibe (`setView` le agrega `zoom` y `pan`), así que uno compartido se iría ensuciando.
+ */
+function movimiento(animado: L.ZoomPanOptions = {}): L.ZoomPanOptions {
+  return prefiereMenosMovimiento() ? { animate: false } : animado
+}
+
 /** Encuadra, vuela al elegido y a tu ubicación. Vive adentro del mapa para tener `useMap`. */
 function ControlDeLaVista({ puntos, elegido, miUbicacion, vista, vuelo }: Pick<Props, 'puntos' | 'elegido' | 'miUbicacion' | 'vista' | 'vuelo'>) {
   const mapa = useMap()
@@ -45,21 +54,21 @@ function ControlDeLaVista({ puntos, elegido, miUbicacion, vista, vuelo }: Pick<P
   useEffect(() => {
     const recuadro = vista.tipo === 'todos' ? recuadroDe(puntos) : CENTRO_Y_NUEVA_CORDOBA
     // `maxZoom`: con un solo punto el recuadro no tiene área y, sin tope, el mapa se acercaría al máximo.
-    if (recuadro) mapa.fitBounds(recuadro, { padding: [28, 28], maxZoom: 16 })
+    if (recuadro) mapa.fitBounds(recuadro, { padding: [28, 28], maxZoom: 16, ...movimiento() })
     // Sólo cuando se pide un encuadre: si dependiera de `puntos`, filtrar movería el mapa.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [vista.n, vista.tipo])
 
   useEffect(() => {
     const p = puntos.find((x) => x.id === elegido)
-    if (p) mapa.flyTo([p.lat, p.lng], Math.max(mapa.getZoom(), 15), { duration: 0.6 })
+    if (p) mapa.flyTo([p.lat, p.lng], Math.max(mapa.getZoom(), 15), movimiento({ duration: 0.6 }))
     // Con cada toque (`vuelo`), también sobre el punto que ya está elegido: si el hincha movió el mapa, vuelve a él.
     // Filtrar, en cambio, no lo mueve: por eso no depende de `puntos`.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [elegido, vuelo])
 
   useEffect(() => {
-    if (miUbicacion) mapa.flyTo([miUbicacion.lat, miUbicacion.lng], 15, { duration: 0.6 })
+    if (miUbicacion) mapa.flyTo([miUbicacion.lat, miUbicacion.lng], 15, movimiento({ duration: 0.6 }))
   }, [mapa, miUbicacion])
 
   return null

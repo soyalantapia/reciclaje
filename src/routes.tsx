@@ -1,4 +1,4 @@
-import { lazy, Suspense, type ComponentType, type ReactNode } from 'react'
+import { Suspense, type ReactNode } from 'react'
 import { createBrowserRouter, Navigate } from 'react-router-dom'
 import { AppLayout } from '@/components/features/AppLayout'
 import { RequireAuth } from '@/components/features/RequireAuth'
@@ -6,32 +6,7 @@ import { RequireCommerce } from '@/components/features/RequireCommerce'
 import { CommerceLayout } from '@/components/features/CommerceLayout'
 import { Skeleton } from '@/components/ui/skeleton'
 import { claveDeAlmacenamiento, muestraPrecios } from '@/lib/escenario'
-
-/**
- * lazy() con retry: tras un deploy, el index cacheado puede apuntar a chunks
- * viejos que ya no existen → "Failed to fetch dynamically imported module".
- * El primer fallo gatilla un reload (una vez por sesión) para tomar el bundle
- * nuevo; si vuelve a fallar, propaga al ErrorBoundary.
- */
-function lazyWithRetry<T extends ComponentType<unknown>>(
-  factory: () => Promise<{ default: T }>,
-) {
-  return lazy(async () => {
-    const KEY = claveDeAlmacenamiento('chunk-reload')
-    try {
-      return await factory()
-    } catch (err) {
-      const reloaded =
-        typeof window !== 'undefined' && window.sessionStorage.getItem(KEY) === '1'
-      if (!reloaded && typeof window !== 'undefined') {
-        window.sessionStorage.setItem(KEY, '1')
-        window.location.reload()
-        return new Promise<{ default: T }>(() => {})
-      }
-      throw err
-    }
-  })
-}
+import { lazyWithRetry } from '@/lib/lazyWithRetry'
 
 if (typeof window !== 'undefined') {
   window.sessionStorage.removeItem(claveDeAlmacenamiento('chunk-reload'))
