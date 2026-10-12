@@ -97,3 +97,19 @@ export function recuadroDe(lugares: Lugar[]): Recuadro | null {
     [Math.max(...lats), Math.max(...lngs)],
   ]
 }
+
+const OSM_URL = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png'
+const OSM_ATRIBUCION = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+
+/**
+ * De dónde salen las teselas del mapa. Sin configurar, las estándar de OpenStreetMap, que alcanzan para la demo pero
+ * no para tráfico real (su política de uso lo prohíbe). Para el piloto se elige un proveedor con plan comercial y se
+ * configura al compilar con `VITE_TESELAS_URL` (con `{z}`, `{x}` e `{y}`, y la clave si la pide) y
+ * `VITE_TESELAS_ATRIBUCION`. Las claras de CARTO, por ejemplo, piden clave desde fines de septiembre de 2026.
+ */
+export function teselasDelMapa(url: unknown, atribucion: unknown): { url: string; atribucion: string } {
+  const propia = typeof url === 'string' ? url.trim() : ''
+  if (!/\{z\}/.test(propia) || !/\{x\}/.test(propia) || !/\{y\}/.test(propia)) return { url: OSM_URL, atribucion: OSM_ATRIBUCION }
+  const cita = typeof atribucion === 'string' ? atribucion.trim() : ''
+  return { url: propia, atribucion: cita || OSM_ATRIBUCION }
+}

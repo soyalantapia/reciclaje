@@ -152,6 +152,24 @@ describe('el mapa de Leaflet', () => {
     })
   })
 
+  it('marca tu ubicación con un punto azul cuando la compartís', () => {
+    const { container, rerender } = verElMapa()
+    expect(container.querySelector('path.leaflet-interactive')).toBeNull()
+    rerender(elMapa({ miUbicacion: { lat: -31.4286, lng: -64.1849 } }))
+    const punto = container.querySelector('path.leaflet-interactive')
+    expect(punto).not.toBeNull()
+    expect(punto).toHaveAttribute('fill', '#2563eb')
+    rerender(elMapa({ miUbicacion: null }))
+    expect(container.querySelector('path.leaflet-interactive')).toBeNull()
+  })
+
+  it('al salir de la pantalla, el mapa se libera', () => {
+    const remove = vi.spyOn(L.Map.prototype, 'remove')
+    const { unmount } = verElMapa()
+    unmount()
+    expect(remove).toHaveBeenCalledTimes(1)
+  })
+
   it('cita a OpenStreetMap, que es obligatorio, y tiene los botones de zoom en español', () => {
     verElMapa()
     expect(screen.getByRole('link', { name: 'OpenStreetMap' })).toHaveAttribute('href', 'https://www.openstreetmap.org/copyright')
