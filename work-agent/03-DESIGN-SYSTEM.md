@@ -151,7 +151,7 @@ Dirección visual de los momentos clave. Diseño: `docs/superpowers/specs/2026-1
   - El `nav` deja pasar los toques (`pointer-events-none`) y el dock los toma: tocar el margen toca la página.
   - **La pestaña elegida:** un fondo `eco-100` que se desliza con un resorte (`layoutId="pestana-activa"`).
   - **Escanear:** un botón de 60 px con degradé `eco-500 → eco-700`, sombra del mismo verde y un aro del color de la página (`ring-background`) que lo recorta sobre el dock.
-  - **Regla de capas:** el fondo deslizante va sin z-index, y el ícono con la etiqueta de cada pestaña y el botón del medio en `z-10`. Si no, al deslizarse tapa las etiquetas por las que pasa.
+  - **Regla de capas:** el fondo deslizante va sin z-index. En `z-10` van el ícono con la etiqueta de cada pestaña, y el botón del medio con la suya. Si no, al deslizarse tapa lo que encuentra. Una prueba de `retoques.test.tsx` lo revisa pestaña por pestaña.
 - **Lo que entra en cada ancho:** desde 400 px, todo; debajo de 400 px, la racha sin «días»; debajo de 375 px, el logo sin el nombre. Medido de 320 a 430 px, sin desbordes.
 - El contenido deja `pb-32` abajo, así el último bloque no queda detrás del dock.
 

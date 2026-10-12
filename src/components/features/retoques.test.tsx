@@ -276,6 +276,18 @@ describe('la barra de abajo', () => {
     expect(enlace('Perfil')).toContainElement(fondos()[0])
   })
 
+  it('el fondo que se desliza pasa por debajo de cada etiqueta y cada ícono, también los de Escanear', () => {
+    // El fondo va sin z-index; lo que tiene que quedar arriba, en `z-10`. Si no, al cruzar la barra tapa lo que encuentra.
+    verBarra('/')
+    for (const nombre of ['Inicio', 'Mapa', 'Escanear', 'Beneficios', 'Perfil']) {
+      for (const pieza of [etiquetaDe(nombre), iconoDe(nombre)]) {
+        const capa = pieza.closest('.z-10')
+        expect(capa, `«${nombre}»: ${pieza.textContent || 'el ícono'} queda debajo del fondo`).not.toBeNull()
+        expect(enlace(nombre)).toContainElement(capa as HTMLElement)
+      }
+    }
+  })
+
   it('con «reducir movimiento» el fondo de la elegida sigue marcándola: sólo no se desliza', () => {
     sistema.reducir = true
     const { container } = verBarra('/mapa')

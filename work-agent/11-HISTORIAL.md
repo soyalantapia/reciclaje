@@ -240,6 +240,8 @@ WhatsApp del proyecto y de la reunión del 03/08 (acta en `docs/producto/reunion
     - la pestaña elegida lleva un fondo que se desliza con un resorte hasta la que tocás (`layoutId` de framer-motion);
     - Escanear es un botón elevado con degradé, recortado sobre el dock por un aro del color de la página.
     - Al deslizarse, el fondo pasa por debajo de los íconos, las etiquetas y el botón del medio (`z-10`).
+      - La etiqueta «Escanear» había quedado sin `z-10`, y el fondo la tapaba al cruzar el medio. Se vio en producción y se arregló en la rama `fix/etiqueta-de-escanear-sobre-el-fondo`.
+      - Ahora una prueba revisa la etiqueta y el ícono de cada pestaña; sin el arreglo, da rojo.
     - Con «reducir movimiento», el fondo sigue marcando la elegida pero no se desliza.
   - **Entra en todos los anchos de celular, de 320 a 430 px:**
     - debajo de 400 px la racha queda en la llama y el número («días» sigue para los lectores de pantalla);
