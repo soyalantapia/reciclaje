@@ -43,15 +43,20 @@ export function AppLayout() {
 
       {/* Columna de contenido */}
       <div className="flex min-h-dvh min-w-0 flex-1 flex-col">
-        {/* Header mobile (en md+ los controles viven en la sidebar) */}
-        <header className="pt-safe sticky top-0 z-30 border-b border-border bg-background/90 backdrop-blur-md md:hidden">
-          <div className="flex items-center justify-between px-4 py-3">
+        {/* Header mobile (en md+ los controles viven en la sidebar): una tarjeta de vidrio que flota, redondeada
+            en las cuatro esquinas y despegada de los bordes. */}
+        <header className="sticky top-0 z-30 px-3 pt-[calc(env(safe-area-inset-top)+0.5rem)] md:hidden">
+          <div className="mx-auto flex max-w-md items-center justify-between rounded-[22px] border border-white/70 bg-card/80 py-2 pl-3 pr-2 shadow-[0_10px_30px_-14px_rgba(6,40,31,0.4)] ring-1 ring-black/5 backdrop-blur-xl dark:border-white/10 dark:bg-card/75 dark:ring-white/5">
+            {/* Lo que entra en cada ancho: desde 400 px, todo; debajo, la racha queda en la llama y el número; y
+                debajo de 375 px, el logo queda en su ícono. Así no se sale de la tarjeta ni con un XP de seis cifras. */}
             <button onClick={() => navigate('/')} aria-label="Ir al inicio">
-              <Logo />
+              <Logo textoClassName="max-[374px]:hidden" />
             </button>
             <div className="flex items-center gap-1.5">
               <span className="inline-flex items-center gap-1 rounded-full bg-xp-100 px-2.5 py-1 text-xs font-bold text-xp-700 dark:bg-xp-700/20 dark:text-xp-300">
-                <Flame size={14} /> {streakDays} días
+                {/* En un celular angosto queda el número con la llama: «días» sigue para los lectores de pantalla */}
+                <Flame size={14} /> {streakDays}{' '}
+                <span className="max-[399px]:sr-only">días</span>
               </span>
               <button
                 onClick={() => navigate('/beneficios')}
@@ -71,7 +76,7 @@ export function AppLayout() {
           </div>
         </header>
 
-        <main className="mx-auto w-full max-w-5xl flex-1 px-4 pb-28 pt-3 md:px-8 md:pb-12 md:pt-8">
+        <main className="mx-auto w-full max-w-5xl flex-1 px-4 pb-32 pt-3 md:px-8 md:pb-12 md:pt-8">
           <AvisoDemo />
           <Outlet />
         </main>
