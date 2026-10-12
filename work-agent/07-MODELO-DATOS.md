@@ -9,7 +9,7 @@ reemplazar handlers, no tocar tipos**.
 |---|---|
 | `User` | `reputationXp` (mérito, **no se gasta**) vs `spendableXp` (canjeable), `level`, `levelName`, `streakDays`, `isPremium` |
 | `Sponsor` | `greenScore` 0-100 (**Huella Verde**), `kgRecovered`, `brandColor`, `category` |
-| `RecyclePoint` | `type` (deposito/maquina/totem), `x`/`y` **normalizados 0..100** para el mapa esquemático, `acceptedMaterials`, `openNow` |
+| `RecyclePoint` | `type` (deposito/maquina/totem), `lat`/`lng` (grados, WGS84) para el mapa de Córdoba; desde el 11/10/2026, todos en Córdoba capital, `acceptedMaterials`, `openNow` |
 | `Contribution` | aporte reciclado: `material`, `units?`/`weightKg?`, `xpEarned`, `status` (validado/pendiente), `lotId?` |
 | `Purchase` | compra en la red: `amountArs`, `xpEarned`, `kind: 'compra'` |
 | `ActivityItem` | `Contribution \| Purchase` — **discriminar con `'material' in item`** |

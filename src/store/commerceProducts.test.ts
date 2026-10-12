@@ -10,7 +10,7 @@ import { VERSION_DE_LOS_DATOS } from './versionDeDatos'
 const clave = claveDeAlmacenamiento('commerce-products')
 const sede: RecyclePoint = {
   id: 'p_club_sede', name: 'Punto R · Sede social', sponsorId: 's_club', type: 'deposito', address: '', city: 'Córdoba',
-  x: 0, y: 0, acceptedMaterials: ['tapitas'], openNow: true,
+  lat: 0, lng: 0, acceptedMaterials: ['tapitas'], openNow: true,
 }
 const producto = (id: string): ImpactProject =>
   crearProducto({

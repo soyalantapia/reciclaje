@@ -1,6 +1,6 @@
 import { MapPin } from 'lucide-react'
 import type { PointType, RecyclePoint, Sponsor } from '@/types'
-import { MATERIAL_LABEL } from '@/lib/utils'
+import { cn, MATERIAL_LABEL } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { HuellaVerde } from './HuellaVerde'
 
@@ -13,14 +13,22 @@ const TYPE_LABEL: Record<PointType, string> = {
 interface Props {
   point: RecyclePoint
   sponsor?: Sponsor
+  /** «a 350 m»: a cuánto queda del hincha, si se sabe dónde está. */
+  distancia?: string
+  /** El punto que está elegido en el mapa. */
+  elegido?: boolean
   onClick?: () => void
 }
 
-export function PointCard({ point, sponsor, onClick }: Props) {
+export function PointCard({ point, sponsor, distancia, elegido, onClick }: Props) {
   return (
     <button
       onClick={onClick}
-      className="flex w-full items-start gap-3 rounded-2xl border border-border bg-card p-4 text-left shadow-sm transition active:scale-[0.99]"
+      aria-pressed={elegido}
+      className={cn(
+        'flex w-full items-start gap-3 rounded-2xl border border-border bg-card p-4 text-left shadow-sm transition active:scale-[0.99]',
+        elegido && 'ring-2 ring-eco-500',
+      )}
     >
       <span
         className="grid h-11 w-11 shrink-0 place-items-center rounded-xl text-white"
@@ -41,9 +49,10 @@ export function PointCard({ point, sponsor, onClick }: Props) {
           <p className="text-xs font-semibold text-muted-foreground">{TYPE_LABEL[point.type]}</p>
           {sponsor && <HuellaVerde score={sponsor.greenScore} compact />}
         </div>
-        <p className="truncate text-xs text-muted-foreground">
+        <p className="line-clamp-2 text-xs text-muted-foreground">
           {point.address} · {point.city}
         </p>
+        {distancia && <p className="text-xs font-semibold text-eco-700 dark:text-eco-300">{distancia}</p>}
         <div className="mt-1.5 flex flex-wrap gap-1">
           {point.acceptedMaterials.map((m) => (
             <span

@@ -16,7 +16,7 @@ const club: Sponsor = {
   greenScore: 64, kgRecovered: 180,
 }
 const punto = (id: string, name: string): RecyclePoint => ({
-  id, name, sponsorId: 's_club', type: 'deposito', address: '', city: 'Córdoba', x: 0, y: 0,
+  id, name, sponsorId: 's_club', type: 'deposito', address: '', city: 'Córdoba', lat: 0, lng: 0,
   acceptedMaterials: ['tapitas', 'plastico'], openNow: true,
 })
 // Un Punto R de otra marca de la red: el informe del club no lo cuenta como suyo.

@@ -223,7 +223,7 @@ describe('metricasConLaSesion: lo que la hinchada hizo en esta sesión lo ve el 
 
   it('lo de otro sponsor no se mezcla; una compra en el club suma XP pero no es un aporte', () => {
     const compra = { id: 'pu_1', kind: 'compra', sponsorId: 's_club', sponsorName: 'Talleres', amountArs: 5000, xpEarned: 100, createdAt: '2026-10-13T14:30:00-03:00' } as const
-    const m = metricasConLaSesion(base, [aporte({ sponsorId: 's_ypf', pointName: 'YPF Av. Colón 1500' }), compra], [], hoy)
+    const m = metricasConLaSesion(base, [aporte({ sponsorId: 's_ypf', pointName: 'YPF Bv. Perón' }), compra], [], hoy)
     expect(m.contributions).toBe(828)
     expect(m.xpEmitted).toBe(56404)
   })

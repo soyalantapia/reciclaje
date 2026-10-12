@@ -16,7 +16,7 @@ import {
 } from './productosDelClub'
 
 const punto = (id: string, name: string, sponsorId = 's_club'): RecyclePoint => ({
-  id, name, sponsorId, type: 'deposito', address: '', city: 'Córdoba', x: 0, y: 0,
+  id, name, sponsorId, type: 'deposito', address: '', city: 'Córdoba', lat: 0, lng: 0,
   acceptedMaterials: ['tapitas', 'plastico'], openNow: true,
 })
 const estadio = punto('p_club_estadio', 'Punto R · Estadio')

@@ -11,7 +11,7 @@ import { useSessionStore } from '@/store/session'
 import CommerceProducts from './CommerceProducts'
 
 const punto = (id: string, name: string): RecyclePoint => ({
-  id, name, sponsorId: 's_club', type: 'deposito', address: '', city: 'Córdoba', x: 0, y: 0,
+  id, name, sponsorId: 's_club', type: 'deposito', address: '', city: 'Córdoba', lat: 0, lng: 0,
   acceptedMaterials: ['tapitas', 'plastico'], openNow: true,
 })
 const puntos = [punto('p_club_estadio', 'Punto R · Estadio'), punto('p_club_sede', 'Punto R · Sede social')]

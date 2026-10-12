@@ -171,13 +171,10 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
-  /* Césped recién cortado: franjas horizontales en dos verdes */
+  /* Césped: un verde liso con un degradé suave de arriba hacia abajo. Sin franjas: a Alan no le
+     gustaban las celdas alternadas (11/10/2026). */
   .bg-cancha {
-    background-image: repeating-linear-gradient(
-      180deg,
-      var(--cancha-claro) 0 28px,
-      var(--cancha-oscuro) 28px 56px
-    );
+    background-image: linear-gradient(180deg, var(--cancha-claro), var(--cancha-oscuro));
   }
 }
 

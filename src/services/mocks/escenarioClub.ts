@@ -13,25 +13,19 @@ import type { DatosDemo } from './datos'
 
 /** El club de ejemplo de la demo general: en este escenario no aparece. */
 const CLUB_DE_EJEMPLO = 's_talleres'
-/** Sponsors de la demo general que no van en la del club: el club de ejemplo y un municipio de Buenos Aires. */
+/**
+ * Sponsors de la demo general que no van en la del club. El club de ejemplo, porque el club de esta
+ * demo ya entra por `casoDelClub` con sus propios ids (`s_club`, `p_club_…`): si el de ejemplo se
+ * quedara, el club aparecería dos veces, con sus Punto R y su banco. El municipio de ejemplo, porque
+ * la demo del club no muestra a un municipio como aliado de ReciclaXP frente al club.
+ */
 const NO_VAN = new Set([CLUB_DE_EJEMPLO, 's_muni'])
 
 /**
- * La red de ejemplo, en Córdoba. El hincha y el club están ahí, y la demo general tiene sus
- * puntos en Buenos Aires: el club veía «Puntos adheridos» en Palermo y Pilar, y al hincha
- * reciclando en Av. del Libertador. Las direcciones son de ejemplo.
- */
-const PUNTOS_EN_CORDOBA: Record<string, { name: string; address: string }> = {
-  p_ypf_libertador: { name: `${ESTACION_DE_EJEMPLO} Av. Colón 1500`, address: 'Av. Colón 1500' },
-  p_ypf_cabildo: { name: `${ESTACION_DE_EJEMPLO} Av. Vélez Sarsfield 2100`, address: 'Av. Vélez Sarsfield 2100' },
-  p_ypf_pana: { name: `${ESTACION_DE_EJEMPLO} Circunvalación`, address: 'Av. Circunvalación y Av. Rafael Núñez' },
-  p_lumen_palermo: { name: 'Café Lúmen Nueva Córdoba', address: 'Obispo Trejo 800' },
-  p_mcdonalds_palermo: { name: 'Burger Plaza Nueva Córdoba', address: 'Av. Hipólito Yrigoyen 300' },
-  p_starbucks_recoleta: { name: 'Café Andino Cerro de las Rosas', address: 'Av. Rafael Núñez 4600' },
-  p_grido_lanus: { name: 'Helados del Parque Centro', address: 'Bv. San Juan 400' },
-}
-
-/**
+ * La red de ejemplo está en Córdoba capital en las dos demos: los puntos, los beneficios y el
+ * historial salen de `data.ts`, con lugares reales de Nueva Córdoba y el Centro, y la demo del
+ * club no los mueve de ahí. Lo que sí cambia son los nombres de las marcas.
+ *
  * Las marcas de la demo general son reales (YPF, Coca-Cola, McDonald's…). En la del club
  * aparecían como «Marcas de la red», como si fueran aliadas de ReciclaXP frente al club. Acá van
  * con nombres de ejemplo. Se reemplaza en los textos; los ids (`s_ypf`, `p_ypf_…`) van en
@@ -52,12 +46,7 @@ function conMarcasDeEjemplo<T>(datos: T): T {
   for (const [real, ejemplo] of MARCAS_DE_EJEMPLO) json = json.replace(real, ejemplo)
   return JSON.parse(json) as T
 }
-/** Los mismos puntos, con el nombre corto que usan las métricas del panel. */
-const METRICAS_EN_CORDOBA: Record<string, string> = {
-  'Libertador 5800': 'Av. Colón 1500',
-  'Cabildo 2200': 'Av. Vélez Sarsfield 2100',
-  'Panamericana KM 30': 'Circunvalación',
-}
+
 /**
  * El historial de la demo general es de mayo. El aporte del club es del 4/10: los demás se corren
  * a septiembre, para que el hincha no aparezca sin reciclar desde hace cinco meses.
@@ -105,16 +94,18 @@ export function casoDelClub(base: DatosDemo, club: DatosDelClub, ids: IdsDelCaso
     kgRecovered: 180,
   }
 
+  // Lugares de Talleres (el Kempes, donde juega de local, y su sede), de fuentes públicas: a confirmar con el club. Con otro club (VITE_CLUB_NOMBRE) cambia el nombre, no los pines.
+  // La sede va sin número de calle: el número sale de una sola fuente pública, débil. Se agrega cuando el club lo confirme.
   const puntos: RecyclePoint[] = [
     {
       id: `p_${ids.prefijo}_estadio`,
       name: `Punto R · ${club.estadio}`,
       sponsorId: ids.sponsor,
       type: 'deposito',
-      address: 'Ingreso principal, en días de partido',
+      address: 'Estadio Mario Alberto Kempes, ingreso principal en días de partido',
       city: 'Córdoba',
-      x: 48,
-      y: 26,
+      lat: -31.368847,
+      lng: -64.246145,
       acceptedMaterials: ['tapitas', 'plastico'],
       openNow: true,
     },
@@ -123,10 +114,10 @@ export function casoDelClub(base: DatosDemo, club: DatosDelClub, ids: IdsDelCaso
       name: `Punto R · ${club.sede}`,
       sponsorId: ids.sponsor,
       type: 'deposito',
-      address: 'Hall de entrada',
+      address: 'Frente a la Plaza San Martín, Centro',
       city: 'Córdoba',
-      x: 58,
-      y: 40,
+      lat: -31.415995,
+      lng: -64.183657,
       acceptedMaterials: ['tapitas', 'plastico'],
       openNow: true,
     },
@@ -325,31 +316,20 @@ export function datosDelClub(base: DatosDemo, club: DatosDelClub): DatosDemo {
   const sinLosQueNoVan = <T extends { sponsorId: string }>(lista: T[]) =>
     lista.filter((x) => !NO_VAN.has(x.sponsorId))
 
-  const puntosDeLaRed: RecyclePoint[] = sinLosQueNoVan(base.points).map((p) => ({
-    ...p,
-    ...PUNTOS_EN_CORDOBA[p.id],
-    city: 'Córdoba',
-  }))
+  const puntosDeLaRed: RecyclePoint[] = sinLosQueNoVan(base.points)
   const historial: Contribution[] = sinLosQueNoVan(base.contributions).map((c) => ({
     ...c,
-    pointName: PUNTOS_EN_CORDOBA[c.pointId]?.name ?? c.pointName,
     createdAt: new Date(Date.parse(c.createdAt) + DIAS_HASTA_SEPTIEMBRE * 86_400_000).toISOString(),
   }))
-  const beneficiosDeLaRed: Benefit[] = sinLosQueNoVan(base.benefits).map((b) =>
-    b.city === 'Red' ? b : { ...b, city: 'Córdoba' },
-  )
+  const beneficiosDeLaRed: Benefit[] = sinLosQueNoVan(base.benefits)
 
   const metricas: DatosDemo['sponsorMetrics'] = {}
   for (const [id, m] of Object.entries(base.sponsorMetrics)) {
-    if (NO_VAN.has(id)) continue
-    metricas[id] = {
-      ...m,
-      byPoint: m.byPoint.map((p) => ({ ...p, point: METRICAS_EN_CORDOBA[p.point] ?? p.point })),
-    }
+    if (!NO_VAN.has(id)) metricas[id] = m
   }
 
   return conMarcasDeEjemplo({
-    currentUser: { ...base.currentUser, city: 'Córdoba' },
+    currentUser: base.currentUser,
     sponsors: [sponsor, ...base.sponsors.filter((s) => !NO_VAN.has(s.id))],
     points: [...puntos, ...puntosDeLaRed],
     projects: [producto, ...sinLosQueNoVan(base.projects)],

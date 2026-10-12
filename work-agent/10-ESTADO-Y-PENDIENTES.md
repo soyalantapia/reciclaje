@@ -40,7 +40,7 @@
 
 ### App de usuario (B2C)
 - Login demo, Home hub, **escaneo real por cámara** (@zxing), deep-link `?p=<pointId>`.
-- Mapa esquemático + lista, marketplace con filtros y **canje → cupón QR**, ranking con
+- Mapa de Córdoba (Leaflet) + lista, marketplace con filtros y **canje → cupón QR**, ranking con
   scopes y premio, causas + detalle + donación, marcas con Huella Verde, proyecto de
   impacto con la viz `ImpactProgress`, trazabilidad de 7 etapas, perfil completo
   (Premium, cupones, transferir XP, tema, logout).

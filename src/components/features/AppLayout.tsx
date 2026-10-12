@@ -19,6 +19,23 @@ export function AppLayout() {
     if (sessionStorage.getItem(claveDeAlmacenamiento('scan-point'))) navigate('/escanear')
   }, [navigate])
 
+  // El mapa se precarga en un momento libre: al tocar «Mapa», ya está bajado.
+  useEffect(() => {
+    // Sin red la precarga falla en silencio: no hay nada que avisar, la pantalla se baja igual cuando se abre.
+    const precargar = () => {
+      void import('@/pages/MapPoints').catch(() => {})
+      void import('@/components/features/MapaDeCordoba').catch(() => {})
+    }
+    // `typeof` y no `in`: con `'requestIdleCallback' in window` TypeScript deja `window` en `never` en el resto.
+    if (typeof window.requestIdleCallback === 'function') {
+      const id = window.requestIdleCallback(precargar)
+      return () => window.cancelIdleCallback(id)
+    }
+    // Safari no trae requestIdleCallback: un plazo corto hace lo mismo.
+    const t = window.setTimeout(precargar, 1500)
+    return () => window.clearTimeout(t)
+  }, [])
+
   return (
     <div className="min-h-dvh bg-background md:flex">
       {/* Navegación lateral (tablet/desktop) */}

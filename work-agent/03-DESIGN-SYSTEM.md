@@ -115,7 +115,7 @@ Dirección visual de los momentos clave. Diseño: `docs/superpowers/specs/2026-1
 
 **Tokens:**
 - `--font-marcador`: Barlow Condensed 600/700, sólo para números grandes, con `tabular-nums`.
-- `bg-cancha`: franjas de césped.
+- `bg-cancha`: el césped, un verde liso con un degradé suave de `--cancha-claro` a `--cancha-oscuro`. Desde el 11/10/2026, sin franjas: a Alan no le gustaban las celdas alternadas.
 - `bg-cal`: la línea de cal, sólo sobre césped.
 - `--color-cancha-claro` y `--color-cancha-oscuro`, con valores para claro y oscuro.
 
@@ -139,3 +139,16 @@ Dirección visual de los momentos clave. Diseño: `docs/superpowers/specs/2026-1
 - En el panel del club nada es «tuyo».
 - En una lista de productos, cada dibujo va en un recuadro de la misma proporción (`aspect-[2/1]`), así los textos de las tarjetas quedan a la misma altura.
 - Al imprimir (el informe para la Comisión Directiva), `data-no-imprimir` oculta el menú, el aviso de la demo y los botones. El informe sale en claro aunque la app esté en oscuro y lleva su propio aviso de datos de ejemplo.
+
+## Movimiento de la navegación y el mapa (11/10/2026)
+
+- **La barra de abajo y el menú lateral** (`IconoQueSeMueve.tsx`):
+  - la pestaña entera se achica al apretar (0,85, en 0,12 s);
+  - el ícono rebota en cada toque (sube 5 px y crece a 1,18 en 0,45 s);
+  - Escanear hace un pulso.
+  - Con «reducir movimiento» del sistema, nada se mueve.
+- **«Pasate a Premium»:** dorado claro (`xp-50 → xp-100`, borde `xp-200`, título `xp-700`). Nada de fondos casi negros en tarjetas.
+- **El mapa** (`MapaDeCordoba.tsx`):
+  - pines redondos del color de la marca con borde blanco; el elegido, más grande y con halo;
+  - los z-index de Leaflet van encerrados con `isolate`, para que no pasen por encima del menú.
+

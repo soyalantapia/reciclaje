@@ -209,6 +209,30 @@ WhatsApp del proyecto y de la reunión del 03/08 (acta en `docs/producto/reunion
     - Un escudo del que no sale ningún color deja la paleta de siempre: el verde de ReciclaXP no cuenta como color propio.
     - Lo guardado roto en el navegador ya no tumba el panel.
   - Se hizo en cuatro tareas con subagentes, cada una con su revisión.
+- Rama `feat/mapa-de-cordoba-y-pulido`: cinco pedidos de Alan para la app del hincha. Diseño: `docs/superpowers/specs/2026-10-11-mapa-de-cordoba-y-pulido-design.md`.
+  - **El césped sin franjas:** `.bg-cancha` pasa a un verde liso con un degradé suave.
+  - **Los íconos que se mueven:**
+    - En la barra de abajo y en el menú lateral, la pestaña entera se achica al apretar y el ícono rebota en cada toque, también en la pestaña en la que ya estás.
+    - Escanear hace un pulso.
+    - Con «reducir movimiento», nada se mueve (`IconoQueSeMueve.tsx`).
+  - **«Pasate a Premium» sin negro:** pasa a un dorado claro, al tono de la corona.
+  - **Todo en Córdoba capital:**
+    - Los puntos de las dos demos van donde de verdad hay un local de su rubro en el Centro y Nueva Córdoba, según OpenStreetMap.
+    - El Punto R del estadio va en el Kempes, y el de la sede frente a la Plaza San Martín (de fuentes públicas, hay que confirmarlo con el club).
+    - `RecyclePoint` pasa de `x`/`y` a `lat`/`lng`.
+    - En la demo general, el municipio pasa a «Municipio de ejemplo», y beneficios, historial y Perfil van en Córdoba. Las causas quedan como estaban.
+    - `VERSION_DE_LOS_DATOS` sube a 3: los navegadores arrancan la demo de cero una vez, y eso incluye la marca del club cargada.
+  - **El mapa de verdad:**
+    - Leaflet con teselas de OpenStreetMap; CARTO sin clave pinta «API KEY REQUIRED».
+    - Abre en el Centro y Nueva Córdoba.
+    - Tiene chips («Abiertos» y por material) y una tarjeta del punto con «Cómo llegar» (Google Maps) y «Reciclar acá» (Escanear con el punto elegido).
+    - La bajada dice que son «puntos de ejemplo». El dato de abierto es fijo, así que se dice «Abierto», no «ahora».
+    - La sede de Talleres va «frente a la Plaza San Martín», sin número de calle (una sola fuente pública).
+    - `react-leaflet` y `@react-leaflet/core` tienen licencia Hippocratic-2.1, no MIT: revisarla antes del piloto.
+    - «Cerca mío» ordena por distancia y la escribe; «Ver todos» encuadra todo.
+    - La lista va junto al mapa.
+    - Se precarga en un momento libre y el `index.html` abre antes la conexión a las teselas. La lógica es pura, en `src/lib/mapa.ts`.
+  - Se hizo en cuatro tareas con subagentes, dos de ellas en paralelo en worktrees aparte, cada una con su revisión.
 
 ---
 

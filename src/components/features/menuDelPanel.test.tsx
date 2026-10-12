@@ -14,7 +14,7 @@ import { navDelPanel } from './CommerceSideNav'
 const etiquetas = (menu: HTMLElement) => within(menu).getAllByRole('link').map((a) => a.textContent?.trim())
 
 const punto = (id: string, name: string): RecyclePoint => ({
-  id, name, sponsorId: 's_club', type: 'deposito', address: '', city: 'Córdoba', x: 0, y: 0,
+  id, name, sponsorId: 's_club', type: 'deposito', address: '', city: 'Córdoba', lat: 0, lng: 0,
   acceptedMaterials: ['tapitas', 'plastico'], openNow: true,
 })
 const banco = {

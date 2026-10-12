@@ -138,24 +138,24 @@ export default function Profile() {
           </ul>
         </div>
       ) : (
-        <div className="rounded-2xl bg-gradient-to-br from-ink-800 to-ink-900 p-5 text-white">
-          <div className="flex items-center gap-2 font-extrabold text-xp-300">
+        <div className="rounded-2xl border border-xp-200 bg-gradient-to-br from-xp-50 to-xp-100 p-5 shadow-sm dark:border-xp-700/40 dark:from-xp-700/15 dark:to-xp-700/5">
+          <div className="flex items-center gap-2 font-extrabold text-xp-700 dark:text-xp-300">
             <Crown size={20} /> Pasate a Premium
           </div>
-          <p className="mt-1 text-sm text-white/70">
+          <p className="mt-1 text-sm text-muted-foreground">
             La app es gratis. Premium potencia tus beneficios y tu impacto.
           </p>
           <ul className="mt-3 space-y-1.5">
             {PREMIUM_PERKS.map((p) => (
-              <li key={p} className="flex items-start gap-2 text-sm text-white/90">
-                <Check size={16} className="mt-0.5 shrink-0 text-xp-300" /> {p}
+              <li key={p} className="flex items-start gap-2 text-sm">
+                <Check size={16} className="mt-0.5 shrink-0 text-xp-600 dark:text-xp-300" /> {p}
               </li>
             ))}
           </ul>
           <Button variant="xp" block size="lg" className="mt-4" onClick={goPremium}>
             Probar Premium
           </Button>
-          <p className="mt-2 text-center text-xs text-white/60">Demo: no se cobra.</p>
+          <p className="mt-2 text-center text-xs text-muted-foreground">Demo: no se cobra.</p>
         </div>
       )}
 

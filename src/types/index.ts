@@ -61,9 +61,9 @@ export interface RecyclePoint {
   type: PointType
   address: string
   city: string
-  /** Coordenadas normalizadas 0..100 sobre el mapa esquemático. */
-  x: number
-  y: number
+  /** Dónde está, en grados (WGS84): el mapa de Córdoba lo dibuja ahí. */
+  lat: number
+  lng: number
   acceptedMaterials: MaterialType[]
   openNow: boolean
 }
