@@ -67,9 +67,10 @@ export function BottomNav() {
                         )}
                         <IconoQueSeMueve icon={icon} activo={isActive} vez={vezDe(to)} size={26} strokeWidth={2.4} />
                       </SeAchicaAlApretar>
+                      {/* `z-10`, como el círculo: el fondo que se desliza de una punta a la otra pasa por debajo */}
                       <span
                         className={cn(
-                          'mt-0.5 text-[11px] font-bold',
+                          'relative z-10 mt-0.5 text-[11px] font-bold',
                           isActive ? 'text-eco-700 dark:text-eco-300' : 'text-muted-foreground',
                         )}
                       >
