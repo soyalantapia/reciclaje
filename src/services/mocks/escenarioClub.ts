@@ -114,7 +114,8 @@ export function casoDelClub(base: DatosDemo, club: DatosDelClub, ids: IdsDelCaso
       name: `Punto R · ${club.sede}`,
       sponsorId: ids.sponsor,
       type: 'deposito',
-      address: 'Frente a la Plaza San Martín, Centro',
+      // La Sede Social del club, según su web oficial (clubtalleres.com.ar, «Hacete socio», verificado el 12/10/2026).
+      address: 'Rosario de Santa Fe 15, Centro',
       city: 'Córdoba',
       lat: -31.415995,
       lng: -64.183657,
