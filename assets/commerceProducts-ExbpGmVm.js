@@ -1,0 +1,1 @@
+import{Et as e,Mt as t,bt as n,jt as r}from"./index-Br4q2EaY.js";var i=e(`commerce-products`),a=t()(r(e=>({creados:[],agregar:t=>e(e=>({creados:[t,...e.creados]})),quitar:t=>e(e=>({creados:e.creados.filter(e=>e.id!==t)}))}),{name:i,...n()}));typeof window<`u`&&window.addEventListener(`storage`,e=>{e.key===i&&a.persist.rehydrate()});export{a as t};

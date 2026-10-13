@@ -1,1 +1,0 @@
-import{Kt as e}from"./index-DJSEx-CA.js";var t=e(`ChevronRight`,[[`path`,{d:`m9 18 6-6-6-6`,key:`mthhwq`}]]);export{t};
