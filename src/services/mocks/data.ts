@@ -455,7 +455,7 @@ export const rankingGlobal: RankingEntry[] = [
   { position: 5, userId: 'u_reni', name: 'Renata B.', avatarColor: '#059669', xpThisMonth: 2890 },
   { position: 6, userId: 'u_joaco', name: 'Joaquín T.', avatarColor: '#1d4ed8', xpThisMonth: 2540 },
   { position: 7, userId: 'u_me', name: 'Camila R. (vos)', avatarColor: '#059669', xpThisMonth: 2180, isCurrentUser: true },
-  { position: 8, userId: 'u_pedro', name: 'Pedro G.', avatarColor: '#0ea5e9', xpThisMonth: 1990 },
+  { position: 8, userId: 'u_pedro', name: 'Pedro G.', avatarColor: '#0d9488', xpThisMonth: 1990 },
   { position: 9, userId: 'u_flor', name: 'Flor C.', avatarColor: '#db2777', xpThisMonth: 1640 },
   { position: 10, userId: 'u_nico', name: 'Nicolás V.', avatarColor: '#65a30d', xpThisMonth: 1410 },
 ]
@@ -464,7 +464,8 @@ export const rankingYpf: RankingEntry[] = [
   { position: 1, userId: 'u_joaco', name: 'Joaquín T.', avatarColor: '#1d4ed8', xpThisMonth: 2540 },
   { position: 2, userId: 'u_lucia', name: 'Lucía P.', avatarColor: '#0033A0', xpThisMonth: 2210 },
   { position: 3, userId: 'u_reni', name: 'Renata B.', avatarColor: '#059669', xpThisMonth: 1760 },
-  { position: 4, userId: 'u_me', name: 'Camila R. (vos)', avatarColor: '#059669', xpThisMonth: 1120, isCurrentUser: true },
+  // Con su pestaña del club (1.280) suma su global (2.180): antes las pestañas sumaban más que el global.
+  { position: 4, userId: 'u_me', name: 'Camila R. (vos)', avatarColor: '#059669', xpThisMonth: 900, isCurrentUser: true },
 ]
 
 /** Rankings por pestaña (scope). Las pestañas que se muestran salen de RANKING_TABS. */

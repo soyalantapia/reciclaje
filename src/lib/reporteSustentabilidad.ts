@@ -75,7 +75,7 @@ export function indicadoresParaElReporte({
     {
       id: 'hinchas',
       dimension: 'Comunitaria',
-      indicador: 'Hinchas que participaron este mes',
+      indicador: 'Hinchas que participaron',
       valor: formatNumber(m.activeUsers),
       numero: m.activeUsers,
       unidad: 'hinchas',

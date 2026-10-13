@@ -182,3 +182,36 @@ describe('demo general', () => {
     expect(Object.keys(datosGenerales.rankings).sort()).toEqual(['global', 'talleres', 'ypf'])
   })
 })
+
+describe('los rankings no se contradicen entre pestañas', () => {
+  // La auditoría del 12/10: en «Hinchada», Facu R. tenía 6.240 XP, más que el n.º 1 del global (4.820), y en el global
+  // no aparecía; y Camila sumaba más XP en las pestañas que en el global.
+  for (const [demo, datos, pestana] of [
+    ['club', club, 'club'],
+    ['general', datosGenerales, 'talleres'],
+  ] as const) {
+    it(`${demo}: quien está en la hinchada está en el global con los mismos XP, si le alcanza para el top`, () => {
+      const global = datos.rankings.global
+      const ultimoDelTop = global[global.length - 1].xpThisMonth
+      for (const e of datos.rankings[pestana]) {
+        if (e.isCurrentUser || e.xpThisMonth < ultimoDelTop) continue
+        expect(global.find((g) => g.userId === e.userId)?.xpThisMonth, `${demo}: ${e.name}`).toBe(e.xpThisMonth)
+      }
+    })
+
+    it(`${demo}: el global está ordenado, numerado y con Camila una sola vez`, () => {
+      const global = datos.rankings.global
+      expect(global.map((e) => e.position)).toEqual(global.map((_, i) => i + 1))
+      expect([...global].sort((a, b) => b.xpThisMonth - a.xpThisMonth)).toEqual(global)
+      expect(global.filter((e) => e.isCurrentUser)).toHaveLength(1)
+    })
+
+    it(`${demo}: lo que Camila suma en cada pestaña no pasa su global`, () => {
+      const xpDeCamila = (scope: string) => datos.rankings[scope]?.find((e) => e.isCurrentUser)?.xpThisMonth ?? 0
+      const enLasPestanas = Object.keys(datos.rankings)
+        .filter((s) => s !== 'global')
+        .reduce((t, s) => t + xpDeCamila(s), 0)
+      expect(enLasPestanas).toBeLessThanOrEqual(xpDeCamila('global'))
+    })
+  }
+})

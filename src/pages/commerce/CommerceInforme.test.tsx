@@ -120,7 +120,7 @@ describe('informe para la Comisión Directiva', () => {
     expect(t).toContain('Kilos recuperados180')
     expect(t).toContain('Tapitas42.840')
     expect(t).toContain('Aportes828')
-    expect(t).toContain('Hinchas que participaron este mes162')
+    expect(t).toContain('Hinchas que participaron162')
     expect(t).toContain('Beneficios canjeados28')
     expect(t).toContain('Huella Verde64 de 100')
     // Una institución no compite en Huella Verde con los comercios: el informe no la pone «8 de 8».
@@ -237,7 +237,7 @@ describe('informe para la Comisión Directiva', () => {
     // Los Punto R son los de la institución, no los de toda la red.
     const puntosR = within(reporte).getByRole('rowheader', { name: /^Puntos de recolección/ }).closest('tr')!
     expect(within(puntosR).getAllByRole('cell')[0]).toHaveTextContent(/^2$/)
-    const hinchas = within(reporte).getByText('Hinchas que participaron este mes').closest('tr')!
+    const hinchas = within(reporte).getByText('Hinchas que participaron').closest('tr')!
     expect(hinchas.textContent).toContain('162')
     expect(hinchas.textContent).toContain('GRI 413-1')
     expect(reporte.textContent).toContain('(meta 1.261 kg)')

@@ -127,7 +127,8 @@ export default function CommerceInforme() {
     ['Kilos recuperados', formatNumber(m.kgRecovered)],
     ['Tapitas', formatNumber(m.capsRecovered)],
     ['Aportes', formatNumber(m.contributions)],
-    ['Hinchas que participaron este mes', formatNumber(m.activeUsers)],
+    // Sin «este mes»: es el acumulado, como los aportes y las tapitas (en octubre había menos aportes que hinchas).
+    ['Hinchas que participaron', formatNumber(m.activeUsers)],
     ['Beneficios canjeados', formatNumber(m.benefitsRedeemed)],
     ['Huella Verde', `${m.greenScore} de 100`],
   ]

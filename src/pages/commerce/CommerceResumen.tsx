@@ -9,7 +9,7 @@ import { conAportesDeLaSesion } from '@/lib/aportesDeLaSesion'
 import { ultimosAportesDeLaHinchada } from '@/lib/ultimosAportes'
 import { useActivityStore } from '@/store/activity'
 import { muestraPuestoEnLaRed, posicionEnLaRed, textoDePosicion } from '@/lib/posicionEnLaRed'
-import { vocabularioDelPanel } from '@/lib/vocabulario'
+import { esInstitucion, vocabularioDelPanel } from '@/lib/vocabulario'
 import { downloadBlob, formatNumber } from '@/lib/utils'
 import { StatCard } from '@/components/features/StatCard'
 import { HuellaVerde } from '@/components/features/HuellaVerde'
@@ -30,6 +30,7 @@ export default function CommerceResumen() {
   const actividad = useActivityStore((s) => s.sessionContributions)
   const { data: red } = useApi(() => api.getSponsors(), [])
   const v = vocabularioDelPanel(commerce?.category)
+  const institucion = esInstitucion(commerce?.category)
 
   // El banco de la hinchada de esta institución, con lo que hizo la hinchada en la sesión.
   const { data: proyectos } = useApi(() => api.getProjects(), [])
@@ -113,9 +114,9 @@ export default function CommerceResumen() {
         />
         <StatCard
           icon={Users}
-          label="Usuarios activos"
+          label={institucion ? 'Hinchas que participaron' : 'Usuarios activos'}
           value={formatNumber(m.activeUsers)}
-          tooltip="Personas que reciclaron en tus puntos este mes."
+          tooltip="Personas que reciclaron en tus puntos."
         />
         <StatCard
           icon={Coins}
@@ -128,7 +129,7 @@ export default function CommerceResumen() {
           icon={Gift}
           label="Beneficios canjeados"
           value={formatNumber(m.benefitsRedeemed)}
-          tooltip="Clientes que canjearon un beneficio tuyo (tráfico a tu local)."
+          tooltip={institucion ? 'Personas que canjearon un beneficio tuyo.' : 'Clientes que canjearon un beneficio tuyo (tráfico a tu local).'}
         />
         <StatCard
           icon={Scale}
