@@ -88,5 +88,9 @@ export default defineConfig(({ command }) => ({
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],
     css: true,
+    // Las pruebas que montan rutas reales esperan pantallas en diferido: con la máquina cargada (o el CI de Railway,
+    // que corre las pruebas antes de publicar) los 5 s por defecto quedaban justos y alguna fallaba sin que nada
+    // anduviera mal.
+    testTimeout: 20000,
   },
 }))
