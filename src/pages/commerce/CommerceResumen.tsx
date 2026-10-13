@@ -18,10 +18,7 @@ import { ErrorState } from '@/components/features/ErrorState'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
 import { Skeleton } from '@/components/ui/skeleton'
-
-function badgeSvg(name: string, score: number) {
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400" viewBox="0 0 600 400"><rect width="600" height="400" rx="28" fill="#065f46"/><text x="300" y="86" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" letter-spacing="3" fill="#a7f3d0" font-weight="700">HUELLA VERDE</text><text x="300" y="156" text-anchor="middle" font-family="Arial, sans-serif" font-size="40" fill="#ffffff" font-weight="800">${name}</text><circle cx="300" cy="252" r="62" fill="#10b981"/><text x="300" y="268" text-anchor="middle" font-family="Arial, sans-serif" font-size="46" fill="#06281f" font-weight="800">${score}</text><text x="300" y="352" text-anchor="middle" font-family="Arial, sans-serif" font-size="19" fill="#a7f3d0">Comprometido con el reciclaje · ReciclaXP</text></svg>`
-}
+import { placaHuellaVerde } from '@/lib/placa'
 
 export default function CommerceResumen() {
   const commerce = useSessionStore((s) => s.commerce)
@@ -67,7 +64,7 @@ export default function CommerceResumen() {
   const maxPoint = Math.max(...m.byPoint.map((p) => p.contributions))
 
   function downloadBadge() {
-    downloadBlob(`huella-verde-${commerce!.slug}.svg`, badgeSvg(commerce!.name, m!.greenScore), 'image/svg+xml')
+    downloadBlob(`huella-verde-${commerce!.slug}.svg`, placaHuellaVerde(commerce!.name, m!.greenScore), 'image/svg+xml')
     toast.success('Placa descargada 🌿')
   }
 
