@@ -5,8 +5,8 @@ interface StoreGuardado {
 
 /**
  * Que el store tome lo que otra pestaña del mismo navegador escribió, sin recargar. Durante la demo, la app del
- * hincha y el panel del club van en dos pestañas: un aporte en una tiene que verse en la otra. El navegador avisa
- * con `storage` sólo a las otras pestañas, nunca a la que escribió.
+ * hincha y el panel del club van en dos pestañas: un aporte en una tiene que verse en la otra, en cualquier orden en
+ * que se hayan abierto. El navegador avisa con `storage` sólo a las otras pestañas, nunca a la que escribió.
  */
 export function sincronizarEntrePestanas(store: StoreGuardado): void {
   if (typeof window === 'undefined') return

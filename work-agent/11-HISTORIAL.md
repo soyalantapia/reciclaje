@@ -358,6 +358,7 @@ revisiones en paralelo (código del 12/10, números y textos, documentación). L
   cerraban con las tapitas; celeste en el n.º 1 de la hinchada; el logro decía «día de partido» (la reunión fue un
   martes); promesas de «reales» en la vista previa del enlace y en Beneficios; ejemplos «Av. Siempreviva 742» y
   «julio».
+- **Dos pestañas (PR #44 y siguiente):** la app y el panel abiertos a la vez no se enteraban de lo que hacía la otra pestaña (sólo productos, pesajes y marca escuchaban `storage`). `sincronizarEntrePestanas` lo hace para todos los stores guardados, incluida la sesión: con el panel abierto antes que la app, el panel mostraba «Un hincha dejó 50 tapitas» y a Camila con 640 tapitas mientras la app decía 690.
 - **Docs:** el escudo, el deploy en Railway y el estado al 13/10.
 - **Queda abierto (decisión de Alan o de los socios):** el WhatsApp real de «Hablar con un asesor»; el repo público
   con el acta y las tareas (posición de negociación); el factor de 238 tapitas por kilo (referencias públicas hablan

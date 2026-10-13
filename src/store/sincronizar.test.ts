@@ -7,6 +7,7 @@ import { useWalletStore } from './wallet'
 import { useCommerceBenefitsStore } from './commerceBenefits'
 import { useCommerceCampaignsStore } from './commerceCampaigns'
 import { useCouponsStore } from './coupons'
+import { useSessionStore } from './session'
 
 type ConPersist = { persist: { getOptions: () => { name?: string; version?: number } } }
 
@@ -46,5 +47,15 @@ describe('lo que escribe otra pestaña', () => {
   it('el cupón canjeado en otra pestaña', async () => {
     await otraPestanaEscribe(useCouponsStore, { coupons: [{ id: 'cu_otra' }] })
     expect(useCouponsStore.getState().coupons.map((c) => c.id)).toEqual(['cu_otra'])
+  })
+
+  // La verificación del 13/10: con el panel abierto antes que la app, el panel no sabía que entró Camila y mostraba
+  // «Un hincha dejó 50 tapitas» y a Camila con 640 tapitas, mientras la app decía 690.
+  it('quien entró a la app en otra pestaña, sin perder el panel abierto en esta', async () => {
+    const talleres = { id: 's_club', name: 'Talleres' }
+    useSessionStore.setState({ user: null, isAuthenticated: false, commerce: talleres as never })
+    await otraPestanaEscribe(useSessionStore, { user: { id: 'u_me', name: 'Camila Ríos' }, isAuthenticated: true, commerce: talleres })
+    expect(useSessionStore.getState().user?.name).toBe('Camila Ríos')
+    expect(useSessionStore.getState().commerce?.id).toBe('s_club')
   })
 })
