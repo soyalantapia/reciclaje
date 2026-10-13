@@ -3,6 +3,7 @@ import { persist } from 'zustand/middleware'
 import type { Sponsor, User } from '@/types'
 import { claveDeAlmacenamiento } from '@/lib/escenario'
 import { conVersionDeLosDatos } from './versionDeDatos'
+import { sincronizarEntrePestanas } from './sincronizar'
 
 interface SessionState {
   user: User | null
@@ -32,3 +33,8 @@ export const useSessionStore = create<SessionState>()(
     { name: claveDeAlmacenamiento('session'), ...conVersionDeLosDatos<SessionState>() },
   ),
 )
+
+// También la sesión: si el panel se abre antes que la app, el panel tiene que saber quién entró a la app en la otra
+// pestaña (si no, mostraba «Un hincha dejó 50 tapitas» y a Camila con 640 tapitas mientras la app decía 690). Las
+// rutas sólo miran `isAuthenticated` (app) y `commerce` (panel), así que una pestaña no echa a la otra.
+sincronizarEntrePestanas(useSessionStore)
