@@ -193,7 +193,7 @@ export default function CommerceCampaigns() {
             <Label htmlFor="ct">Título</Label>
             <Input
               id="ct"
-              placeholder="Reciclá más en julio"
+              placeholder="Reciclá más este mes"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
             />
@@ -211,7 +211,7 @@ export default function CommerceCampaigns() {
             <Label htmlFor="cr">Premio / recompensa</Label>
             <Input
               id="cr"
-              placeholder="Un combo gratis por un mes"
+              placeholder="Ej.: un beneficio de regalo para quien gane"
               value={reward}
               onChange={(e) => setReward(e.target.value)}
             />

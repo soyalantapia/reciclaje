@@ -37,7 +37,7 @@ describe('indicadoresParaElReporte', () => {
   })
 
   it('la comunidad usa las mismas métricas del informe, y sin referencia forzada donde no encaja', () => {
-    expect(fila('Hinchas que participaron este mes')).toMatchObject({ dimension: 'Comunitaria', valor: '162', referencia: 'GRI 413-1' })
+    expect(fila('Hinchas que participaron')).toMatchObject({ dimension: 'Comunitaria', valor: '162', referencia: 'GRI 413-1' })
     expect(fila('Aportes registrados')).toMatchObject({ valor: '828', referencia: SIN_REFERENCIA })
     expect(fila('Beneficios canjeados por la hinchada')).toMatchObject({ valor: '28', referencia: SIN_REFERENCIA })
     expect(SIN_REFERENCIA).toBe('—')

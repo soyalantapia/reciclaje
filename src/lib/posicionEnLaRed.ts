@@ -1,3 +1,5 @@
+import { esInstitucion } from './vocabulario'
+
 /**
  * El puesto de un comercio o una institución en la red, por Huella Verde. Antes el panel decía
  * «Top 12% de la red» a cualquiera, mientras «Marcas de la red» mostraba al club último.
@@ -27,7 +29,8 @@ export function posicionEnLaRed(id: string, huella: number, red: MiembroDeLaRed[
 
 export function textoDePosicion(p: Posicion): string {
   if (!p.siguiente) return 'Primer puesto de la red 🌎'
-  return `Puesto ${p.puesto} de ${p.total} en la red · a ${p.siguiente.diferencia} puntos de ${p.siguiente.nombre}`
+  const puntos = p.siguiente.diferencia === 1 ? 'punto' : 'puntos'
+  return `Puesto ${p.puesto} de ${p.total} en la red · a ${p.siguiente.diferencia} ${puntos} de ${p.siguiente.nombre}`
 }
 
 /**
@@ -36,5 +39,6 @@ export function textoDePosicion(p: Posicion): string {
  * Alan el 12/10/2026).
  */
 export function muestraPuestoEnLaRed(sponsor: { category: string }): boolean {
-  return sponsor.category !== 'club'
+  // La misma regla que el menú del panel: un club dado de alta en vivo como «Club / estadio» queda `estadio`.
+  return !esInstitucion(sponsor.category)
 }

@@ -42,8 +42,8 @@ const club: Sponsor = {
   greenScore: 64, kgRecovered: 180,
 }
 
-function verLaPantalla() {
-  useSessionStore.setState({ commerce: club })
+function verLaPantalla(sponsor: Sponsor = club) {
+  useSessionStore.setState({ commerce: sponsor })
   return render(
     <MemoryRouter>
       <CommercePantalla />
@@ -100,5 +100,19 @@ describe('la pantalla del estadio', () => {
     expect(screen.queryByRole('heading', { name: 'Los que más aportan' })).not.toBeInTheDocument()
     expect(screen.getByText('Todavía nadie sumó tapitas. ¡La primera puede ser la tuya!')).toBeInTheDocument()
     expect(await screen.findByRole('img', { name: 'QR del Punto R · Sede social' })).toBeInTheDocument()
+  })
+
+  it('los números del top van en dorado fijo, no con la paleta del club: con el azul de Talleres quedaban oscuro sobre oscuro', async () => {
+    verLaPantalla()
+    const top = (await screen.findByRole('heading', { name: 'Los que más aportan' })).closest('section')!
+    const numero = within(top).getByText('1')
+    expect(numero.className).toMatch(/bg-xp-400/)
+    expect(numero.className).not.toMatch(/eco-/)
+  })
+
+  it('un club sin productos (dado de alta en vivo) no queda en «Cargando…»: dice cómo empezar', async () => {
+    verLaPantalla({ ...club, id: 's_club_nuevo', name: 'Club Nuevo' })
+    expect(await screen.findByText(/Todavía no hay productos/)).toBeInTheDocument()
+    expect(screen.queryByText('Cargando…')).not.toBeInTheDocument()
   })
 })

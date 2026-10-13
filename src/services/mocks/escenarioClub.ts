@@ -278,7 +278,8 @@ export function casoDelClub(base: DatosDemo, club: DatosDelClub, ids: IdsDelCaso
   }
 
   const hinchada: RankingEntry[] = [
-    { position: 1, userId: 'u_facu', name: 'Facu R.', avatarColor: '#0ea5e9', xpThisMonth: 6240 },
+    // Sin celeste, el color de Belgrano: es el n.º 1 de la hinchada de Talleres.
+    { position: 1, userId: 'u_facu', name: 'Facu R.', avatarColor: '#0b2d6b', xpThisMonth: 6240 },
     { position: 2, userId: 'u_lu', name: 'Lu M.', avatarColor: '#7c3aed', xpThisMonth: 2380 },
     { position: 3, userId: 'u_nico', name: 'Nico P.', avatarColor: '#b45309', xpThisMonth: 1720 },
     {
@@ -295,9 +296,10 @@ export function casoDelClub(base: DatosDemo, club: DatosDelClub, ids: IdsDelCaso
   const premioDelClub: MonthlyPrize = {
     sponsorId: ids.sponsor,
     sponsorName: club.nombre,
-    title: 'Experiencia banco de suplentes',
-    description: 'Quien más aporte al banco de suplentes este mes vive un partido de local desde el banco.',
-    emoji: '🏟️',
+    // En el banco de suplentes sólo entra personal habilitado: el premio es algo que el club sí puede dar.
+    title: 'Dos plateas y la camiseta firmada',
+    description: 'Quien más aporte al banco de suplentes este mes gana dos plateas para un partido de local y la camiseta firmada por el plantel.',
+    emoji: '🎟️',
   }
 
   return { sponsor, puntos, producto, traza, recompensas, aporte, hinchada, premio: premioDelClub }
@@ -339,7 +341,7 @@ export function datosDelClub(base: DatosDemo, club: DatosDelClub): DatosDemo {
     traceByProject: { [ID_PRODUCTO]: traza },
     benefits: [...recompensas, ...beneficiosDeLaRed],
     contributions: [aporte, ...historial],
-    rankings: { global: base.rankings.global, club: hinchada, ypf: base.rankings.ypf },
+    rankings: { global: globalConLaHinchada(base.rankings.global, hinchada), club: hinchada, ypf: base.rankings.ypf },
     prizes: {
       // El premio global es de ReciclaXP: no se ata a ningún sponsor.
       global: { ...base.prizes.global, sponsorId: 'reciclaxp' },
@@ -349,6 +351,19 @@ export function datosDelClub(base: DatosDemo, club: DatosDelClub): DatosDemo {
     sponsorMetrics: metricas,
     causes: base.causes,
   })
+}
+
+/**
+ * El ranking global con la hinchada adentro: quien suma más XP en la hinchada que el último del top también está
+ * en el global, con los mismos XP. Antes Facu R. tenía 6.240 XP en «Hinchada», más que el n.º 1 del global, y en el
+ * global no aparecía. Camila ya está en el global: no se repite.
+ */
+export function globalConLaHinchada(global: RankingEntry[], hinchada: RankingEntry[]): RankingEntry[] {
+  const yaEstan = new Set(global.map((e) => e.userId))
+  return [...global, ...hinchada.filter((e) => !e.isCurrentUser && !yaEstan.has(e.userId))]
+    .sort((a, b) => b.xpThisMonth - a.xpThisMonth)
+    .slice(0, global.length)
+    .map((e, i) => ({ ...e, position: i + 1 }))
 }
 
 /**
@@ -372,7 +387,7 @@ export function conElCasoDelClub(base: DatosDemo, club: DatosDelClub, ids: IdsDe
     traceByProject: { ...traceByProject, [ids.producto]: caso.traza },
     benefits: [...caso.recompensas, ...sinLoDeAntes(base.benefits)],
     contributions: [caso.aporte, ...sinLoDeAntes(base.contributions)],
-    rankings: { ...base.rankings, [pestana]: caso.hinchada },
+    rankings: { ...base.rankings, global: globalConLaHinchada(base.rankings.global, caso.hinchada), [pestana]: caso.hinchada },
     prizes: { ...base.prizes, [pestana]: caso.premio },
     sponsorMetrics,
   }

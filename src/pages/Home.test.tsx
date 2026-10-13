@@ -1,10 +1,11 @@
 import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
-import type { ImpactProject, RecyclePoint, TraceEvent } from '@/types'
+import type { Contribution, ImpactProject, RecyclePoint, TraceEvent } from '@/types'
 import { claveDeAlmacenamiento } from '@/lib/escenario'
 import { useCommerceProductsStore } from '@/store/commerceProducts'
 import { usePesajesStore } from '@/store/pesajesDelClub'
+import { useActivityStore } from '@/store/activity'
 import Home from './Home'
 
 const banco = {
@@ -27,6 +28,7 @@ const recorrido: TraceEvent[] = [
 ]
 
 const estadio = { id: 'p_club_estadio', name: 'Punto R · Estadio', sponsorId: 's_club' } as RecyclePoint
+const sede = { id: 'p_club_sede', name: 'Punto R · Sede social', sponsorId: 's_club' } as RecyclePoint
 
 // Los proyectos que devuelve la API en cada caso: arranca siendo sólo el banco.
 let proyectosDelCaso: ImpactProject[] = [banco]
@@ -38,7 +40,7 @@ vi.mock('@/services/api', async (original) => ({
     getContributions: () => Promise.resolve([]),
     getCauses: () => Promise.resolve([]),
     getProjectTrace: () => Promise.resolve(recorrido),
-    getPoints: () => Promise.resolve([estadio]),
+    getPoints: () => Promise.resolve([estadio, sede]),
   },
 }))
 
@@ -146,6 +148,7 @@ describe('tu tapita en el inicio', () => {
   beforeEach(() => {
     proyectosDelCaso = [banco]
     usePesajesStore.setState({ pesajes: [] })
+    useActivityStore.setState({ sessionContributions: [] })
   })
 
   it('debajo del banco dice dónde va tu tapita y lleva al recorrido', async () => {
@@ -164,6 +167,30 @@ describe('tu tapita en el inicio', () => {
         puntoNombre: 'Punto R · Estadio', kilos: 12.5, tapitas: 2975, creadoEn: '2026-10-12T15:00:00.000Z',
       })
     })
+    expect((await screen.findByText(/tu tapita va por/i)).textContent).toMatch(/pesaje del lote/i)
+  })
+
+  it('con tu aporte de hoy en la Sede, un pesaje en el Estadio no mueve tu tapita; uno en la Sede, sí', async () => {
+    const hoy = new Date()
+    const dia = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}-${String(hoy.getDate()).padStart(2, '0')}`
+    const aporte: Contribution = {
+      id: 'c_sesion', userId: 'u1', pointId: 'p_club_sede', pointName: 'Punto R · Sede social', sponsorId: 's_club',
+      sponsorName: 'Club', material: 'tapitas', units: 50, xpEarned: 100, projectId: 'pr_banco_club',
+      status: 'validado', createdAt: hoy.toISOString(),
+    }
+    useActivityStore.setState({ sessionContributions: [aporte] })
+    verElInicio()
+    await screen.findByRole('link', { name: /el recorrido de tu tapita/i })
+    const pesar = (id: string, p: RecyclePoint) =>
+      act(() => {
+        usePesajesStore.getState().agregar({
+          id, partido: 'Fecha 12', fecha: dia, puntoId: p.id, puntoNombre: p.name, kilos: 12.5, tapitas: 2975,
+          creadoEn: hoy.toISOString(),
+        })
+      })
+    pesar('ps_estadio', estadio)
+    expect(screen.queryByText(/tu tapita va por/i)).toBeNull()
+    pesar('ps_sede', sede)
     expect((await screen.findByText(/tu tapita va por/i)).textContent).toMatch(/pesaje del lote/i)
   })
 })

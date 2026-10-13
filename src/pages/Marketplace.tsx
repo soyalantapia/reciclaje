@@ -25,6 +25,8 @@ const TABS: TabItem<Filter>[] = [
   { value: 'combustible', label: 'Combustible' },
   { value: 'experiencia', label: 'Experiencias' },
   { value: 'producto', label: 'Productos' },
+  // Lo que el panel publica como «Merch» (la camiseta oficial del club) sólo se veía en «Todos».
+  { value: 'merch', label: 'Merch' },
   { value: 'descuento', label: 'Descuentos' },
   { value: 'entrada', label: 'Entradas' },
 ]
@@ -81,7 +83,7 @@ export default function Marketplace() {
     <div className="space-y-4">
       <div>
         <h1 className="text-2xl font-extrabold leading-tight">Beneficios</h1>
-        <p className="text-sm text-muted-foreground">Canjeá tus XP por recompensas reales.</p>
+        <p className="text-sm text-muted-foreground">Canjeá tus XP por beneficios de la red.</p>
       </div>
 
       <Tabs tabs={TABS} value={filter} onChange={setFilter} />

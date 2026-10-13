@@ -1,4 +1,4 @@
-import type { RecyclePoint, Sponsor, SponsorMetrics } from '@/types'
+import { XP_PER_UNIT, type RecyclePoint, type Sponsor, type SponsorMetrics } from '@/types'
 
 /**
  * Genera métricas deterministas para un comercio a partir de su sponsor + puntos.
@@ -57,7 +57,8 @@ export function metricsFor(sponsor: Sponsor, points: RecyclePoint[], hoy: Date =
     greenScore: sponsor.greenScore,
     activeUsers: Math.round(kg * 0.9),
     contributions,
-    xpEmitted: Math.round(contributions * 68),
+    // 2 XP por tapita, como en cada aporte (XP_PER_UNIT): antes salía de los aportes y no cerraba con las tapitas.
+    xpEmitted: Math.round(kg * TAPITAS_POR_KILO) * XP_PER_UNIT.tapitas,
     benefitsRedeemed: Math.round(contributions * 0.034),
     kgRecovered: kg,
     capsRecovered: Math.round(kg * TAPITAS_POR_KILO),

@@ -57,3 +57,12 @@ describe('conMesesHastaHoy', () => {
     ])
   })
 })
+
+describe('XP emitidos', () => {
+  it('son 2 XP por tapita recuperada, como en cada aporte: decía 56.304 con 42.840 tapitas (85.680)', () => {
+    const talleres = { id: 's_club', name: 'Talleres', slug: 'club', category: 'club', brandColor: '#0b2d6b', tagline: '', greenScore: 64, kgRecovered: 180 } as const
+    const m = metricsFor(talleres, [])
+    expect(m.capsRecovered).toBe(42840)
+    expect(m.xpEmitted).toBe(85680)
+  })
+})

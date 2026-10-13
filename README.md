@@ -52,7 +52,8 @@ y las recompensas del club. El club de ejemplo de la demo general no aparece.
 - **El club es Talleres** (decidido el 10/10/2026): las dos demos lo nombran y ninguna nombra a River
   (lo vigila `src/services/mocks/escenarioClub.test.ts`). Para mostrarle la demo a otro club, `.env.local`
   pisa el nombre, el estadio y la sede (`VITE_CLUB_NOMBRE`, `VITE_CLUB_ESTADIO`, `VITE_CLUB_SEDE`; ver
-  `.env.example`). El escudo y los colores del club **no** se publican sin su permiso escrito.
+  `.env.example`). Desde el 12/10/2026 la demo muestra el escudo oficial y el azul de Talleres (lo decidió Alan para
+  la reunión con el club); el permiso escrito del club se pide en esa reunión. Con otro club, nada de Talleres.
 - Guarda su estado con claves propias (`reciclaxp-club-*`): abrirlo en el mismo navegador no
   toca la demo general.
 - Todas las pantallas llevan el aviso «Demo · los números son de ejemplo».

@@ -39,7 +39,7 @@ export default defineConfig(({ command }) => ({
         name: 'ReciclaXP · Reciclá, sumá XP, cambiá tu mundo',
         short_name: 'ReciclaXP',
         description:
-          'Reciclá tapitas y materiales, sumá XP, canjeá beneficios en una red de lugares adheridos y seguí la trazabilidad e impacto real de tu aporte.',
+          'Reciclá tapitas y materiales, sumá XP, canjeá beneficios en una red de lugares adheridos y seguí el recorrido de tu aporte.',
         theme_color: '#059669',
         background_color: '#f3faf6',
         display: 'standalone',
@@ -88,5 +88,9 @@ export default defineConfig(({ command }) => ({
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],
     css: true,
+    // Las pruebas que montan rutas reales esperan pantallas en diferido: con la máquina cargada (o el CI de Railway,
+    // que corre las pruebas antes de publicar) los 5 s por defecto quedaban justos y alguna fallaba sin que nada
+    // anduviera mal.
+    testTimeout: 20000,
   },
 }))

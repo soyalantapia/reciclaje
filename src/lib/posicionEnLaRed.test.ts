@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { posicionEnLaRed, textoDePosicion } from './posicionEnLaRed'
+import { muestraPuestoEnLaRed, posicionEnLaRed, textoDePosicion } from './posicionEnLaRed'
 
 const red = [
   { id: 'a', name: 'Coca-Cola', greenScore: 90 },
@@ -22,5 +22,23 @@ describe('posicionEnLaRed', () => {
 
   it('un comercio recién creado, que todavía no está en la lista, se cuenta igual', () => {
     expect(posicionEnLaRed('nuevo', 70, red)).toEqual({ puesto: 2, total: 4, siguiente: { nombre: 'Coca-Cola', diferencia: 20 } })
+  })
+
+  it('a un punto se dice en singular', () => {
+    expect(textoDePosicion({ puesto: 7, total: 9, siguiente: { nombre: 'Café Lúmen', diferencia: 1 } })).toBe(
+      'Puesto 7 de 9 en la red · a 1 punto de Café Lúmen',
+    )
+  })
+})
+
+describe('muestraPuestoEnLaRed', () => {
+  it('un comercio ve su puesto', () => {
+    expect(muestraPuestoEnLaRed({ category: 'comercio' })).toBe(true)
+    expect(muestraPuestoEnLaRed({ category: 'estacion' })).toBe(true)
+  })
+
+  it('una institución no, también la que se da de alta como «Club / estadio» (categoría estadio)', () => {
+    expect(muestraPuestoEnLaRed({ category: 'club' })).toBe(false)
+    expect(muestraPuestoEnLaRed({ category: 'estadio' })).toBe(false)
   })
 })

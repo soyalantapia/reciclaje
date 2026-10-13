@@ -5,7 +5,7 @@ import { Scale, Trash2 } from 'lucide-react'
 import { usePuntosDelPanel } from '@/hooks/usePuntosDelPanel'
 import { useSessionStore } from '@/store/session'
 import { usePesajesStore } from '@/store/pesajesDelClub'
-import { crearPesaje, kilosValidos, pesajesDelInforme } from '@/lib/pesajes'
+import { crearPesaje, kilosValidos, leerKilos, pesajesDelInforme } from '@/lib/pesajes'
 import { TAPITAS_POR_KILO } from '@/lib/metrics'
 import { esInstitucion } from '@/lib/vocabulario'
 import { formatNumber, shortCode } from '@/lib/utils'
@@ -44,13 +44,15 @@ export default function CommercePesajes() {
 
   const puntosDelClub = (puntos ?? []).filter((p) => p.sponsorId === commerce.id)
   const punto = puntosDelClub.find((p) => p.id === puntoId) ?? puntosDelClub[0]
-  // Acepta la coma, que es como se escribe un decimal acá.
-  const kg = Number(kilos.replace(',', '.'))
+  // Coma decimal y punto de miles, como se escribe acá: «1.250» son mil doscientos cincuenta kilos.
+  const kg = leerKilos(kilos)
   const mios = pesajesDelInforme(pesajes.filter((p) => puntosDelClub.some((pt) => pt.id === p.puntoId)))
 
   function guardar() {
     if (!partido.trim()) return toast.error('Poné qué partido fue')
     if (!fecha) return toast.error('Poné la fecha del partido')
+    // El campo tiene `max`, pero una fecha escrita a mano se lo saltea.
+    if (fecha > hoy()) return toast.error('La fecha del partido no puede ser de un día que todavía no pasó')
     if (!punto) return toast.error('Elegí el Punto R que pesaste')
     if (!kilosValidos(kg)) return toast.error('Poné los kilos que marcó la balanza')
     agregar(
@@ -84,7 +86,7 @@ export default function CommercePesajes() {
             <Label htmlFor="pesaje-partido">Partido</Label>
             <Input
               id="pesaje-partido"
-              placeholder={`Ej.: ${commerce.name} vs. Belgrano`}
+              placeholder={`Ej.: Fecha 12, ${commerce.name} de local`}
               maxLength={60}
               value={partido}
               onChange={(e) => setPartido(e.target.value)}

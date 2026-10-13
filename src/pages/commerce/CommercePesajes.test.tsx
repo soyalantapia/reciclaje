@@ -104,4 +104,11 @@ describe('Pesajes del panel del club', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Eliminar el pesaje de Talleres vs. Belgrano' }))
     expect(usePesajesStore.getState().pesajes).toEqual([])
   })
+
+  it('el ejemplo del partido no nombra a otro club: decía «vs. Belgrano», el clásico rival de Talleres', async () => {
+    verPesajes()
+    const partido = await screen.findByLabelText('Partido')
+    expect(partido.getAttribute('placeholder')).not.toMatch(/ vs\. /)
+    expect(partido.getAttribute('placeholder')).toMatch(/Talleres/)
+  })
 })

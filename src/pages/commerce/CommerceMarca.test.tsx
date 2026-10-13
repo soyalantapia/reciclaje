@@ -15,8 +15,10 @@ vi.mock('@/lib/escudo', async (original) => ({
   prepararEscudo: preparar,
 }))
 
+// Un club con otro id que el de la demo: la marca oficial de Talleres (src/lib/logos.ts) no aplica, y se prueba la
+// marca que se carga acá. La oficial tiene sus pruebas al final.
 const club: Sponsor = {
-  id: 's_club', name: 'Talleres', slug: 'club', category: 'club', brandColor: '#059669', tagline: '',
+  id: 's_otro_club', name: 'Talleres', slug: 'club', category: 'club', brandColor: '#059669', tagline: '',
   greenScore: 64, kgRecovered: 180,
 }
 // Un escudo de mentira: no es el de ningún club.
@@ -46,17 +48,17 @@ describe('la marca del club', () => {
     verMarca()
     fireEvent.change(screen.getByLabelText('Archivo del escudo'), { target: { files: [archivo()] } })
     expect(await screen.findByRole('img', { name: 'Escudo de Talleres' })).toHaveAttribute('src', ESCUDO)
-    expect(useMarcaDelClubStore.getState().marcas.s_club).toEqual({ escudo: ESCUDO, color: '#0b2d6b' })
+    expect(useMarcaDelClubStore.getState().marcas.s_otro_club).toEqual({ escudo: ESCUDO, color: '#0b2d6b' })
     expect(screen.getByLabelText('Color de la marca')).toHaveValue('#0b2d6b')
   })
 
   it('si del escudo no sale un color, queda el que había', async () => {
-    useMarcaDelClubStore.getState().guardar('s_club', { color: '#aa0000' })
+    useMarcaDelClubStore.getState().guardar('s_otro_club', { color: '#aa0000' })
     preparar.mockResolvedValue({ escudo: ESCUDO, color: null })
     verMarca()
     fireEvent.change(screen.getByLabelText('Archivo del escudo'), { target: { files: [archivo()] } })
     await screen.findByRole('img', { name: 'Escudo de Talleres' })
-    expect(useMarcaDelClubStore.getState().marcas.s_club).toEqual({ escudo: ESCUDO, color: '#aa0000' })
+    expect(useMarcaDelClubStore.getState().marcas.s_otro_club).toEqual({ escudo: ESCUDO, color: '#aa0000' })
   })
 
   it('un archivo que no sirve dice por qué, y no guarda nada', async () => {
@@ -70,11 +72,11 @@ describe('la marca del club', () => {
   it('el selector cambia el color', () => {
     verMarca()
     fireEvent.change(screen.getByLabelText('Color de la marca'), { target: { value: '#123456' } })
-    expect(useMarcaDelClubStore.getState().marcas.s_club).toEqual({ color: '#123456' })
+    expect(useMarcaDelClubStore.getState().marcas.s_otro_club).toEqual({ color: '#123456' })
   })
 
   it('«Volver a los colores de ReciclaXP» borra la marca', () => {
-    useMarcaDelClubStore.getState().guardar('s_club', { escudo: ESCUDO, color: '#0b2d6b' })
+    useMarcaDelClubStore.getState().guardar('s_otro_club', { escudo: ESCUDO, color: '#0b2d6b' })
     verMarca()
     fireEvent.click(screen.getByRole('button', { name: /Volver a los colores de ReciclaXP/ }))
     expect(useMarcaDelClubStore.getState().marcas).toEqual({})
@@ -104,20 +106,20 @@ describe('el aviso de que en los botones el color va más oscuro', () => {
   })
 
   it('con un color claro, sobre el que el texto blanco no se lee, avisa', () => {
-    useMarcaDelClubStore.getState().guardar('s_club', { color: '#ffe14d' })
+    useMarcaDelClubStore.getState().guardar('s_otro_club', { color: '#ffe14d' })
     verMarca()
     expect(screen.getByText(AVISO)).toBeInTheDocument()
   })
 
   it('con un color oscuro, que ya se lee con texto blanco, no hace falta', () => {
-    useMarcaDelClubStore.getState().guardar('s_club', { color: '#0b2d6b' })
+    useMarcaDelClubStore.getState().guardar('s_otro_club', { color: '#0b2d6b' })
     verMarca()
     expect(screen.queryByText(AVISO)).not.toBeInTheDocument()
   })
 
   // El verde de ReciclaXP es el «todavía no eligió el suyo»: no pisa la paleta, así que no hay nada que oscurecer.
   it('con el verde de ReciclaXP y un escudo, tampoco: el panel no lo oscurece', () => {
-    useMarcaDelClubStore.getState().guardar('s_club', { escudo: ESCUDO, color: '#059669' })
+    useMarcaDelClubStore.getState().guardar('s_otro_club', { escudo: ESCUDO, color: '#059669' })
     verMarca()
     expect(screen.getByRole('img', { name: 'Escudo de Talleres' })).toHaveAttribute('src', ESCUDO)
     expect(screen.queryByText(AVISO)).not.toBeInTheDocument()
@@ -128,7 +130,7 @@ describe('el aviso de que en los botones el color va más oscuro', () => {
     verMarca()
     fireEvent.change(screen.getByLabelText('Archivo del escudo'), { target: { files: [archivo()] } })
     await screen.findByRole('img', { name: 'Escudo de Talleres' })
-    expect(useMarcaDelClubStore.getState().marcas.s_club).toEqual({ escudo: ESCUDO, color: '#059669' })
+    expect(useMarcaDelClubStore.getState().marcas.s_otro_club).toEqual({ escudo: ESCUDO, color: '#059669' })
     expect(screen.getByLabelText('Color de la marca')).toHaveValue('#059669')
     expect(screen.queryByText(AVISO)).not.toBeInTheDocument()
   })
@@ -152,7 +154,7 @@ describe('si lo guardado en el navegador viene roto', () => {
     ['sin color', { escudo: ESCUDO }],
     ['con el color en un número', { escudo: ESCUDO, color: 123 }],
   ])('una marca %s abre con el verde de ReciclaXP, conserva el escudo y no avisa nada', (_, marca) => {
-    guardadoRoto({ s_club: marca })
+    guardadoRoto({ s_otro_club: marca })
     verMarca()
     expect(screen.getByLabelText('Color de la marca')).toHaveValue('#059669')
     expect(screen.getByRole('img', { name: 'Escudo de Talleres' })).toHaveAttribute('src', ESCUDO)
@@ -160,10 +162,10 @@ describe('si lo guardado en el navegador viene roto', () => {
   })
 
   it('elegir un color desde ahí lo arregla', () => {
-    guardadoRoto({ s_club: { escudo: ESCUDO, color: 123 } })
+    guardadoRoto({ s_otro_club: { escudo: ESCUDO, color: 123 } })
     verMarca()
     fireEvent.change(screen.getByLabelText('Color de la marca'), { target: { value: '#123456' } })
-    expect(useMarcaDelClubStore.getState().marcas.s_club).toEqual({ escudo: ESCUDO, color: '#123456' })
+    expect(useMarcaDelClubStore.getState().marcas.s_otro_club).toEqual({ escudo: ESCUDO, color: '#123456' })
   })
 })
 
@@ -186,17 +188,17 @@ describe('la pantalla en uso', () => {
     expect(screen.getByRole('button', { name: /Subir el escudo/ })).toBeInTheDocument()
     expect(screen.getByText('T')).toBeInTheDocument()
     unmount()
-    useMarcaDelClubStore.getState().guardar('s_club', { escudo: ESCUDO, color: '#0b2d6b' })
+    useMarcaDelClubStore.getState().guardar('s_otro_club', { escudo: ESCUDO, color: '#0b2d6b' })
     verMarca()
     expect(screen.getByRole('button', { name: /Cambiar el escudo/ })).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: /Subir el escudo/ })).not.toBeInTheDocument()
   })
 
   it('cambiar el color conserva el escudo que ya se subió', () => {
-    useMarcaDelClubStore.getState().guardar('s_club', { escudo: ESCUDO, color: '#0b2d6b' })
+    useMarcaDelClubStore.getState().guardar('s_otro_club', { escudo: ESCUDO, color: '#0b2d6b' })
     verMarca()
     fireEvent.change(screen.getByLabelText('Color de la marca'), { target: { value: '#123456' } })
-    expect(useMarcaDelClubStore.getState().marcas.s_club).toEqual({ escudo: ESCUDO, color: '#123456' })
+    expect(useMarcaDelClubStore.getState().marcas.s_otro_club).toEqual({ escudo: ESCUDO, color: '#123456' })
     expect(screen.getByRole('img', { name: 'Escudo de Talleres' })).toHaveAttribute('src', ESCUDO)
     // Y el código que se lee al lado del selector es el elegido.
     expect(screen.getByText('#123456')).toBeInTheDocument()
@@ -275,5 +277,34 @@ describe('la pantalla en uso', () => {
     expect(preparar).not.toHaveBeenCalled()
     expect(screen.queryByRole('alert')).not.toBeInTheDocument()
     expect(useMarcaDelClubStore.getState().marcas).toEqual({})
+  })
+})
+
+describe('la marca oficial de Talleres', () => {
+  const talleres: Sponsor = { ...club, id: 's_club' }
+
+  it('sin nada guardado muestra el escudo y el azul que ya usa el resto del panel', () => {
+    verMarca(talleres)
+    expect(screen.getByRole('img', { name: 'Escudo de Talleres' }).getAttribute('src')).toMatch(/clubes\/talleres\/escudo\.svg$/)
+    expect(screen.getByLabelText('Color de la marca')).toHaveValue('#0b2d6b')
+    expect(screen.getByRole('button', { name: /Cambiar el escudo/ })).toBeInTheDocument()
+    // No hay nada guardado que deshacer.
+    expect(screen.queryByRole('button', { name: /Volver a/ })).not.toBeInTheDocument()
+  })
+
+  it('cambiar el color conserva el escudo oficial', () => {
+    verMarca(talleres)
+    fireEvent.change(screen.getByLabelText('Color de la marca'), { target: { value: '#123456' } })
+    const guardada = useMarcaDelClubStore.getState().marcas.s_club
+    expect(guardada.color).toBe('#123456')
+    expect(guardada.escudo).toMatch(/clubes\/talleres\/escudo\.svg$/)
+  })
+
+  it('«Volver a la marca oficial del club» borra lo guardado y vuelve el escudo oficial', () => {
+    useMarcaDelClubStore.setState({ marcas: { s_club: { escudo: ESCUDO, color: '#aa0000' } } })
+    verMarca(talleres)
+    fireEvent.click(screen.getByRole('button', { name: /Volver a la marca oficial del club/ }))
+    expect(useMarcaDelClubStore.getState().marcas).toEqual({})
+    expect(screen.getByRole('img', { name: 'Escudo de Talleres' }).getAttribute('src')).toMatch(/clubes\/talleres\/escudo\.svg$/)
   })
 })

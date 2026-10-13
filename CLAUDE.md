@@ -10,7 +10,9 @@ navegable **front-end con datos mock (MSW)**. Ver `README.md` para el detalle de
 - Proyecto real: **`~/dev/reciclaje`** (NO en `~/Desktop`, que está sincronizado por
   iCloud y rompe esbuild/rollup/lightningcss). Hay un symlink en
   `~/Desktop/Programacion/reciclaje`.
-- GitHub: `soyalantapia/reciclaje`. Deploy a GitHub Pages con `npm run deploy`.
+- GitHub: `soyalantapia/reciclaje`. Cada merge a `main` se publica solo en Railway (https://reciclaxp.xnod.tech y
+  `/club`, `.github/workflows/railway.yml`). Los respaldos en GitHub Pages son a mano: `npm run deploy` y
+  `npm run deploy:club`.
 - Dev server: **:5183** (`strictPort`).
 
 ## Stack y convenciones

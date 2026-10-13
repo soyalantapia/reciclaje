@@ -21,7 +21,8 @@ export function prepararSonido(): void {
   if (!Audio) return
   try {
     contexto ??= new Audio()
-    if (contexto.state === 'suspended') void contexto.resume()
+    // No sólo «suspended»: en iPhone, al volver de la pantalla bloqueada queda «interrupted». Un fallo no rompe nada.
+    if (contexto.state !== 'running') void contexto.resume().catch(() => {})
   } catch {
     contexto = null
   }

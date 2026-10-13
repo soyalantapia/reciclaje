@@ -1,3 +1,4 @@
+import type { ImpactProject } from '@/types'
 import { api } from '@/services/api'
 import { useApi } from '@/hooks/useApi'
 import { conAportesDeLaSesion } from '@/lib/aportesDeLaSesion'
@@ -6,8 +7,11 @@ import { useActivityStore } from '@/store/activity'
 import { useSessionStore } from '@/store/session'
 import { useWalletStore } from '@/store/wallet'
 
-/** Lo que miran los logros: el historial, los aportes de la sesión, la racha y el banco de la hinchada. */
-export function useDatosDeLogros(): DatosDeLogros | null {
+/**
+ * Lo que miran los logros: el historial, los aportes de la sesión, la racha y el banco de la hinchada.
+ * `bancoBase` es el banco sin los aportes de la sesión, para calcular cómo estaban los logros antes de un aporte.
+ */
+export function useDatosDeLogros(): (DatosDeLogros & { bancoBase?: ImpactProject }) | null {
   const { data: historial } = useApi(() => api.getContributions(), [])
   const { data: proyectos } = useApi(() => api.getProjects(), [])
   const sesion = useActivityStore((s) => s.sessionContributions)
@@ -20,6 +24,7 @@ export function useDatosDeLogros(): DatosDeLogros | null {
     sesion,
     rachaDias,
     banco: banco && conAportesDeLaSesion(banco, sesion, nombre),
+    bancoBase: banco,
     nombre,
   }
 }

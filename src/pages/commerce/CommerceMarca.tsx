@@ -7,6 +7,7 @@ import { useMarcaDelClubStore } from '@/store/marcaDelClub'
 import { esInstitucion } from '@/lib/vocabulario'
 import { COLOR_DE_RECICLAXP, colorLegible, esColorPropio } from '@/lib/marca'
 import { ESCUDO_TOPE_MB, EscudoInvalido, TIPOS_DE_ESCUDO, prepararEscudo } from '@/lib/escudo'
+import { marcaOficial } from '@/lib/logos'
 import { Button } from '@/components/ui/button'
 
 /**
@@ -27,8 +28,13 @@ export default function CommerceMarca() {
   if (!esInstitucion(commerce.category)) return <Navigate to="/comercio" replace />
 
   const id = commerce.id
+  // La marca que ya usa el resto del panel (useMarcaDelPanel): lo guardado manda y, si no hay nada, la oficial que
+  // trae la demo (el escudo y el azul de Talleres). Antes esta pantalla mostraba una inicial y el verde de
+  // ReciclaXP mientras el menú y el informe mostraban el escudo, y cambiar el color borraba el escudo de todo el panel.
+  const oficial = marcaOficial(commerce)
+  const vigente = marca ?? oficial ?? undefined
   // Lo guardado en el navegador puede venir sin color, o con uno que no es texto: se muestra el verde de ReciclaXP.
-  const color = typeof marca?.color === 'string' ? marca.color : COLOR_DE_RECICLAXP
+  const color = typeof vigente?.color === 'string' ? vigente.color : COLOR_DE_RECICLAXP
 
   async function subir(archivo: File | undefined) {
     if (!archivo) return
@@ -58,8 +64,8 @@ export default function CommerceMarca() {
           Escudo
         </h2>
         <div className="mt-3 flex items-center gap-4">
-          {marca?.escudo ? (
-            <img src={marca.escudo} alt={`Escudo de ${commerce.name}`} className="h-20 w-20 shrink-0 object-contain" />
+          {vigente?.escudo ? (
+            <img src={vigente.escudo} alt={`Escudo de ${commerce.name}`} className="h-20 w-20 shrink-0 object-contain" />
           ) : (
             <span
               aria-hidden
@@ -82,7 +88,7 @@ export default function CommerceMarca() {
               onChange={(e) => void subir(e.target.files?.[0])}
             />
             <Button type="button" onClick={() => entrada.current?.click()} disabled={leyendo}>
-              <ImageUp size={18} /> {marca?.escudo ? 'Cambiar el escudo' : 'Subir el escudo'}
+              <ImageUp size={18} /> {vigente?.escudo ? 'Cambiar el escudo' : 'Subir el escudo'}
             </Button>
             <p className="text-xs text-muted-foreground">{`PNG, JPG, SVG o WebP, hasta ${ESCUDO_TOPE_MB} MB.`}</p>
           </div>
@@ -104,7 +110,7 @@ export default function CommerceMarca() {
             type="color"
             aria-label="Color de la marca"
             value={color}
-            onChange={(e) => guardar(id, { ...marca, color: e.target.value })}
+            onChange={(e) => guardar(id, { ...vigente, color: e.target.value })}
             className="h-11 w-16 cursor-pointer rounded-lg border border-border bg-transparent"
           />
           <span className="font-mono text-sm">{color}</span>
@@ -124,7 +130,7 @@ export default function CommerceMarca() {
         </p>
         {marca && (
           <Button type="button" variant="secondary" onClick={() => quitar(id)}>
-            <RotateCcw size={16} /> Volver a los colores de ReciclaXP
+            <RotateCcw size={16} /> {oficial ? 'Volver a la marca oficial del club' : 'Volver a los colores de ReciclaXP'}
           </Button>
         )}
       </div>

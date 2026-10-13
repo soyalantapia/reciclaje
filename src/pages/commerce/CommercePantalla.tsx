@@ -108,7 +108,10 @@ export default function CommercePantalla() {
       </header>
 
       {!producto ? (
-        <p className="m-auto text-xl text-eco-200">Cargando…</p>
+        // Sin productos todavía (un club dado de alta en vivo): no es que esté cargando.
+        <p className="m-auto max-w-md text-center text-xl text-eco-200">
+          {proyectos ? 'Todavía no hay productos. Creá el primero en Productos y aparece acá.' : 'Cargando…'}
+        </p>
       ) : (
         // Cada producto entra con un fundido; el anterior se va al instante (sin esperar una salida).
         <motion.main
@@ -157,7 +160,8 @@ export default function CommercePantalla() {
                     {top.map((c, i) => (
                       <li key={c.name} className="flex items-center justify-between gap-3 rounded-2xl bg-white/10 px-4 py-3">
                         <span className="flex items-center gap-3 text-xl font-bold">
-                          <span className="grid h-9 w-9 place-items-center rounded-full bg-eco-500 font-marcador text-lg text-eco-950">
+                          {/* Dorado fijo: con la paleta del club (el azul de Talleres) el número quedaba oscuro sobre oscuro. */}
+                          <span className="grid h-9 w-9 place-items-center rounded-full bg-xp-400 font-marcador text-lg text-ink-900">
                             {i + 1}
                           </span>
                           {c.name}

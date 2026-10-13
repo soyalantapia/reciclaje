@@ -24,3 +24,5 @@ Salen de las decisiones del panel. Las bloqueadas esperan la firma con el club o
 - **10/10/2026 · T3: las demos nombran a Talleres.** Lo pidió Alan (PR #14).
   - Ni la demo general ni la del club dicen River o «Tu club».
   - El criterio de T3 sobre el escudo y los colores sigue igual: no se usan sin el permiso escrito del club, que es la pregunta 4 de la página de posición.
+- **12/10/2026 · T3: la demo muestra el escudo y el azul de Talleres.** Lo decidió Alan para la reunión (PR #35). Cambia el criterio de arriba: el permiso escrito se pide en la reunión.
+- **11 y 12/10/2026 · versiones demo de T8, T9 y T11:** pesajes por partido, productos del club con meta y patrocinador, marca del club, pantalla del estadio, informe para la Comisión Directiva, recorrido de la tapita, logros y sonido. Todo en el navegador: lo que falta para el piloto es el servidor (T7).

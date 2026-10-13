@@ -12,10 +12,10 @@ import type { MaterialType, RecyclePoint, ScanResult } from '@/types'
 import {
   MATERIAL_EMOJI,
   MATERIAL_LABEL,
-  MATERIAL_UNIT,
   formatNumber,
   formatXp,
   parsePointFromQr,
+  unidadDe,
 } from '@/lib/utils'
 import { BuyFlow } from '@/components/features/BuyFlow'
 import { FestejoDelAporte } from '@/components/features/FestejoDelAporte'
@@ -119,20 +119,23 @@ export default function Scan() {
   if (mode === 'reciclar' && step === 'done' && result) {
     // El festejo, sólo si el aporte suma a un banco: mismo proyecto y mismo material.
     const proyectoConAporte = result.project && conAportesDeLaSesion(result.project, actividad, nombre)
-    // El logro que ganó este aporte: los logros sin él, contra los logros con él.
+    // El logro que ganó este aporte: los logros sin él, contra los logros con él. Siempre contra el banco de la
+    // hinchada, como el perfil, aunque el aporte haya ido a un producto del panel.
     const sinEste = actividad.filter((c) => c.id !== result.contribution.id)
-    const ganados =
-      datosDeLogros && result.project
-        ? logrosNuevos(
-            {
-              ...datosDeLogros,
-              historial: datosDeLogros.historial.filter((c) => c.id !== result.contribution.id),
-              sesion: sinEste,
-              banco: conAportesDeLaSesion(result.project, sinEste, nombre),
-            },
-            { ...datosDeLogros, banco: proyectoConAporte },
-          )
-        : []
+    const ganados = datosDeLogros
+      ? logrosNuevos(
+          {
+            ...datosDeLogros,
+            historial: datosDeLogros.historial.filter((c) => c.id !== result.contribution.id),
+            sesion: sinEste,
+            banco: datosDeLogros.bancoBase && conAportesDeLaSesion(datosDeLogros.bancoBase, sinEste, nombre),
+          },
+          datosDeLogros,
+        )
+      : []
+    const logros = ganados.map((l) => <LogroDesbloqueado key={l.id} logro={l} />)
+    // Un aporte suma al proyecto sólo si es de su material: el plástico no suma a un banco que junta tapitas.
+    const sumaAlProyecto = result.project && result.contribution.material === result.project.material
 
     return (
       <div className="flex flex-col items-center pt-6 text-center">
@@ -141,9 +144,7 @@ export default function Scan() {
             <h1 className="text-2xl font-extrabold">¡Aporte registrado!</h1>
             <p className="mb-4 text-muted-foreground">{result.contribution.pointName}</p>
             <FestejoDelAporte proyecto={proyectoConAporte} unidades={result.contribution.units ?? 0} xp={result.xpEarned} />
-            {ganados.map((l) => (
-              <LogroDesbloqueado key={l.id} logro={l} />
-            ))}
+            {logros}
           </>
         ) : (
           <>
@@ -162,13 +163,14 @@ export default function Scan() {
               <p className="text-sm text-eco-100">Sumaste</p>
               <p className="text-4xl font-extrabold">+{formatNumber(result.xpEarned)} XP</p>
               <p className="mt-1 text-sm text-eco-100">
-                {formatNumber(result.contribution.units ?? 0)} {MATERIAL_UNIT[material]}
+                {formatNumber(result.contribution.units ?? 0)} {unidadDe(material, result.contribution.units ?? 0)}
               </p>
             </div>
+            {logros}
           </>
         )}
 
-        {result.project && (
+        {result.project && sumaAlProyecto && (
           <div className="mt-4 w-full rounded-2xl border border-border bg-card p-4 text-left">
             <div className="flex items-center gap-2 text-sm font-semibold text-eco-700 dark:text-eco-300">
               <Sparkles size={16} /> Tu aporte suma a un proyecto
@@ -242,7 +244,7 @@ export default function Scan() {
             </button>
             <div className="text-center">
               <p className="text-4xl font-extrabold leading-none">{units}</p>
-              <p className="text-xs text-muted-foreground">{MATERIAL_UNIT[material]}</p>
+              <p className="text-xs text-muted-foreground">{unidadDe(material, units)}</p>
             </div>
             <button
               onClick={() => setUnits((u) => u + 10)}

@@ -11,7 +11,7 @@ vi.mock('@/lib/sonido', () => ({ sonarLogro: vi.fn() }))
 
 const logros: Logro[] = [
   { id: 'primera', titulo: 'Primera tapita', detalle: 'Hiciste tu primer aporte.', ganado: true, actual: 1, meta: 1 },
-  { id: 'cancha', titulo: 'Hincha de cancha', detalle: 'Dejá tapitas en el Punto R del Estadio en día de partido.', ganado: false, actual: 0, meta: 1 },
+  { id: 'cancha', titulo: 'Hincha de cancha', detalle: 'Dejá tapitas hoy en el Punto R del Estadio.', ganado: false, actual: 0, meta: 1 },
   { id: 'mil', titulo: '1.000 tapitas', detalle: 'Llegá a 1.000 tapitas en el banco.', ganado: false, actual: 690, meta: 1000 },
 ]
 
@@ -29,11 +29,11 @@ describe('logros en pantalla', () => {
   it('el festejo anuncia el logro y lleva a «Tus logros»', () => {
     render(
       <MemoryRouter>
-        <LogroDesbloqueado logro={{ ...logros[1], ganado: true, detalle: 'Dejaste tapitas en el Estadio en día de partido.' }} />
+        <LogroDesbloqueado logro={{ ...logros[1], ganado: true, detalle: 'Dejaste tapitas hoy en el Punto R del Estadio.' }} />
       </MemoryRouter>,
     )
     const aviso = screen.getByRole('status')
-    expect(aviso.textContent).toMatch(/¡Logro desbloqueado!.*Hincha de cancha.*día de partido/)
+    expect(aviso.textContent).toMatch(/¡Logro desbloqueado!.*Hincha de cancha.*hoy en el Punto R del Estadio/)
     expect(screen.getByRole('link', { name: 'Ver tus logros' }).getAttribute('href')).toBe('/perfil#logros')
     // Suena cuando entra la medalla.
     expect(sonarLogro).toHaveBeenCalledTimes(1)

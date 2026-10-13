@@ -1,6 +1,6 @@
 # 10 · Estado actual y pendientes
 
-**Fecha de corte:** 2026-10-10 · **Estado:** MVP de demostración, sin backend, pre-lanzamiento
+**Fecha de corte:** 2026-10-13 (antes de la reunión con Talleres) · **Estado:** MVP de demostración, sin backend, pre-lanzamiento
 (sin clientes reales). Lo de abajo de «Octubre 2026» es el corte anterior (2026-07-18, `40dbc00`).
 
 ---
@@ -9,16 +9,22 @@
 
 - **Qué se busca**: que un club firme un piloto de 90 días y financie el resto del desarrollo.
   Plan, decisiones y tareas en `docs/producto/reuniones/2026-10-10-plan-de-producto/`.
-- **Lo prometido contra lo que existe**: `docs/producto/prometido-vs-demo.md`. Lo que falta para
-  un piloto real es servidor y login, pesaje, producto creado por la institución, constancia
-  con datos registrados, datos de los hinchas e informe del piloto.
+- **Lo prometido contra lo que existe**: `docs/producto/prometido-vs-demo.md`.
+- **Lo que la demo del club ya hace (11 al 13/10/2026), todo en el navegador:** productos del club con meta en
+  kilos y patrocinador, pesajes por partido, el recorrido de la tapita (también en el inicio), marca del club con
+  el escudo oficial de Talleres, pantalla del estadio, informe para la Comisión Directiva (PDF y CSV), logros con
+  festejo y sonido, y el club sin «Puesto X de N». Lo que falta para un piloto real es el servidor y el login (T7):
+  sin él, la app y el panel se hablan sólo en el mismo navegador. También la constancia con datos registrados y
+  los datos de los hinchas.
+- **Auditoría del 12 y 13/10/2026** antes de la reunión: ver «La auditoría antes de la reunión» en
+  [11-HISTORIAL](11-HISTORIAL.md).
 - **Desglose técnico del piloto** por entregable (23,5 a 31,5 días de desarrollo):
   `docs/producto/desglose-piloto.md`.
 - **Escenario club**: `npm run dev:club` en local; publicado aparte con `npm run deploy:club`
   en https://soyalantapia.github.io/reciclaje-club/ y en https://reciclaxp.xnod.tech/club.
 - **El club de las demos es Talleres** (decidido el 10/10/2026): las dos lo nombran y ninguna nombra a
-  River, ni en los textos ni en los ids. El escudo y los colores del club esperan su permiso escrito, que
-  se pide en la reunión del martes.
+  River, ni en los textos ni en los ids. Desde el 12/10/2026 la demo usa el escudo oficial y el azul de Talleres
+  (lo decidió Alan para la reunión); el permiso escrito del club se pide en la reunión del martes 13/10.
 - **Regla de honestidad aplicada**: todas las pantallas dicen que los números son de ejemplo.
 - **La demo del club no muestra precios de lista** (decidido el 10/10/2026): el panel no tiene «Plan», y la
   landing y el alta dicen «A convenir». El plan del club sale de la propuesta. Se revisa al cerrar la tabla de

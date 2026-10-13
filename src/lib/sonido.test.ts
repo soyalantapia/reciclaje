@@ -5,6 +5,9 @@ import { prepararSonido, sonarLogro, sonarTapitas, olvidarSonido } from './sonid
 
 /** Un AudioContext de mentira que anota cuándo arranca cada oscilador. */
 class ContextoFalso {
+  constructor() {
+    ;(globalThis as unknown as { __ultimo?: ContextoFalso }).__ultimo = this
+  }
   currentTime = 10
   state = 'suspended'
   destination = {}
@@ -71,5 +74,20 @@ describe('sonido del festejo', () => {
       sonarTapitas([1])
       sonarLogro(0)
     }).not.toThrow()
+  })
+
+  it('en un iPhone que volvió de la pantalla bloqueada (estado «interrupted») lo despierta igual, y un fallo no rompe', async () => {
+    prepararSonido()
+    const ctx = (globalThis as unknown as { __ultimo?: ContextoFalso }).__ultimo
+    expect(ctx).toBeDefined()
+    ctx!.state = 'interrupted'
+    let despertado = 0
+    ctx!.resume = () => {
+      despertado++
+      return Promise.reject(new Error('no se pudo'))
+    }
+    expect(() => prepararSonido()).not.toThrow()
+    expect(despertado).toBe(1)
+    await Promise.resolve()
   })
 })

@@ -9,6 +9,9 @@ import { router } from '@/routes'
 import { useMarcaDelClubStore } from '@/store/marcaDelClub'
 import { useSessionStore } from '@/store/session'
 
+// Las pantallas se cargan en diferido: con toda la batería corriendo, 1 a 3 s quedaban justos (fallaba a veces).
+const CARGA_DIFERIDA = 8000
+
 vi.mock('@/services/api', async (original) => ({
   ...(await original<typeof import('@/services/api')>()),
   api: {
@@ -48,7 +51,7 @@ async function abrirElPanelEn(ruta: string, titulo: string, sponsor: Sponsor = c
   useSessionStore.setState({ commerce: sponsor })
   const vista = render(<RouterProvider router={createMemoryRouter(router.routes, { initialEntries: [ruta] })} />)
   // La pantalla carga diferida (~0,3 s en frío): con la máquina ocupada, el segundo que se espera por defecto queda justo.
-  await screen.findByRole('heading', { level: 1, name: titulo }, { timeout: 3000 })
+  await screen.findByRole('heading', { level: 1, name: titulo }, { timeout: CARGA_DIFERIDA })
   return vista
 }
 
@@ -179,7 +182,7 @@ describe('la paleta de la marca en <html>, para lo que se monta fuera del panel'
     useMarcaDelClubStore.getState().guardar('s_otro_club', { color: '#0b2d6b' })
     const c = await verElPanelEn('/comercio/productos', 'Productos')
     fireEvent.click(screen.getByRole('button', { name: /Nuevo producto/ }))
-    const dialogo = await screen.findByRole('dialog', { name: 'Nuevo producto' })
+    const dialogo = await screen.findByRole('dialog', { name: 'Nuevo producto' }, { timeout: CARGA_DIFERIDA })
 
     // Está fuera del contenedor que lleva la paleta…
     const panel = conMarca(c)

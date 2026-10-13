@@ -15,6 +15,9 @@ import Home from '@/pages/Home'
 import CommerceInforme from '@/pages/commerce/CommerceInforme'
 import CommerceProducts from '@/pages/commerce/CommerceProducts'
 
+// Las pantallas se cargan en diferido: con toda la batería corriendo, 1 a 3 s quedaban justos (fallaba a veces).
+const CARGA_DIFERIDA = 8000
+
 const { points, projects, sponsors } = datos
 const banco = projects[0]
 const club = sponsors.find((s) => s.id === banco.sponsorId)!
@@ -57,11 +60,11 @@ describe('los productos del club, de punta a punta', () => {
         <Home />
       </MemoryRouter>,
     )
-    await screen.findByText('Sumá tus tapitas')
+    await screen.findByText('Sumá tus tapitas', undefined, { timeout: CARGA_DIFERIDA })
     expect(screen.queryByRole('group', { name: 'Productos de la hinchada' })).not.toBeInTheDocument()
 
     act(() => useCommerceProductsStore.getState().agregar(butacas()))
-    const pestanas = await screen.findByRole('group', { name: 'Productos de la hinchada' }, { timeout: 3000 })
+    const pestanas = await screen.findByRole('group', { name: 'Productos de la hinchada' }, { timeout: CARGA_DIFERIDA })
     fireEvent.click(within(pestanas).getByRole('button', { name: /Butacas para la platea/ }))
     expect(screen.getByText('Todavía nadie sumó tapitas. ¡La primera puede ser la tuya!')).toBeInTheDocument()
 
@@ -70,7 +73,7 @@ describe('los productos del club, de punta a punta', () => {
     expect(res.contribution.projectId).toBe('pr_nuevo_INTEG')
     expect(res.project?.title).toBe('Butacas para la platea')
     act(() => useActivityStore.getState().add(res.contribution))
-    await waitFor(() => expect(screen.queryByText('Todavía nadie sumó tapitas. ¡La primera puede ser la tuya!')).not.toBeInTheDocument())
+    await waitFor(() => expect(screen.queryByText('Todavía nadie sumó tapitas. ¡La primera puede ser la tuya!')).not.toBeInTheDocument(), { timeout: CARGA_DIFERIDA })
     expect(screen.getByText(/dejó 50 tapitas/)).toBeInTheDocument()
 
     // En el estadio, el aporte va al banco.
@@ -88,7 +91,7 @@ describe('los productos del club, de punta a punta', () => {
         <CommerceProducts />
       </MemoryRouter>,
     )
-    expect(await screen.findByText('Butacas para la platea')).toBeInTheDocument()
+    expect(await screen.findByText('Butacas para la platea', undefined, { timeout: CARGA_DIFERIDA })).toBeInTheDocument()
     expect(screen.getAllByText('Butacas para la platea')).toHaveLength(1)
     unmount()
 
@@ -97,9 +100,9 @@ describe('los productos del club, de punta a punta', () => {
         <CommerceInforme />
       </MemoryRouter>,
     )
-    const heading = await screen.findByRole('heading', { name: 'Lo que construye la hinchada' }, { timeout: 3000 })
+    const heading = await screen.findByRole('heading', { name: 'Lo que construye la hinchada' }, { timeout: CARGA_DIFERIDA })
     const seccion = heading.closest('section')!
-    await waitFor(() => expect(seccion.textContent).toContain('50 de 119.000 tapitas'))
+    await waitFor(() => expect(seccion.textContent).toContain('50 de 119.000 tapitas'), { timeout: CARGA_DIFERIDA })
     expect(seccion.textContent).toContain('Junta en: Punto R · Sede social')
     // Sede ocupada: el banco sólo junta en el estadio.
     expect(seccion.textContent).toMatch(/Junta en: Punto R · Estadio(?!,)/)
