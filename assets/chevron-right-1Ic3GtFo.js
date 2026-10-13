@@ -1,1 +1,0 @@
-import{Kt as e}from"./index-Br4q2EaY.js";var t=e(`ChevronRight`,[[`path`,{d:`m9 18 6-6-6-6`,key:`mthhwq`}]]);export{t};

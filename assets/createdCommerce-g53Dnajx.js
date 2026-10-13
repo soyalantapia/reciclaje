@@ -1,0 +1,1 @@
+import{Dt as e,Mt as t,Nt as n,bt as r}from"./index-9_Ws_3uE.js";var i=n()(t(e=>({commerce:null,point:null,plan:`Pro`,set:(t,n,r)=>e({commerce:t,point:n,plan:r}),clear:()=>e({commerce:null,point:null,plan:`Pro`})}),{name:e(`created-commerce`),version:1}));r(i);export{i as t};

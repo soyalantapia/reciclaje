@@ -1,0 +1,1 @@
+import{Dt as e,Mt as t,Nt as n,xt as r}from"./index-9_Ws_3uE.js";var i=e(`commerce-products`),a=n()(t(e=>({creados:[],agregar:t=>e(e=>({creados:[t,...e.creados]})),quitar:t=>e(e=>({creados:e.creados.filter(e=>e.id!==t)}))}),{name:i,...r()}));typeof window<`u`&&window.addEventListener(`storage`,e=>{e.key===i&&a.persist.rehydrate()});export{a as t};
