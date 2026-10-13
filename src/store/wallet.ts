@@ -4,6 +4,7 @@ import type { User } from '@/types'
 import { levelFor } from '@/lib/copy'
 import { claveDeAlmacenamiento } from '@/lib/escenario'
 import { conVersionDeLosDatos } from './versionDeDatos'
+import { sincronizarEntrePestanas } from './sincronizar'
 
 interface WalletState {
   userId: string | null
@@ -72,3 +73,6 @@ export const useWalletStore = create<WalletState>()(
     { name: claveDeAlmacenamiento('wallet'), ...conVersionDeLosDatos<WalletState>() },
   ),
 )
+
+// La app y el panel van en dos pestañas del mismo navegador: lo que escribe una, la otra lo toma sin recargar.
+sincronizarEntrePestanas(useWalletStore)

@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { claveDeAlmacenamiento } from '@/lib/escenario'
+import { sincronizarEntrePestanas } from './sincronizar'
 
 type Theme = 'light' | 'dark'
 
@@ -21,3 +22,6 @@ export const useUiStore = create<UiState>()(
     { name: claveDeAlmacenamiento('ui'), version: 1 },
   ),
 )
+
+// La app y el panel van en dos pestañas del mismo navegador: lo que escribe una, la otra lo toma sin recargar.
+sincronizarEntrePestanas(useUiStore)

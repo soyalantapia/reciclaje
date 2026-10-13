@@ -3,6 +3,7 @@ import { persist } from 'zustand/middleware'
 import type { Campaign } from '@/types'
 import { claveDeAlmacenamiento } from '@/lib/escenario'
 import { conVersionDeLosDatos } from './versionDeDatos'
+import { sincronizarEntrePestanas } from './sincronizar'
 
 interface CommerceCampaignsState {
   /** Campañas creadas en el panel. */
@@ -38,3 +39,6 @@ export const useCommerceCampaignsStore = create<CommerceCampaignsState>()(
     { name: claveDeAlmacenamiento('commerce-campaigns'), ...conVersionDeLosDatos<CommerceCampaignsState>() },
   ),
 )
+
+// La app y el panel van en dos pestañas del mismo navegador: lo que escribe una, la otra lo toma sin recargar.
+sincronizarEntrePestanas(useCommerceCampaignsStore)

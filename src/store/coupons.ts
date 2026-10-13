@@ -3,6 +3,7 @@ import { persist } from 'zustand/middleware'
 import type { Coupon } from '@/types'
 import { claveDeAlmacenamiento } from '@/lib/escenario'
 import { conVersionDeLosDatos } from './versionDeDatos'
+import { sincronizarEntrePestanas } from './sincronizar'
 
 interface CouponsState {
   coupons: Coupon[]
@@ -20,3 +21,6 @@ export const useCouponsStore = create<CouponsState>()(
     { name: claveDeAlmacenamiento('coupons'), ...conVersionDeLosDatos<CouponsState>() },
   ),
 )
+
+// La app y el panel van en dos pestañas del mismo navegador: lo que escribe una, la otra lo toma sin recargar.
+sincronizarEntrePestanas(useCouponsStore)

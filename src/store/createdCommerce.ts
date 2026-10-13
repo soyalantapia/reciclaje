@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { RecyclePoint, Sponsor } from '@/types'
 import { claveDeAlmacenamiento } from '@/lib/escenario'
+import { sincronizarEntrePestanas } from './sincronizar'
 
 interface CreatedCommerceState {
   /** Comercio creado vía onboarding (no está en el seed). */
@@ -25,3 +26,6 @@ export const useCreatedCommerceStore = create<CreatedCommerceState>()(
     { name: claveDeAlmacenamiento('created-commerce'), version: 1 },
   ),
 )
+
+// La app y el panel van en dos pestañas del mismo navegador: lo que escribe una, la otra lo toma sin recargar.
+sincronizarEntrePestanas(useCreatedCommerceStore)
