@@ -39,7 +39,7 @@ export default defineConfig(({ command }) => ({
         name: 'ReciclaXP · Reciclá, sumá XP, cambiá tu mundo',
         short_name: 'ReciclaXP',
         description:
-          'Reciclá tapitas y materiales, sumá XP, canjeá beneficios en una red de lugares adheridos y seguí la trazabilidad e impacto real de tu aporte.',
+          'Reciclá tapitas y materiales, sumá XP, canjeá beneficios en una red de lugares adheridos y seguí el recorrido de tu aporte.',
         theme_color: '#059669',
         background_color: '#f3faf6',
         display: 'standalone',

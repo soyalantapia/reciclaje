@@ -340,6 +340,29 @@ Tres funciones para la reunión con Talleres del 13/10, pensadas para las pregun
 - Cada festejo suena una vez: una ref lo cuida del doble montaje del modo estricto de React (en desarrollo sonaba dos veces).
 - De paso, la prueba del menú del panel tiene 5 s para las rutas en diferido: fallaba 1 de cada 5 corridas y podía frenar un deploy.
 
+### La auditoría antes de la reunión (rama `fix/auditoria-antes-de-talleres`)
+Recorrido de punta a punta en producción (31 capacidades: app del hincha, panel del club y lo transversal), más tres
+revisiones en paralelo (código del 12/10, números y textos, documentación). Lo que se arregló:
+- **Panel:** «Marca» mostraba una «T» verde mientras el resto del panel tenía el escudo, y cambiar el color borraba el
+  escudo (ahora parte de la marca oficial); los números del top en la pantalla del estadio eran oscuro sobre oscuro
+  (ahora dorado); un club sin productos quedaba en «Cargando…»; un club dado de alta como «Club / estadio» veía su
+  puesto (ahora `esInstitucion`); «a 1 punto» en singular.
+- **Pesajes:** el pesaje movía «tu tapita» en un producto al que no aportaste o en otro punto (ahora hace falta tu
+  aporte y, en la sesión, el mismo punto y el mismo día o después); el ejemplo decía «Talleres vs. Belgrano»;
+  «1.250» se leía 1,25 kg; una fecha futura escrita a mano se guardaba.
+- **App:** el plástico en el Estadio ganaba el logro sin festejarlo y decía que sumaba al banco de tapitas;
+  «1 envases»; «1.4 kg»; faltaba la pestaña «Merch» (la camiseta del club sólo en «Todos»); el hospital en kg y en
+  tapitas a la vez; el cupón decía «en el comercio»; el sonido en iPhone tras bloquear la pantalla.
+- **Datos y textos:** rankings que se contradecían (Facu R. no estaba en el global); el premio prometía el banco de
+  suplentes, donde sólo entra personal habilitado; «hinchas este mes» con menos aportes en el mes; XP emitidos que no
+  cerraban con las tapitas; celeste en el n.º 1 de la hinchada; el logro decía «día de partido» (la reunión fue un
+  martes); promesas de «reales» en la vista previa del enlace y en Beneficios; ejemplos «Av. Siempreviva 742» y
+  «julio».
+- **Docs:** el escudo, el deploy en Railway y el estado al 13/10.
+- **Queda abierto (decisión de Alan o de los socios):** el WhatsApp real de «Hablar con un asesor»; el repo público
+  con el acta y las tareas (posición de negociación); el factor de 238 tapitas por kilo (referencias públicas hablan
+  de 400 a 500); la Huella Verde de ejemplo de Talleres (64, la más baja de la red).
+
 ---
 
 ## Trabajo hecho que NO quedó en commits

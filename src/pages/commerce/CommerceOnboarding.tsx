@@ -180,7 +180,7 @@ export default function CommerceOnboarding() {
               <Label htmlFor="oaddr">Dirección</Label>
               <Input
                 id="oaddr"
-                placeholder="Av. Siempreviva 742"
+                placeholder="Ej.: Av. Colón 1200"
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
               />

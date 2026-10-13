@@ -110,7 +110,7 @@ export default function CommerceLogin() {
                   type="email"
                   inputMode="email"
                   autoComplete="email"
-                  placeholder="tucomercio@email.com"
+                  placeholder="nombre@email.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && sendCode()}
