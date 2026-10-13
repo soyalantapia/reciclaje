@@ -3,6 +3,7 @@ import { persist } from 'zustand/middleware'
 import type { Benefit } from '@/types'
 import { claveDeAlmacenamiento } from '@/lib/escenario'
 import { conVersionDeLosDatos } from './versionDeDatos'
+import { sincronizarEntrePestanas } from './sincronizar'
 
 interface CommerceBenefitsState {
   /** Beneficios creados por el comercio (se suman a los del seed). */
@@ -35,3 +36,6 @@ export const useCommerceBenefitsStore = create<CommerceBenefitsState>()(
     { name: claveDeAlmacenamiento('commerce-benefits'), ...conVersionDeLosDatos<CommerceBenefitsState>() },
   ),
 )
+
+// La app y el panel van en dos pestañas del mismo navegador: lo que escribe una, la otra lo toma sin recargar.
+sincronizarEntrePestanas(useCommerceBenefitsStore)

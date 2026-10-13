@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { claveDeAlmacenamiento } from '@/lib/escenario'
+import { sincronizarEntrePestanas } from './sincronizar'
 
 interface CausesState {
   /** XP que el usuario donó a cada causa (causeId → puntos). */
@@ -25,3 +26,6 @@ export const useCausesStore = create<CausesState>()(
     { name: claveDeAlmacenamiento('causes'), version: 1 },
   ),
 )
+
+// La app y el panel van en dos pestañas del mismo navegador: lo que escribe una, la otra lo toma sin recargar.
+sincronizarEntrePestanas(useCausesStore)
